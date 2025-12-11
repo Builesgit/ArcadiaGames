@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ArcadiaGames</string>
+    <string name="Usuario">Usuario</string>
+    <string name="Contraseña">Contraseña</string>
+    <string name="Ingresar">Ingresar</string>
+    <string name="Bienvenido">Bienvenido a ArcadiaGames, esperamos que disfrutes</string>
+</resources>
