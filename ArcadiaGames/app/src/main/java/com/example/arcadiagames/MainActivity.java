@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), mensajeEG, Snackbar.LENGTH_SHORT);
                     snackbar.setBackgroundTint(getColor(R.color.Oscuro));
                     snackbar.show();
+                    layoutusuario.setError("Campo vacío");
+                    layoutcontraseña.setError("Campo vacío");
 
                     if (user.isEmpty()) {
                         layoutusuario.setError("Campo vacío");
@@ -54,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     if (pass.isEmpty()) {
                         layoutcontraseña.setError("Campo vacío");
                     }
-                    layoutusuario.setError(null);
-                    layoutcontraseña.setError(null);
+                    
 
                 } else {
                     layoutusuario.setError(null);
