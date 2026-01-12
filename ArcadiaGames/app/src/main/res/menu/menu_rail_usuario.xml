@@ -16,4 +16,9 @@
         android:id="@+id/item_perfil"
         android:icon="@android:drawable/ic_menu_manage"
         android:title="Perfil" />
+    <item
+        android:id="@+id/item_ayuda"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="Ayuda"
+        app:showAsAction="ifRoom" />
 </menu>
