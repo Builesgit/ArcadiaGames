@@ -5,4 +5,9 @@
     <color name="Oscuro">#060045</color>
     <color name="Morado_Logo">#7E4B90</color>
     <color name="Morado_Texto">#281A3E</color>
+    <color name="Azul_claro">#76C3DD</color>
+    <color name="Azul_Fondo_Botones">#334660</color>
+    <color name="Azul_Oscuro">#0A1324</color>
+    <color name="Amarillo">#FFD240</color>
+    <color name="Texto">#4A4459</color>
 </resources>
