@@ -18,8 +18,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
+        android:orientation="horizontal"
+        android:id="@+id/main_home_U_fragment">
 
         <com.google.android.material.navigationrail.NavigationRailView
             android:id="@+id/navigation_rail"
@@ -40,12 +40,11 @@
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="16dp" />
 
-
         </com.google.android.material.navigationrail.NavigationRailView>
 
         <!-- El perfil lo moveremos abajo por código o con un layout header/footer -->
 
-        <FrameLayout
+        <!--FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
@@ -59,9 +58,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp">
-
-
-
 
                     <TextView
                         android:id="@+id/textview"
@@ -150,7 +146,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.core.widget.NestedScrollView>
-        </FrameLayout>
+        </FrameLayout-->
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

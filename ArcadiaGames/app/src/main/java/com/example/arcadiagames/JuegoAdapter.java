@@ -7,56 +7,61 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide; // Importamos Glide
+
 import java.util.List;
 
 public class JuegoAdapter extends RecyclerView.Adapter<JuegoAdapter.JuegoViewHolder> {
 
     private List<Juego> listaJuegos;
 
-    public JuegoAdapter(List<Juego> listaJuegos) {
+    public JuegoAdapter(List<Juegos> listaJuegos) {
         this.listaJuegos = listaJuegos;
+    }
+
+    // Método para actualizar la lista cuando filtramos
+    public void setFilteredList(List<Juego> filteredList) {
+        this.listaJuegos = filteredList;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public JuegoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_novedades_carrusel, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_juego_catalogo_u, parent, false);
         return new JuegoViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull JuegoViewHolder holder, int position) {
-        if (listaJuegos == null || listaJuegos.isEmpty()) return;
+        Juego juego = listaJuegos.get(position);
+        holder.tvTitulo.setText(juego.getNombre());
+        holder.tvDescripcion.setText(juego.getDescripcion());
+        holder.tvPrecio.setText(juego.getPrecio());
+        holder.ivPortada.setImageResource(juego.getImagenResId());
 
-        // Ahora usamos la posición real, sin trucos de módulo
-        Juego juegoActual = listaJuegos.get(position);
-
-        holder.tvNombre.setText(juegoActual.getNombre());
-        holder.tvPrecio.setText(juegoActual.getPrecio());
-
-        // Cargamos la imagen de forma optimizada
-        Glide.with(holder.itemView.getContext())
-                .load(juegoActual.getImagenResId())
-                .centerCrop()
-                .into(holder.imgJuego);
+        // Unimos los tags en un solo String separado por comas o puntos
+        if (juego.getTags() != null) {
+            String tagsString = String.join(" • ", juego.getTags());
+            holder.tvTags.setText(tagsString);
+        }
     }
 
     @Override
     public int getItemCount() {
-        // Devolvemos el tamaño real de la lista
-        return listaJuegos != null ? listaJuegos.size() : 0;
+        return listaJuegos.size();
     }
 
-    class JuegoViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgJuego;
-        TextView tvNombre, tvPrecio;
+    static class JuegoViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivPortada;
+        TextView tvTitulo, tvDescripcion, tvPrecio, tvTags;
 
-        public JuegoViewHolder(View itemView) {
+        public JuegoViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgJuego = itemView.findViewById(R.id.img_juego);
-            tvNombre = itemView.findViewById(R.id.tv_nombre_jc);
-            tvPrecio = itemView.findViewById(R.id.tv_precio_jc);
+            ivPortada = itemView.findViewById(R.id.iv_juego_portada);
+            tvTitulo = itemView.findViewById(R.id.tv_juego_titulo);
+            tvDescripcion = itemView.findViewById(R.id.tv_juego_descripcion);
+            tvPrecio = itemView.findViewById(R.id.tv_juego_precio);
+            tvTags = itemView.findViewById(R.id.tv_juego_tags);
         }
     }
 }

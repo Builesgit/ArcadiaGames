@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
@@ -18,7 +19,12 @@ import com.google.android.material.navigationrail.NavigationRailView;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
+
 public class HomeUsuario extends AppCompatActivity {
+
+    private Button btnAbrir;
+    private NavigationRailView rail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +32,10 @@ public class HomeUsuario extends AppCompatActivity {
         setContentView(R.layout.homeusuario_layout);
 
 
-        NavigationRailView rail = findViewById(R.id.navigation_rail);
-        Button btnAbrir = findViewById(R.id.btn_abrir_rail);
+        rail = findViewById(R.id.navigation_rail);
+        btnAbrir = findViewById(R.id.btn_abrir_rail);
         float density = getResources().getDisplayMetrics().density;
-
+        /*
         List<Juego> listaNovedades = new ArrayList<>();
         listaNovedades.add(new Juego("Cybercriminal 2077", "29.99€", R.drawable.wicher3));
         listaNovedades.add(new Juego("The Witcher 3", "19.99€", R.drawable.wicher3));
@@ -53,29 +59,27 @@ public class HomeUsuario extends AppCompatActivity {
         rvNovedades.setLayoutManager(layoutManager);
         JuegoAdapter adapter = new JuegoAdapter(listaNovedades);
         rvNovedades.setAdapter(adapter);
-
+        */
         //cerral navigator
         rail.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            Fragment seleccionado = null;
+            seleccionado = new HomeFragment();
+
             if (item.getItemId() == R.id.item_menu) {
+                seleccionado = new HomeFragment();
 
-                ValueAnimator animRail = ValueAnimator.ofInt(rail.getWidth(), 0);
-                animRail.setDuration(200);
-                animRail.addUpdateListener(animation -> {
-                    rail.getLayoutParams().width = (int) animation.getAnimatedValue();
-                    rail.requestLayout();
-                });
+            } else if (id == R.id.item_catalogo) {
+                seleccionado = new FragmentCatalogo();
 
+            }
 
-                btnAbrir.animate().translationX(0).setDuration(200).start();
-
-                animRail.start();
+            if (seleccionado != null) {
+                cargarFragmento(seleccionado);
+                cerrarRail(); // Llamamos al método para animar el cierre
                 return true;
             }
-
-            if (item.getItemId() == R.id.item_catalogo) {
-
-            }
-            return true; // Gestionar otros clics de menú aquí
+            return false; // Gestionar otros clics de menú aquí
         });
 
         //abril navigator
@@ -86,17 +90,42 @@ public class HomeUsuario extends AppCompatActivity {
                 rail.getLayoutParams().width = (int) animation.getAnimatedValue();
                 rail.requestLayout();
             });
-
-
             btnAbrir.animate().translationX(-100 * density).setDuration(300).start();
-
             animRail.start();
         });
 
 
     }
+    // Método para cambiar fragmentos
+    private void cargarFragmento(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.main_home_U_fragment, fragment)
+                .commit();
+    }
 
+    // Método para animar el cierre del Rail
+    private void cerrarRail() {
+        ValueAnimator animRail = ValueAnimator.ofInt(rail.getWidth(), 0);
+        animRail.setDuration(200);
+        animRail.addUpdateListener(animation -> {
+            rail.getLayoutParams().width = (int) animation.getAnimatedValue();
+            rail.requestLayout();
+        });
+        btnAbrir.animate().translationX(0).setDuration(200).start();
+        animRail.start();
+    }
+/*ValueAnimator animRail = ValueAnimator.ofInt(rail.getWidth(), 0);
+                animRail.setDuration(200);
+                animRail.addUpdateListener(animation -> {
+                    rail.getLayoutParams().width = (int) animation.getAnimatedValue();
+                    rail.requestLayout();
+                });
 
+                btnAbrir.animate().translationX(0).setDuration(200).start();
+
+                animRail.start();
+                return true;*/
 
 
 }
