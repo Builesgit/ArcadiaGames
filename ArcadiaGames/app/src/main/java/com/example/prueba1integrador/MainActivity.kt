@@ -17,11 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.prueba1integrador.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
-    // Declaración de la variable para la animación de cambio de pantallas
     private lateinit var binding: ActivityMainBinding
-
-    // Declaración de la variable para la el login funcional
     private lateinit var edtUsuario: EditText
     private lateinit var edtPassword: EditText
     private lateinit var btnLogin: Button
@@ -29,24 +25,30 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Solo una vez el binding e inflar la vista
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+            // layoutInflater: lee los archivos XML y los convierte en objetos de Kotlin
+            // .inflate(): Toma el XML y lo convierte en un objeto 3D en la memoria del teléfono
+            // binding: te da acceso y control directo de todos los elementos del diseño
 
-        // 1. Configurar UI de la animación
+        setContentView(binding.root) // setContentView: muestra la pantalla al usuario
+
+        // CONFIGURAR EL ESTADO INICIAL DE LA TRANSICION
         setupInitialState()
 
-        // 2. Cargar el GIF
-        binding.root.post {
+        // CARGAR EL GIF
+        /* binding.root.post {
             loadGifOptimized()
-        }
+        } */
 
-        // 3. Ejecutar transición
+        // CARGAR IMG FONDO LOGO
+        binding.logoImageView.setImageResource(R.drawable.fondo_con_logo)
+
+        // EJECUTAR LA TRANSICIÓN
         binding.root.postDelayed({
-            executeFlipTransition()
+            executeFlipTransition() // Ejecuta la animación de cambio de pantalla durante 6s
         }, 6000)
 
-        // 4. Inicializar variables del login usando BINDING
+        // INICIALIZAR VARIABLES LOGIN
         edtUsuario = binding.edtUsuario
         edtPassword = binding.edtPassword
         btnLogin = binding.btnLogin
@@ -63,36 +65,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // METODOS PARA LA ANIMACIÓN DE CAMBIO DE PANTALLA
-
     private fun setupInitialState() {
         val scale = resources.displayMetrics.density
         val distance = 8000 * scale
 
+        // cameraDistance: hace que la animación sea más realista aplicandole una distancia a la hora de la rotación
         binding.initialScreenLayout.cameraDistance = distance
         binding.loginScreenLayout.cameraDistance = distance
-        binding.loginScreenLayout.visibility = View.GONE
+
+        binding.loginScreenLayout.visibility = View.GONE // Desaparece la pantalla de inicio
     }
 
-    private fun loadGifOptimized() {
+    /* private fun loadGifOptimized() {
         Glide.with(this)
             .asGif()
-            .load(R.drawable.prueba3)
+            .load(R.drawable.gif_inicio)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .into(binding.logoImageView)
-    }
+    } */
 
     private fun executeFlipTransition() {
         val duration = 600L
         val interpolator = AccelerateDecelerateInterpolator()
 
+        // PARTE 1: La pantalla inicial gira 90 grados (se pone de lado)
         binding.initialScreenLayout.animate()
             .rotationY(90f)
             .setDuration(duration)
             .setInterpolator(interpolator)
             .withEndAction {
-                binding.initialScreenLayout.visibility = View.GONE
+                binding.initialScreenLayout.visibility = View.GONE // Desaparece la pantalla inicial
 
+                // PARTE 2: El Login aparece desde -90 y gira a 0 (se pone de frente)
                 binding.loginScreenLayout.apply {
                     rotationY = -90f
                     visibility = View.VISIBLE
@@ -106,33 +110,46 @@ class MainActivity : AppCompatActivity() {
             .start()
     }
 
-    // METODOS PARA EL LOGIN CON BASE DE DATOS
-
     private fun validarUsuario(url: String) {
         val stringRequest = object : StringRequest(
-            Request.Method.POST, url,
+            Request.Method.POST, url, // POST: forma de envió seguro para que la contraseña no viaje en la URL
             { response ->
+
+                // Esto ocurre cuando el servidor RESPONDE
                 if (response.isNotEmpty() && !response.contains("no_existe")) {
+
+                    // Ir a la siguiente pantalla (HOME)
                     val intent = Intent(this, HomeActivity::class.java)
+
                     intent.putExtra("USUARIO_LOGUEADO", edtUsuario.text.toString())
                     startActivity(intent)
                     finish()
+
                 } else {
+
                     Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+
                 }
             },
-            { error ->
-                // Esto te dirá el error real en un Toast
+            { error -> // Si falla el internet o el servidor
+
                 Toast.makeText(this, "Error: ${error.message ?: "Conexión fallida"}", Toast.LENGTH_LONG).show()
             }
         ) {
+            // getParams: obtiene los datos que se van a enviar al servidor mediante $_POST['usuario']
             override fun getParams(): MutableMap<String, String> {
                 val parametros = HashMap<String, String>()
+
                 parametros["usuario"] = edtUsuario.text.toString()
                 parametros["password"] = edtPassword.text.toString()
+
                 return parametros
+
             }
         }
+
+        // RequestQueue: Es una fila de espera
+        // Volley envía la petición y queda esperando la respuesta sin bloquear la pantalla del usuario
         Volley.newRequestQueue(this).add(stringRequest)
     }
 }
