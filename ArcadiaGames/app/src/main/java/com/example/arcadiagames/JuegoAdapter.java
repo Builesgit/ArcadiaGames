@@ -12,15 +12,25 @@ import java.util.List;
 
 public class JuegoAdapter extends RecyclerView.Adapter<JuegoAdapter.JuegoViewHolder> {
 
-    private List<Juego> listaJuegos;
+    private List<Juego> listaJuego;
+    private boolean modoCompacto = false; //esto es para el modo de la lista para el carrusel
 
-    public JuegoAdapter(List<Juegos> listaJuegos) {
-        this.listaJuegos = listaJuegos;
+    public JuegoAdapter(List<Juego> listaJuego) {
+        this.listaJuego = listaJuego;
+        this.modoCompacto = false;
     }
+
+    // este en principio es para el carrusel
+    public JuegoAdapter(List<Juego> listaJuego, boolean modoCompacto) {
+        this.listaJuego = listaJuego;
+        this.modoCompacto = modoCompacto;
+    }
+
+
 
     // Método para actualizar la lista cuando filtramos
     public void setFilteredList(List<Juego> filteredList) {
-        this.listaJuegos = filteredList;
+        this.listaJuego = filteredList;
         notifyDataSetChanged();
     }
 
@@ -33,22 +43,31 @@ public class JuegoAdapter extends RecyclerView.Adapter<JuegoAdapter.JuegoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull JuegoViewHolder holder, int position) {
-        Juego juego = listaJuegos.get(position);
+        Juego juego = listaJuego.get(position);
+
         holder.tvTitulo.setText(juego.getNombre());
-        holder.tvDescripcion.setText(juego.getDescripcion());
         holder.tvPrecio.setText(juego.getPrecio());
         holder.ivPortada.setImageResource(juego.getImagenResId());
 
         // Unimos los tags en un solo String separado por comas o puntos
-        if (juego.getTags() != null) {
-            String tagsString = String.join(" • ", juego.getTags());
-            holder.tvTags.setText(tagsString);
+        if (modoCompacto) {
+            holder.tvDescripcion.setVisibility(View.GONE);
+            holder.tvTags.setVisibility(View.GONE);
+            // Puedes ocultar también el texto extra si quieres
+        } else {
+            holder.tvDescripcion.setVisibility(View.VISIBLE);
+            holder.tvTags.setVisibility(View.VISIBLE);
+            holder.tvDescripcion.setText(juego.getDescripcion());
+
+            if (juego.getTags() != null) {
+                holder.tvTags.setText(String.join(" • ", juego.getTags()));
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return listaJuegos.size();
+        return listaJuego.size();
     }
 
     static class JuegoViewHolder extends RecyclerView.ViewHolder {
@@ -64,4 +83,6 @@ public class JuegoAdapter extends RecyclerView.Adapter<JuegoAdapter.JuegoViewHol
             tvTags = itemView.findViewById(R.id.tv_juego_tags);
         }
     }
+
+
 }

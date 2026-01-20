@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.carousel.CarouselLayoutManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -20,12 +21,12 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Aquí pegas el código del RecyclerView y la lista de juegos
-        List<Juegos> listaNovedades = new ArrayList<>();
-        listaNovedades.add(new Juegos("Cybercriminal 2077", "29.99€", R.drawable.wicher3 ));
-        listaNovedades.add(new Juegos("The Witcher 3", "19.99€", R.drawable.wicher3));
-        listaNovedades.add(new Juegos("Starfield", "60.0€", R.drawable.wicher3));
-        listaNovedades.add(new Juegos("Morio", "600.0€", R.drawable.wicher3));
-        listaNovedades.add(new Juegos("AgarthaBrainrot", "67.67€", R.drawable.wicher3));
+        List<Juego> listaNovedades = new ArrayList<>();
+        listaNovedades.add(new Juego("Cybercriminal 2077", "29.99€", R.drawable.wicher3,"29.99€", Arrays.asList("null")));
+        listaNovedades.add(new Juego("The Witcher 3", "19.99€", R.drawable.wicher3, "19.99€", Arrays.asList("null")));
+        listaNovedades.add(new Juego("Starfield", "60.0€", R.drawable.wicher3, "60.0€", Arrays.asList("null")));
+        listaNovedades.add(new Juego("Morio", "600.0€", R.drawable.wicher3, "600.0€", Arrays.asList("null")));
+        listaNovedades.add(new Juego("AgarthaBrainrot", "67.67€", R.drawable.wicher3, "67.67€", Arrays.asList("null")));
 
 
         // 1. Buscamos el RecyclerView
@@ -42,7 +43,7 @@ public class HomeFragment extends Fragment {
 
         // 4. Lo asignamos al RecyclerView
         rvNovedades.setLayoutManager(layoutManager);
-        JuegoAdapter adapter = new JuegoAdapter(listaNovedades);
+        JuegoAdapter adapter = new JuegoAdapter(listaNovedades, true);
         rvNovedades.setAdapter(adapter);
 
         return view;

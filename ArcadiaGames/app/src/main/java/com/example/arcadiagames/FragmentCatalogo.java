@@ -122,9 +122,10 @@ public class FragmentCatalogo extends Fragment {
         listaCompleta.add(new Juego("Super Morio World", "C morió.", R.drawable.morio, "4000.99€", Arrays.asList("MeloInvento")));
         listaCompleta.add(new Juego("Poly Racing", "Carreras poligonales. Mira un vértice", R.drawable.polyracing, "0.09€", Arrays.asList("PolyStation")));
         listaCompleta.add(new Juego("Xbob El con-Xtructor", "Construye como nadie", R.drawable.wicher3, "49.99€", Arrays.asList("Xbob")));
-        listaCompleta.add(new Juego("PC Master Race", "Racist era algo de carreras ¿no?.", R.drawable.pcmasterrace, "50.00€", Arrays.asList("PC")));
+        listaCompleta.add(new Juego("PC Master Race", "Solamente disponible en PC para los chads", R.drawable.pcmasterrace, "50.00€", Arrays.asList("PC")));
         listaCompleta.add(new Juego("Multi Plataforma", "Funciona en todo.", R.drawable.wicher3, "3.99€", Arrays.asList("PolyStation", "PC", "Xbob", "MeloInvento")));
         listaCompleta.add(new Juego("Facto Horio", "Tira factos en el horio.", R.drawable.wicher3, "39.99€", Arrays.asList("PolyStation", "PC")));
+        listaCompleta.add(new Juego("Facto Horio", "Tira factos en el horio.", R.drawable.wicher3, "39.99€", Arrays.asList("null")));
 
     }
 }
