@@ -20,31 +20,27 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Aquí pegas el código del RecyclerView y la lista de juegos
+        // Aquí se pega el código del RecyclerView y la lista de juegos
         List<Juego> listaNovedades = new ArrayList<>();
-        listaNovedades.add(new Juego("Cybercriminal 2077", "29.99€", R.drawable.wicher3,"29.99€", Arrays.asList("null")));
-        listaNovedades.add(new Juego("The Witcher 3", "19.99€", R.drawable.wicher3, "19.99€", Arrays.asList("null")));
-        listaNovedades.add(new Juego("Starfield", "60.0€", R.drawable.wicher3, "60.0€", Arrays.asList("null")));
-        listaNovedades.add(new Juego("Morio", "600.0€", R.drawable.wicher3, "600.0€", Arrays.asList("null")));
-        listaNovedades.add(new Juego("AgarthaBrainrot", "67.67€", R.drawable.wicher3, "67.67€", Arrays.asList("null")));
+
+        listaNovedades.add(new Juego("Cybercriminal 2077", "29.99€", R.drawable.wicher3,"29.99€", Arrays.asList("PC")));
+        listaNovedades.add(new Juego("The Witcher 3", "19.99€", R.drawable.wicher3, "19.99€", Arrays.asList("PC")));
+        listaNovedades.add(new Juego("Starfield", "60.0€", R.drawable.wicher3, "60.0€", Arrays.asList("PC")));
+        listaNovedades.add(new Juego("Morio", "600.0€", R.drawable.wicher3, "600.0€", Arrays.asList("PC")));
+        listaNovedades.add(new Juego("AgarthaBrainrot", "67.67€", R.drawable.wicher3, "67.67€", Arrays.asList("PC")));
 
 
-        // 1. Buscamos el RecyclerView
+
         RecyclerView rvNovedades = view.findViewById(R.id.rv_novedades);
 
-
-        // 2. Creamos el LayoutManager del carrusel
         CarouselLayoutManager layoutManager = new CarouselLayoutManager();
 
-
         layoutManager.setCarouselStrategy(new com.google.android.material.carousel.UncontainedCarouselStrategy());
-        //hay diferentes tipos de carrusel, UncontainedCarouselStrategy() es el que creo que es el mejor, per también está CarouselLayoutManager()
 
-
-        // 4. Lo asignamos al RecyclerView
         rvNovedades.setLayoutManager(layoutManager);
         JuegoAdapter adapter = new JuegoAdapter(listaNovedades, true);
         rvNovedades.setAdapter(adapter);
+
 
         return view;
     }

@@ -7,60 +7,65 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
-public class JuegoAdapter extends RecyclerView.Adapter<JuegoAdapter.JuegoViewHolder> {
+public class JuegoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Juego> listaJuego;
-    private boolean modoCompacto = false; //esto es para el modo de la lista para el carrusel
+    public static final int VIEW_TYPE_LISTA = 1;
+    public static final int VIEW_TYPE_CAROUSEL = 2;
+    private final int tipoConfigurado;
 
+    // Constructor para Catálogo
     public JuegoAdapter(List<Juego> listaJuego) {
         this.listaJuego = listaJuego;
-        this.modoCompacto = false;
+        this.tipoConfigurado = VIEW_TYPE_LISTA;
     }
 
-    // este en principio es para el carrusel
-    public JuegoAdapter(List<Juego> listaJuego, boolean modoCompacto) {
+    // Constructor para Home (Carousel)
+    public JuegoAdapter(List<Juego> listaJuego, boolean esCarousel) {
         this.listaJuego = listaJuego;
-        this.modoCompacto = modoCompacto;
+        this.tipoConfigurado = esCarousel ? VIEW_TYPE_CAROUSEL : VIEW_TYPE_LISTA;
     }
 
-
-
-    // Método para actualizar la lista cuando filtramos
-    public void setFilteredList(List<Juego> filteredList) {
-        this.listaJuego = filteredList;
-        notifyDataSetChanged();
+    // ESTO le dice al RecyclerView qué estamos dibujando
+    @Override
+    public int getItemViewType(int position) {
+        return tipoConfigurado;
     }
 
     @NonNull
     @Override
-    public JuegoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_juego_catalogo_u, parent, false);
-        return new JuegoViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        if (viewType == VIEW_TYPE_CAROUSEL) {
+            View v = inflater.inflate(R.layout.item_novedades_carrusel, parent, false);
+            return new CarouselViewHolder(v);
+        } else {
+            View v = inflater.inflate(R.layout.item_juego_catalogo_u, parent, false);
+            return new ListaViewHolder(v);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull JuegoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Juego juego = listaJuego.get(position);
 
-        holder.tvTitulo.setText(juego.getNombre());
-        holder.tvPrecio.setText(juego.getPrecio());
-        holder.ivPortada.setImageResource(juego.getImagenResId());
-
-        // Unimos los tags en un solo String separado por comas o puntos
-        if (modoCompacto) {
-            holder.tvDescripcion.setVisibility(View.GONE);
-            holder.tvTags.setVisibility(View.GONE);
-            // Puedes ocultar también el texto extra si quieres
-        } else {
-            holder.tvDescripcion.setVisibility(View.VISIBLE);
-            holder.tvTags.setVisibility(View.VISIBLE);
-            holder.tvDescripcion.setText(juego.getDescripcion());
-
+        if (holder instanceof CarouselViewHolder) {
+            CarouselViewHolder h = (CarouselViewHolder) holder;
+            h.tvTitulo.setText(juego.getNombre());
+            h.tvPrecio.setText(juego.getPrecio());
+            h.ivPortada.setImageResource(juego.getImagenResId());
+        }
+        else if (holder instanceof ListaViewHolder) {
+            ListaViewHolder h = (ListaViewHolder) holder;
+            h.tvTitulo.setText(juego.getNombre());
+            h.tvPrecio.setText(juego.getPrecio());
+            h.tvDescripcion.setText(juego.getDescripcion());
+            h.ivPortada.setImageResource(juego.getImagenResId());
             if (juego.getTags() != null) {
-                holder.tvTags.setText(String.join(" • ", juego.getTags()));
+                h.tvTags.setText(String.join(" • ", juego.getTags()));
             }
         }
     }
@@ -70,11 +75,31 @@ public class JuegoAdapter extends RecyclerView.Adapter<JuegoAdapter.JuegoViewHol
         return listaJuego.size();
     }
 
-    static class JuegoViewHolder extends RecyclerView.ViewHolder {
+    public void setFilteredList(List<Juego> filteredList) {
+        this.listaJuego = filteredList;
+        notifyDataSetChanged();
+    }
+
+    // VIEWHOLDER 1: Solo tiene lo que usa el Carousel
+    static class CarouselViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView ivPortada;
+        TextView tvTitulo, tvPrecio;
+
+        public CarouselViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ivPortada = itemView.findViewById(R.id.img_juego);
+            tvTitulo = itemView.findViewById(R.id.tv_nombre_jc);
+            tvPrecio = itemView.findViewById(R.id.tv_precio_jc);
+        }
+    }
+
+    // VIEWHOLDER 2: Tiene todo lo del Catálogo
+    static class ListaViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPortada;
         TextView tvTitulo, tvDescripcion, tvPrecio, tvTags;
 
-        public JuegoViewHolder(@NonNull View itemView) {
+        public ListaViewHolder(@NonNull View itemView) {
             super(itemView);
             ivPortada = itemView.findViewById(R.id.iv_juego_portada);
             tvTitulo = itemView.findViewById(R.id.tv_juego_titulo);
@@ -83,6 +108,4 @@ public class JuegoAdapter extends RecyclerView.Adapter<JuegoAdapter.JuegoViewHol
             tvTags = itemView.findViewById(R.id.tv_juego_tags);
         }
     }
-
-
 }

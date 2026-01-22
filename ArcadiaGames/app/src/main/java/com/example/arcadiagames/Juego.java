@@ -7,13 +7,13 @@ public class Juego {
     private String descripcion;
     private String precio;
     private int imagenResId;
-    private List<String> tags; // Aquí irán "PolyStation", "MeloInvento", etc.
+    private List<String> tags; // Aquí van las consolas.
 
     public Juego(String nombre, String descripcion, int imagenResId, String precio, List<String> tags) {
         this.nombre = nombre;
+        this.precio = precio;
         this.descripcion = descripcion;
         this.imagenResId = imagenResId;
-        this.precio = precio;
         this.tags = tags;
     }
 
