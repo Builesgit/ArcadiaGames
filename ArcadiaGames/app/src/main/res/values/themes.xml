@@ -1,20 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.ArcadiaGames" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Prueba1Integrador" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">@color/Azul_claro</item>
     </style>
 
-    <style name="Theme.ArcadiaGames" parent="Base.Theme.ArcadiaGames" />
-
-    <style name="ShapeAppearance.App.Carousel" parent="ShapeAppearance.Material3.MediumComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
-    </style>
-
-    <style name="RoundedSquare" parent="ShapeAppearance.Material3.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerRadius">16dp</item>
-    </style>
+    <style name="Theme.Prueba1Integrador" parent="Base.Theme.Prueba1Integrador" />
 </resources>
