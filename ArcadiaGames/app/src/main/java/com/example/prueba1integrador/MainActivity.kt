@@ -12,9 +12,11 @@ import com.android.volley.toolbox.Volley
 
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+// import com.bumptech.glide.Glide
+// import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.prueba1integrador.databinding.ActivityMainBinding
+
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -114,21 +116,29 @@ class MainActivity : AppCompatActivity() {
         val stringRequest = object : StringRequest(
             Request.Method.POST, url, // POST: forma de envió seguro para que la contraseña no viaje en la URL
             { response ->
+                println("DEBUG_SERVER_RESPONSE: $response")
 
-                // Esto ocurre cuando el servidor RESPONDE
                 if (response.isNotEmpty() && !response.contains("no_existe")) {
+                    try {
+                        val jsonResponse = JSONObject(response)
 
-                    // Ir a la siguiente pantalla (HOME)
-                    val intent = Intent(this, HomeActivity::class.java)
+                        // IMPORTANTE: Verifica que estas claves coincidan con el JSON del log
+                        val rol = jsonResponse.getString("rol")
+                        val usuario = jsonResponse.getString("usuario")
 
-                    intent.putExtra("USUARIO_LOGUEADO", edtUsuario.text.toString())
-                    startActivity(intent)
-                    finish()
+                        val intent = Intent(this, HomeActivity::class.java)
+                        intent.putExtra("ROL_USUARIO", rol)
+                        intent.putExtra("USUARIO_LOGUEADO", usuario)
 
+                        startActivity(intent)
+                        finish()
+                    } catch (e: Exception) {
+                        // Imprime el error real en la consola para saber qué falló
+                        e.printStackTrace()
+                        Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-
                     Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
-
                 }
             },
             { error -> // Si falla el internet o el servidor
@@ -146,6 +156,9 @@ class MainActivity : AppCompatActivity() {
                 return parametros
 
             }
+
+
+
         }
 
         // RequestQueue: Es una fila de espera
