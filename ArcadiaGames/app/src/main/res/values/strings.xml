@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">Arcadia Games</string>
+    <string name="app_name">ArcadiaGames</string>
+    <string name="Usuario">Usuario</string>
+    <string name="Contraseña">Contraseña</string>
+    <string name="Confirmar">Confirmar Contraseña</string>
+    <string name="Ingresar">Ingresar</string>
+    <string name="Bienvenido">Bienvenido a ArcadiaGames, esperamos que disfrutes</string>
+    <string name="Inicio">Iniciar Sesión</string>
+    <string name="Acceder">Acceder</string>
+    <string name="Crear">Crear Cuenta</string>
+    <string name="Correo">Correo</string>
+    <string name="Numero">Número de Teléfono</string>
+    <string name="Buscar">Buscar juegos</string>
+    <string name="Novedades">Novedades</string>
+    <string name="Ofertas">Ofertas</string>
+    <string name="Favoritos">Favoritos</string>
+    <string name="Catalogo">Catalogo de Juegos</string>
+
+
+
 </resources>

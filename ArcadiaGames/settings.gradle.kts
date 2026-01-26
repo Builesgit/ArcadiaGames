@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Inicio Integrador"
+rootProject.name = "ArcadiaGames"
 include(":app")
+ 
