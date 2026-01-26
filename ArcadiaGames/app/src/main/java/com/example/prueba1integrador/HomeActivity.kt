@@ -5,22 +5,34 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.finishAffinity
+import com.example.prueba1integrador.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val txtBienvenida: TextView = findViewById(R.id.txtBienvenida)
-        val btnCerrarSesion: Button = findViewById(R.id.btnCerrarSesion)
+        // Recuperamos los datos que enviamos desde MainActivity
+        val usuario = intent.getStringExtra("USUARIO_LOGUEADO")
+        val rol = intent.getStringExtra("ROL_USUARIO")
 
-        val nombre = intent.getStringExtra("USUARIO_LOGUEADO")
-        txtBienvenida.text = "¡Bienvenido, $nombre!"
+        binding.btnIrAPerfil.setOnClickListener {
+            val intentPerfil = Intent(this, PerfilActivity::class.java)
+            intentPerfil.putExtra("USUARIO_LOGUEADO", usuario)
+            intentPerfil.putExtra("ROL_USUARIO", rol)
+            startActivity(intentPerfil)
+        }
 
-        btnCerrarSesion.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+        binding.btnCerrarSesion.setOnClickListener {
+            // Esto cierra todas las actividades de la aplicación y sale por completo
+            finishAffinity()
+
+            // Opcional: Si quieres asegurar que el proceso se detenga totalmente (uso extremo)
+            // System.exit(0)
         }
     }
 }

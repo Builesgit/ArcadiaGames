@@ -6,7 +6,7 @@ Este proyecto es una aplicación de Android desarrollada en **Kotlin** que combi
 
 Para mejorar la limpieza del código fuente de Android, se ha reestructurado el repositorio de la siguiente manera:
 * **Carpeta Raíz**: Ahora contiene el archivo `README.md`, la carpeta de la base de datos para un acceso rápido y claramente el proyecto de Arcadia Games
-* **Carpeta de Base de Datos**: Los archivos PHP y SQL se encuentran fuera del proyecto de Android para evitar confusiones con el código de la aplicación.
+* **Carpeta de Base de Datos**: Contiene los archivos **PHP** (`config.php`, `validar_usuario.php`, `registrar_usuario.php`) y el script **SQL** para la base de datos fuera del proyecto de Android
 
 ## Características del Proyecto
 
@@ -20,6 +20,11 @@ Para mejorar la limpieza del código fuente de Android, se ha reestructurado el 
 * **Validación de Datos**: Control de campos vacíos antes del envío.
 * **Comunicación Asíncrona**: Uso de la librería **Volley** para realizar peticiones `POST` al servidor.
 * **Código Comentado**: Se han añadido comentarios detallados en cada bloque de código (View Binding, Animaciones y Red) para facilitar la comprensión del equipo.
+
+### 3. Sistema de Roles Dinámico (Admin vs User)
+* **Diferenciación de Perfiles**: La aplicación detecta el rol del usuario (`admin` o `user`) y adapta la interfaz automáticamente.
+* **Vistas Condicionales**: Los administradores tienen acceso a herramientas de gestión (Inventario, Reportes, Incidencias), mientras que los usuarios ven opciones de compra/venta (Mis Juegos, Intercambios, Chat).
+* **Asignación Automática**: El sistema está preparado para que el primer usuario registrado sea el Administrador principal.
 
 ---
 
