@@ -16,6 +16,10 @@ import android.view.animation.AccelerateDecelerateInterpolator
 // import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.prueba1integrador.databinding.ActivityMainBinding
 
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import android.util.Log
+
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +30,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val database = Firebase.database
+        val myRef = database.getReference("test_conexion")
+
+        myRef.setValue("Hola desde Arcadia Games!")
+            .addOnSuccessListener {
+                // Esto saldrá en el Logcat de Android Studio si funciona
+                Log.d("FirebaseTest", "¡Dato enviado correctamente!")
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirebaseTest", "Error al enviar dato", e)
+            }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
             // layoutInflater: lee los archivos XML y los convierte en objetos de Kotlin

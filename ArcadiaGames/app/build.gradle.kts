@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -57,4 +58,9 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
 
     implementation("com.android.volley:volley:1.2.1")
+    // Importa el BoM (gestor de versiones)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+
+    // Dependencia para Realtime Database
+    implementation("com.google.firebase:firebase-database")
 }
