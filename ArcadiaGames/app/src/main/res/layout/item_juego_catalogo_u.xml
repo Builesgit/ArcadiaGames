@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_juego_portada"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+            android:src="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/tv_juego_titulo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="Nombre del Juego"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_juego_precio"
+            app:layout_constraintStart_toEndOf="@id/iv_juego_portada"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_juego_descripcion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Descripción..."
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            app:layout_constraintEnd_toEndOf="@id/tv_juego_titulo"
+            app:layout_constraintStart_toStartOf="@id/tv_juego_titulo"
+            app:layout_constraintTop_toBottomOf="@id/tv_juego_titulo" />
+
+        <TextView
+            android:id="@+id/tv_juego_tags"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="TAGS"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tv_juego_titulo"
+            app:layout_constraintStart_toStartOf="@id/tv_juego_titulo"
+            app:layout_constraintTop_toBottomOf="@id/tv_juego_descripcion" />
+
+        <TextView
+            android:id="@+id/tv_juego_precio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/boton_background"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="59.99€"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

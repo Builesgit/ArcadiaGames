@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_catalogo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Azul_Oscuro">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/titulo_catalago_u"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:letterSpacing="0.1"
+                android:text="@string/Catalogo"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.search.SearchBar
+                android:id="@+id/search_bar_catalogo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Buscar juegos en Arcadia..."
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/titulo_catalago_u" />
+
+            <com.google.android.material.search.SearchView
+                android:id="@+id/search_view_catalogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/Buscar"
+                app:layout_anchor="@id/search_bar_catalogo" />
+
+            <HorizontalScrollView
+                android:id="@+id/scroll_chips"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:scrollbars="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/search_bar_catalogo">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_categorias"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_pc"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PC"
+                        app:chipBackgroundColor="@color/Azul_Fondo_Botones"
+                        android:textColor="@color/white"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_xbob"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xbob" />
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_catalogo_completo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scroll_chips" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

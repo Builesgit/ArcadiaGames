@@ -25,12 +25,14 @@
         </activity>
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
 
         <activity
-            android:name=".PerfilActivity"
+            android:name=".HomeActivity"
             android:exported="false" />
+
+
 
     </application>
 
