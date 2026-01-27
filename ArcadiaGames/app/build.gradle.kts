@@ -52,15 +52,17 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0")) // Actualizada a las más reciente
+    implementation("com.google.firebase:firebase-auth-ktx") // Corregido: Guion en lugar de punto
+    implementation("com.google.firebase:firebase-database") // Versión KTX para Realtime Database
+
+
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     implementation("com.google.android.material:material:1.11.0")
 
-    implementation("com.android.volley:volley:1.2.1")
-    // Importa el BoM (gestor de versiones)
-    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
 
-    // Dependencia para Realtime Database
-    implementation("com.google.firebase:firebase-database")
+
+    
 }
