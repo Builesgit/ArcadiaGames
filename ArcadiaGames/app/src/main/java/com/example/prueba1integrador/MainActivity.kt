@@ -2,25 +2,18 @@ package com.example.prueba1integrador
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-
-import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-// import com.bumptech.glide.Glide
-// import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.prueba1integrador.databinding.ActivityMainBinding
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import android.util.Log
-
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -28,43 +21,29 @@ class MainActivity : AppCompatActivity() {
     private lateinit var edtPassword: EditText
     private lateinit var btnLogin: Button
 
+    // Variable para Firebase Authentication
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val database = Firebase.database
-        val myRef = database.getReference("test_conexion")
+        // Inicializar Firebase Auth
+        auth = Firebase.auth
 
-        myRef.setValue("Hola desde Arcadia Games!")
-            .addOnSuccessListener {
-                // Esto saldrá en el Logcat de Android Studio si funciona
-                Log.d("FirebaseTest", "¡Dato enviado correctamente!")
-            }
-            .addOnFailureListener { e ->
-                Log.e("FirebaseTest", "Error al enviar dato", e)
-            }
-
+        // View Binding
         binding = ActivityMainBinding.inflate(layoutInflater)
-            // layoutInflater: lee los archivos XML y los convierte en objetos de Kotlin
-            // .inflate(): Toma el XML y lo convierte en un objeto 3D en la memoria del teléfono
-            // binding: te da acceso y control directo de todos los elementos del diseño
-
-        setContentView(binding.root) // setContentView: muestra la pantalla al usuario
+        setContentView(binding.root)
 
         // CONFIGURAR EL ESTADO INICIAL DE LA TRANSICION
         setupInitialState()
 
-        // CARGAR EL GIF
-        /* binding.root.post {
-            loadGifOptimized()
-        } */
-
         // CARGAR IMG FONDO LOGO
         binding.logoImageView.setImageResource(R.drawable.fondo_con_logo)
 
-        // EJECUTAR LA TRANSICIÓN
+        // EJECUTAR LA TRANSICIÓN AUTOMÁTICA (6 segundos de splash)
         binding.root.postDelayed({
-            executeFlipTransition() // Ejecuta la animación de cambio de pantalla durante 6s
-        }, 6000)
+            executeFlipTransition()
+        }, 3000)
 
         // INICIALIZAR VARIABLES LOGIN
         edtUsuario = binding.edtUsuario
@@ -72,11 +51,12 @@ class MainActivity : AppCompatActivity() {
         btnLogin = binding.btnLogin
 
         btnLogin.setOnClickListener {
-            val user = edtUsuario.text.toString()
-            val pass = edtPassword.text.toString()
+            val email = edtUsuario.text.toString().trim()
+            val pass = edtPassword.text.toString().trim()
 
-            if (user.isNotEmpty() && pass.isNotEmpty()) {
-                validarUsuario("http://10.0.2.2/arcadia_games_db/validar_usuario.php")
+            if (email.isNotEmpty() && pass.isNotEmpty()) {
+                // Ahora usamos Firebase en lugar de Volley
+                loginConFirebase(email, pass)
             } else {
                 Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
             }
@@ -86,35 +66,21 @@ class MainActivity : AppCompatActivity() {
     private fun setupInitialState() {
         val scale = resources.displayMetrics.density
         val distance = 8000 * scale
-
-        // cameraDistance: hace que la animación sea más realista aplicandole una distancia a la hora de la rotación
         binding.initialScreenLayout.cameraDistance = distance
         binding.loginScreenLayout.cameraDistance = distance
-
-        binding.loginScreenLayout.visibility = View.GONE // Desaparece la pantalla de inicio
+        binding.loginScreenLayout.visibility = View.GONE
     }
-
-    /* private fun loadGifOptimized() {
-        Glide.with(this)
-            .asGif()
-            .load(R.drawable.gif_inicio)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .into(binding.logoImageView)
-    } */
 
     private fun executeFlipTransition() {
         val duration = 600L
         val interpolator = AccelerateDecelerateInterpolator()
 
-        // PARTE 1: La pantalla inicial gira 90 grados (se pone de lado)
         binding.initialScreenLayout.animate()
             .rotationY(90f)
             .setDuration(duration)
             .setInterpolator(interpolator)
             .withEndAction {
-                binding.initialScreenLayout.visibility = View.GONE // Desaparece la pantalla inicial
-
-                // PARTE 2: El Login aparece desde -90 y gira a 0 (se pone de frente)
+                binding.initialScreenLayout.visibility = View.GONE
                 binding.loginScreenLayout.apply {
                     rotationY = -90f
                     visibility = View.VISIBLE
@@ -128,57 +94,39 @@ class MainActivity : AppCompatActivity() {
             .start()
     }
 
-    private fun validarUsuario(url: String) {
-        val stringRequest = object : StringRequest(
-            Request.Method.POST, url, // POST: forma de envió seguro para que la contraseña no viaje en la URL
-            { response ->
-                println("DEBUG_SERVER_RESPONSE: $response")
+    private fun loginConFirebase(email: String, pass: String) {
+        // Mostrar un mensaje de carga o deshabilitar botón si lo deseas
+        auth.signInWithEmailAndPassword(email, pass)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
 
-                if (response.isNotEmpty() && !response.contains("no_existe")) {
-                    try {
-                        val jsonResponse = JSONObject(response)
+                    // Buscamos el rol del usuario en la base de datos (nodo "usuarios")
+                    val dbRef = Firebase.database.getReference("usuarios").child(user?.uid ?: "")
 
-                        // IMPORTANTE: Verifica que estas claves coincidan con el JSON del log
-                        val rol = jsonResponse.getString("rol")
-                        val usuario = jsonResponse.getString("usuario")
+                    dbRef.get().addOnSuccessListener { snapshot ->
+                        // Si el usuario existe en la DB, leemos su rol
+                        val rol = snapshot.child("rol").value?.toString() ?: "cliente"
+                        val nombreUsuario = snapshot.child("usuario").value?.toString() ?: email
 
                         val intent = Intent(this, HomeActivity::class.java)
                         intent.putExtra("ROL_USUARIO", rol)
-                        intent.putExtra("USUARIO_LOGUEADO", usuario)
+                        intent.putExtra("USUARIO_LOGUEADO", nombreUsuario)
 
                         startActivity(intent)
                         finish()
-                    } catch (e: Exception) {
-                        // Imprime el error real en la consola para saber qué falló
-                        e.printStackTrace()
-                        Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        // Si falla la lectura de la DB, entra como cliente básico
+                        val intent = Intent(this, HomeActivity::class.java)
+                        intent.putExtra("ROL_USUARIO", "cliente")
+                        startActivity(intent)
+                        finish()
                     }
                 } else {
-                    Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+                    // Si el login falla (contraseña mal, usuario no existe, etc)
+                    Log.e("FirebaseLogin", "Error: ${task.exception?.message}")
+                    Toast.makeText(this, "Error: Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
                 }
-            },
-            { error -> // Si falla el internet o el servidor
-
-                Toast.makeText(this, "Error: ${error.message ?: "Conexión fallida"}", Toast.LENGTH_LONG).show()
             }
-        ) {
-            // getParams: obtiene los datos que se van a enviar al servidor mediante $_POST['usuario']
-            override fun getParams(): MutableMap<String, String> {
-                val parametros = HashMap<String, String>()
-
-                parametros["usuario"] = edtUsuario.text.toString()
-                parametros["password"] = edtPassword.text.toString()
-
-                return parametros
-
-            }
-
-
-
-        }
-
-        // RequestQueue: Es una fila de espera
-        // Volley envía la petición y queda esperando la respuesta sin bloquear la pantalla del usuario
-        Volley.newRequestQueue(this).add(stringRequest)
     }
 }
