@@ -2,6 +2,7 @@ package com.example.prueba1integrador
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.prueba1integrador.databinding.ActivityHomeBinding
@@ -22,39 +23,39 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupNavigationGlobal(usuario: String, rol: String) {
-        val density = resources.displayMetrics.density
-
-        // 1. Pantalla por defecto al entrar
         cargarFragmento(FragmentHome())
 
-        // 2. Control de clics en la barra lateral
+        val headerView = binding.navigationRail.getHeaderView()
+        val btnMenuHeader = headerView?.findViewById<ImageButton>(R.id.btn_expandir)
+
+        // Configuración inicial: barra oculta
+        binding.navigationRail.visibility = View.GONE
+
+        // Botón "Hamburguesa" de la Activity (el pequeño que queda fuera)
+        binding.btnAbrirRail.setOnClickListener {
+            binding.navigationRail.visibility = View.VISIBLE
+            binding.btnAbrirRail.visibility = View.GONE
+        }
+
+        // Botón del Header (el que está dentro de la barra lateral)
+        btnMenuHeader?.setOnClickListener {
+            binding.navigationRail.visibility = View.GONE
+            binding.btnAbrirRail.visibility = View.VISIBLE
+        }
+
         binding.navigationRail.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.item_menu -> cargarFragmento(FragmentHome())
                 R.id.item_catalogo -> cargarFragmento(FragmentCatalogo())
-                R.id.item_perfil -> {
-                    // Para el perfil, puedes cargarlo como Fragment o como Activity.
-                    // Si quieres que la barra siga ahí, conviértelo en Fragment.
-                    cargarFragmento(FragmentPerfil.newInstance(usuario, rol))
-                }
+                R.id.item_perfil -> cargarFragmento(FragmentPerfil.newInstance(usuario, rol))
             }
-            // Reset visual de la barra tras elegir
-            binding.navigationRail.layoutParams.width = 0
-            binding.navigationRail.requestLayout()
-            binding.btnAbrirRail.translationX = 0f
+            // Cerrar menú al navegar para evitar que tape la vista
+            binding.navigationRail.visibility = View.GONE
+            binding.btnAbrirRail.visibility = View.VISIBLE
             true
-        }
-
-        // 3. Botón para abrir la barra (Hamburguesa)
-        binding.btnAbrirRail.setOnClickListener {
-            binding.navigationRail.visibility = View.VISIBLE
-            binding.navigationRail.layoutParams.width = (72 * density).toInt()
-            binding.navigationRail.requestLayout()
-            binding.btnAbrirRail.translationX = -100 * density
         }
     }
 
-    // Función para cambiar de vista sin cerrar la barra lateral
     private fun cargarFragmento(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_home_U_fragment, fragment)
