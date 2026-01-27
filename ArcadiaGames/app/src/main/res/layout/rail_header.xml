@@ -1,14 +1,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <ImageButton
         android:id="@+id/btn_expandir"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_camera" />
+        android:background="@drawable/boton_background"
+        android:backgroundTint="#40FFFFFF"
+        android:src="@android:drawable/ic_menu_sort_by_size"
+        android:contentDescription="Abrir menú"
+        android:tint="@color/white" />
 
 </FrameLayout>

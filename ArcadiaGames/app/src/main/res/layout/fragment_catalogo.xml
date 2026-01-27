@@ -4,7 +4,7 @@
     android:id="@+id/fragment_catalogo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Azul_Oscuro">
+    android:background="@drawable/fondo_sin_logo">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -70,16 +70,28 @@
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="PC"
-                        app:chipBackgroundColor="@color/Azul_Fondo_Botones"
-                        android:textColor="@color/white"/>
+                        android:text="PC" />
 
                     <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_xbob"
+                        android:id="@+id/chip_playstation"
                         style="@style/Widget.Material3.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xbob" />
+                        android:text="Playstation" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_xbox"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xbox" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_nintendo"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nintendo" />
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>

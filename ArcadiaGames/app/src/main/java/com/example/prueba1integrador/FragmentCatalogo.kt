@@ -90,13 +90,13 @@ class FragmentCatalogo : Fragment() {
     }
 
     private fun setupData() {
-        // Lista de datos de ejemplo (Mockup)
         listaCompleta = listOf(
-            Juego("Super Morio World", "C morió.", R.drawable.morio, "4000.99€", listOf("MeloInvento")),
-            Juego("Poly Racing", "Carreras poligonales.", R.drawable.polyracing, "0.09€", listOf("PolyStation")),
-            Juego("Xbob El con-Xtructor", "Construye como nadie", R.drawable.wicher3, "49.99€", listOf("Xbob")),
-            Juego("PC Master Race", "Solo para Chads.", R.drawable.pcmasterrace, "50.00€", listOf("PC")),
-            Juego("Multi Plataforma", "Funciona en todo.", R.drawable.wicher3, "3.99€", listOf("PolyStation", "PC", "Xbob", "MeloInvento"))
+            Juego("The Witcher 3", "Caza monstruos en un mundo abierto.", R.drawable.wicher3, "29.99€", listOf("PC", "Playstation", "Xbox", "Nintendo")),
+            Juego("Cyberpunk 2077", "Futuro distópico y neones.", R.drawable.cyberpunk2077, "59.99€", listOf("PC", "Playstation", "Xbox")),
+            Juego("Super Mario Odyssey", "Aventuras en 3D con Cappy.", R.drawable.super_mario_odyssey, "49.99€", listOf("Nintendo")),
+            Juego("Halo Infinite", "El regreso del Jefe Maestro.", R.drawable.halo_infinitive, "0.00€", listOf("PC", "Xbox")),
+            Juego("God of War Ragnarok", "Kratos contra el destino nórdico.", R.drawable.god_of_war, "69.99€", listOf("Playstation")),
+            Juego("Elden Ring", "Sin luz, camina hacia el Trono.", R.drawable.elden_ring, "59.99€", listOf("PC", "Playstation", "Xbox"))
         )
     }
 

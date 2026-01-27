@@ -13,8 +13,10 @@ class FragmentPerfil : Fragment() {
     private var _binding: ActivityPerfilBinding? = null
     private val binding get() = _binding!!
 
-    // Usamos esto para pasar datos al fragmento
     companion object {
+        /**
+         * Crea una nueva instancia del fragmento pasando el usuario y su rol.
+         */
         fun newInstance(usuario: String, rol: String): FragmentPerfil {
             val fragment = FragmentPerfil()
             val args = Bundle()
@@ -29,6 +31,7 @@ class FragmentPerfil : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Se utiliza el binding para inflar activity_perfil.xml
         _binding = ActivityPerfilBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -36,24 +39,38 @@ class FragmentPerfil : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Recuperamos los datos que pasamos desde la HomeActivity
+        // Recuperamos los datos del Bundle
         val usuario = arguments?.getString("USUARIO") ?: "Desconocido"
         val rol = arguments?.getString("ROL") ?: "user"
 
-        // Adaptamos la vista según el rol
+        // Configuración visual básica según los datos recibidos
         binding.txtNombreUsuario.text = usuario
         binding.txtTituloPerfil.text = if (rol == "admin") "ADMINISTRADOR" else "USUARIO"
 
+        // Lógica de visibilidad de los bloques de botones
         if (rol == "admin") {
             binding.layoutAdmin.visibility = View.VISIBLE
             binding.layoutUsuario.visibility = View.GONE
+
+            // Acción para el botón de Administrador
+            binding.btnCrearProducto.setOnClickListener {
+                val intent = Intent(requireContext(), AnadirProductoActivity::class.java)
+                startActivity(intent)
+            }
         } else {
             binding.layoutAdmin.visibility = View.GONE
             binding.layoutUsuario.visibility = View.VISIBLE
+
+            // Acción para el botón de Usuario (Subir Juego)
+            binding.btnSubirJuego.setOnClickListener {
+                val intent = Intent(requireContext(), AnadirProductoActivity::class.java)
+                startActivity(intent)
+            }
         }
 
-        // Botón de cerrar sesión
+        // Lógica para cerrar sesión
         binding.btnLogout.setOnClickListener {
+            // Suponiendo que MainActivity es tu pantalla de Login/Inicio
             val intent = Intent(requireContext(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
@@ -62,6 +79,7 @@ class FragmentPerfil : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Limpiamos el binding para evitar fugas de memoria
         _binding = null
     }
 }
