@@ -1,14 +1,13 @@
 package com.example.prueba1integrador
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.fragment.app.Fragment
 import com.example.prueba1integrador.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,23 +15,49 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Recuperamos los datos que enviamos desde MainActivity
-        val usuario = intent.getStringExtra("USUARIO_LOGUEADO")
-        val rol = intent.getStringExtra("ROL_USUARIO")
+        val usuario = intent.getStringExtra("USUARIO_LOGUEADO") ?: "Invitado"
+        val rol = intent.getStringExtra("ROL") ?: "user"
 
-        binding.btnIrAPerfil.setOnClickListener {
-            val intentPerfil = Intent(this, PerfilActivity::class.java)
-            intentPerfil.putExtra("USUARIO_LOGUEADO", usuario)
-            intentPerfil.putExtra("ROL_USUARIO", rol)
-            startActivity(intentPerfil)
+        setupNavigationGlobal(usuario, rol)
+    }
+
+    private fun setupNavigationGlobal(usuario: String, rol: String) {
+        val density = resources.displayMetrics.density
+
+        // 1. Pantalla por defecto al entrar
+        cargarFragmento(FragmentHome())
+
+        // 2. Control de clics en la barra lateral
+        binding.navigationRail.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.item_menu -> cargarFragmento(FragmentHome())
+                R.id.item_catalogo -> cargarFragmento(FragmentCatalogo())
+                R.id.item_perfil -> {
+                    // Para el perfil, puedes cargarlo como Fragment o como Activity.
+                    // Si quieres que la barra siga ahí, conviértelo en Fragment.
+                    cargarFragmento(FragmentPerfil.newInstance(usuario, rol))
+                }
+            }
+            // Reset visual de la barra tras elegir
+            binding.navigationRail.layoutParams.width = 0
+            binding.navigationRail.requestLayout()
+            binding.btnAbrirRail.translationX = 0f
+            true
         }
 
-        binding.btnCerrarSesion.setOnClickListener {
-            // Esto cierra todas las actividades de la aplicación y sale por completo
-            finishAffinity()
-
-            // Opcional: Si quieres asegurar que el proceso se detenga totalmente (uso extremo)
-            // System.exit(0)
+        // 3. Botón para abrir la barra (Hamburguesa)
+        binding.btnAbrirRail.setOnClickListener {
+            binding.navigationRail.visibility = View.VISIBLE
+            binding.navigationRail.layoutParams.width = (72 * density).toInt()
+            binding.navigationRail.requestLayout()
+            binding.btnAbrirRail.translationX = -100 * density
         }
+    }
+
+    // Función para cambiar de vista sin cerrar la barra lateral
+    private fun cargarFragmento(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_home_U_fragment, fragment)
+            .commit()
     }
 }
