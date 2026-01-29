@@ -52,10 +52,15 @@ class FragmentPerfil : Fragment() {
             binding.layoutAdmin.visibility = View.VISIBLE
             binding.layoutUsuario.visibility = View.GONE
 
-            // Acción para el botón de Administrador
+            // Acción para el botón de Administrador - Crear Producto
             binding.btnCrearProducto.setOnClickListener {
                 val intent = Intent(requireContext(), AnadirProductoActivity::class.java)
                 startActivity(intent)
+            }
+
+            // Acción para el botón de Administrador - Gestionar Inventario
+            binding.btnInventario.setOnClickListener {
+                startActivity(Intent(requireContext(), GestionarInventarioActivity::class.java))
             }
         } else {
             binding.layoutAdmin.visibility = View.GONE

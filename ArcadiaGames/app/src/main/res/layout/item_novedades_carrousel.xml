@@ -36,6 +36,7 @@
                 android:id="@+id/tv_nombre_jc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Nombre del Juego"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -47,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:text="59.99€"
                 android:textColor="#00FF00"
                 android:textSize="16sp"
                 android:textStyle="bold" />

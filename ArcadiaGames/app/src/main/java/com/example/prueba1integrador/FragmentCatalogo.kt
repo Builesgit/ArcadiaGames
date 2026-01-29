@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.FragmentCatalogoBinding
 import com.google.android.material.chip.Chip
+import android.content.Intent
 
 class FragmentCatalogo : Fragment() {
 
@@ -18,7 +19,7 @@ class FragmentCatalogo : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: JuegoAdapter
-    private lateinit var listaCompleta: List<Juego>
+    private var listaCompleta: List<Juego> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +37,35 @@ class FragmentCatalogo : Fragment() {
         setupData()
         setupRecyclerView()
         setupFilters()
+        setupFab()
+    }
+
+    private val inventoryManager = FirebaseInventoryManager()
+
+    private fun setupData() {
+        // Usamos Firebase para cargar datos reales
+        inventoryManager.consultarInventario(object: FirebaseInventoryManager.InventoryCallback {
+            override fun onDataLoaded(lista: List<Juego>) {
+                listaCompleta = lista
+                if (::adapter.isInitialized) {
+                    adapter.setFilteredList(listaCompleta)
+                }
+            }
+        })
+    }
+
+    private fun setupFab() {
+        // Lógica para mostrar/ocultar FAB según rol
+        val rolUsuario = activity?.intent?.getStringExtra("ROL_USUARIO") ?: "cliente"
+        
+        if (rolUsuario == "admin") {
+            binding.fabAgregarJuego.visibility = View.VISIBLE
+            binding.fabAgregarJuego.setOnClickListener {
+                startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
+            }
+        } else {
+            binding.fabAgregarJuego.visibility = View.GONE
+        }
     }
 
     private fun setupRecyclerView() {
@@ -80,24 +110,15 @@ class FragmentCatalogo : Fragment() {
         val listaFiltrada = listaCompleta.filter { juego ->
             val coincideNombre = juego.nombre.contains(texto, ignoreCase = true)
             val coincideChip = etiquetasSeleccionadas.isEmpty() ||
-                    juego.tags.any { tag -> etiquetasSeleccionadas.contains(tag) }
+                    juego.tags.any { tag -> 
+                        etiquetasSeleccionadas.any { selected -> tag.contains(selected, ignoreCase = true) }
+                    }
 
             coincideNombre && coincideChip
         }
 
         // Actualizamos el adaptador con la nueva lista
         adapter.setFilteredList(listaFiltrada)
-    }
-
-    private fun setupData() {
-        listaCompleta = listOf(
-            Juego("The Witcher 3", "Caza monstruos en un mundo abierto.", R.drawable.wicher3, "29.99€", listOf("PC", "Playstation", "Xbox", "Nintendo")),
-            Juego("Cyberpunk 2077", "Futuro distópico y neones.", R.drawable.cyberpunk2077, "59.99€", listOf("PC", "Playstation", "Xbox")),
-            Juego("Super Mario Odyssey", "Aventuras en 3D con Cappy.", R.drawable.super_mario_odyssey, "49.99€", listOf("Nintendo")),
-            Juego("Halo Infinite", "El regreso del Jefe Maestro.", R.drawable.halo_infinitive, "0.00€", listOf("PC", "Xbox")),
-            Juego("God of War Ragnarok", "Kratos contra el destino nórdico.", R.drawable.god_of_war, "69.99€", listOf("Playstation")),
-            Juego("Elden Ring", "Sin luz, camina hacia el Trono.", R.drawable.elden_ring, "59.99€", listOf("PC", "Playstation", "Xbox"))
-        )
     }
 
     override fun onDestroyView() {

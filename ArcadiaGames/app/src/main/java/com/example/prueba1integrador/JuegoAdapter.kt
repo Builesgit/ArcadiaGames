@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class JuegoAdapter(
     private var listaJuego: List<Juego>,
@@ -40,17 +41,35 @@ class JuegoAdapter(
 
         val juego = listaJuego[actualPosition]
 
+        // Lógica unificada para cargar imagenes (compatible con URL de Firebase o ID de recurso local)
+        fun cargarImagen(imageView: ImageView, juego: Juego) {
+            if (juego.imagenUrl.isNotEmpty()) {
+                // Prioridad a URL de Firebase
+                Glide.with(imageView.context)
+                    .load(juego.imagenUrl)
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(imageView)
+            } else if (juego.imagenResId != 0) {
+                 // Fallback a recurso local si existe y no hay URL
+                 imageView.setImageResource(juego.imagenResId)
+            } else {
+                 // Fallback final
+                 imageView.setImageResource(R.drawable.ic_launcher_background)
+            }
+        }
+
         when (holder) {
             is CarouselViewHolder -> {
                 holder.tvTitulo.text = juego.nombre
-                holder.tvPrecio.text = juego.precio // Aquí ya saldrá el precio corregido
-                holder.ivPortada.setImageResource(juego.imagenResId)
+                holder.tvPrecio.text = juego.precio
+                cargarImagen(holder.ivPortada, juego)
             }
             is ListaViewHolder -> {
                 holder.tvTitulo.text = juego.nombre
                 holder.tvPrecio.text = juego.precio
                 holder.tvDescripcion.text = juego.descripcion
-                holder.ivPortada.setImageResource(juego.imagenResId)
+                cargarImagen(holder.ivPortada, juego)
                 holder.tvTags.text = juego.tags.joinToString(" • ")
             }
         }
