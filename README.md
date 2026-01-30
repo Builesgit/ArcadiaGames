@@ -6,30 +6,27 @@
 
 ## Funcionalidades Principales
 
-### 1. Autenticación y Jerarquía de Roles (Novedad)
+### 1. Autenticación y Jerarquía de Roles (Actualizado)
 * **Seguridad:** Sistema de autenticación gestionado mediante **Firebase Authentication**.
 * **Jerarquía de Administradores:**
     * **Admin Jefe:** Único perfil con capacidad para generar códigos de invitación y gestionar al equipo de administración (Degradar/Ascender).
-    * **Admin Subordinado:** Acceso a gestión de inventario y reportes, pero sin permisos de gestión de equipo.
+    * **Admin Subordinado:** Acceso a gestión de inventario y edición de productos.
     * **Clientes:** Acceso al catálogo, filtrado de juegos y gestión de perfil personal.
-* **Sistema de Invitación:** Generación de códigos aleatorios con **validez de 5 minutos** para ascender usuarios a administradores de forma segura y efímera.
+* **Sistema de Invitación:** Generación de códigos aleatorios con **validez de 5 minutos**. Al canjearse, el usuario asciende a Admin y el código se destruye automáticamente.
 
 ### 2. Experiencia de Usuario (UX/UI)
-* **Navigation Rail:** Menú lateral ergonómico que maximiza el espacio vertical en pantallas modernas.
-* **Tema Oscuro:** Estética de alta fidelidad con paleta `#202020` y acentos vibrantes en amarillo y verde neón.
-* **Actualización en Tiempo Real:** Perfiles reactivos que cambian su interfaz instantáneamente al detectar un cambio de rol en la base de datos (mediante `ValueEventListener`) sin necesidad de reiniciar la app.
+* **Perfil Reactivo:** Implementación de `addValueEventListener` en el perfil para conmutar la interfaz entre "Modo Usuario" y "Modo Administrador" instantáneamente al detectar cambios en la base de datos.
+* **Navigation Rail:** Menú lateral ergonómico para una navegación optimizada en dispositivos modernos.
+* **Tema Oscuro Premium:** Paleta de colores `#202020` con acentos en amarillo y diseño de tarjetas con transparencias.
 
-### 3. Pantalla de Inicio (Home)
-* **Carrusel Infinito:** Implementación de `CarouselLayoutManager` con lógica de scroll circular para destacar novedades.
-* **Sincronización Híbrida:** Capacidad de renderizar contenido promocional estático mientras sincroniza datos dinámicos desde la nube.
+### 3. Pantalla de Inicio y Catálogo
+* **Carrusel Infinito:** Destacados dinámicos mediante `CarouselLayoutManager`.
+* **Doble Filtrado:** Localización por nombre (`SearchBar`) y categorías por plataforma (PC, PS, Xbox, Nintendo) con chips centrados dinámicamente.
+* **Sincronización RTDB:** Los cambios en el catálogo se reflejan en todos los dispositivos conectados sin necesidad de recargar.
 
-### 4. Catálogo Inteligente
-* **Doble Filtrado:** Localización mediante `SearchBar` y filtrado por plataforma (PC, PS, Xbox, Nintendo) con chips centrados dinámicamente.
-* **Conectividad:** Uso de listeners de Firebase para reflejar cambios en el stock o precios al instante.
-
-### 5. Gestión de Inventario (Backend)
-* **Editor Avanzado:** `AnadirProductoActivity` con validación de campos y previsualización de imagen.
-* **Formateo de Precios:** Lógica de validación que asegura que los precios siempre se almacenen con dos decimales y el símbolo correspondiente (ej: `59.00 €`).
+### 4. Gestión de Inventario y Equipo
+* **Panel de Gestión de Admins:** Recuadro gris oscuro estilizado para la visualización clara de administradores subordinados identificados por su correo electrónico.
+* **Backend de Productos:** Formulario validado con captura de imagen (Storage) y formateo estricto de precios (`%.2f €`).
 
 ---
 
@@ -39,35 +36,36 @@
 
 | Componente | Responsabilidad |
 | :--- | :--- |
-| **`FragmentPerfil`** | Interfaz reactiva que escucha cambios de rol y gestiona el canje de códigos de invitación. |
-| **`GestionAdminsActivity`** | Panel exclusivo del Jefe para generar invitaciones y listar administradores en un recuadro oscuro. |
-| **`AdminAdapter`** | Adaptador especializado para visualizar el equipo de gestión mediante su correo electrónico. |
-| **`Usuario.kt`** | Data Class optimizada para jerarquía con campos `rol`, `esJefe` y `usuario` (email). |
-| **`FirebaseInventoryManager`** | Clase Singleton que centraliza las operaciones de red con RTDB y Storage. |
+| **`FragmentPerfil`** | Orquesta la visibilidad de layouts (`layoutAdmin`/`layoutUsuario`) mediante escucha reactiva de Firebase. |
+| **`RegisterActivity`** | Gestión de altas con triple campo: **Nombre de Usuario**, **Correo** y **Contraseña**. |
+| **`GestionAdminsActivity`** | Panel del Jefe para generar invitaciones y listar administradores subordinados. |
+| **`AdminAdapter`** | Adaptador para visualizar el equipo de gestión utilizando el campo `correo` de la Data Class. |
+| **`Usuario.kt`** | Data Class actualizada con campos `nombre`, `correo`, `rol` y `esJefe`. |
 
 ### Diseño (XML - `app/src/main/res/layout/`)
 
-* **`activity_gestion_admins.xml`**: Panel administrativo con diseño de recuadro gris oscuro para separar la lista de equipo.
-* **`item_admin.xml`**: Tarjeta de usuario optimizada para mostrar el correo electrónico y botón de degradación de rango.
-* **`activity_register.xml`**: Interfaz de registro mejorada (anteriormente `crearcuenta_layout.xml`).
+* **`activity_main.xml`**: Login actualizado para acceso mediante **Correo Electrónico**.
+* **`activity_register.xml`**: Formulario expandido con campo para **Nombre de Usuario** (identificador visual del perfil).
+* **`activity_gestion_admins.xml`**: Interfaz con contenedor `CardView` en gris oscuro para el listado de equipo.
+* **`item_admin.xml`**: Diseño de fila optimizado para mostrar el email del admin y botón de degradación.
 
 ---
 
 ## Stack Tecnológico
 
 * **Lenguaje:** Kotlin 1.9+.
-* **Plataforma:** Android (minSdk 24).
-* **Servicios Cloud:** Firebase Auth, Realtime Database y Firebase Storage.
-* **Seguridad:** Reglas JSON personalizadas para restringir acceso a códigos de admin solo al perfil `esJefe`.
+* **Servicios Cloud:** Firebase (Auth, Realtime Database, Storage).
+* **Seguridad:** Reglas JSON configuradas para permitir lectura global de usuarios autenticados y escritura restringida al Jefe.
+* **Librerías:** Material Design 3, Glide, ViewBinding.
 
 ---
 
 ## Notas de Versión
-* **v1.3.0:** Añadida jerarquía de **Admin Jefe**, generación de códigos de 5 min y actualización de perfiles en tiempo real.
-* **v1.2.5:** Rediseño del panel de gestión con contenedores en gris oscuro y visualización de equipo por correo electrónico.
-* **v1.2.0:** Implementado el centrado dinámico de chips de plataforma en el catálogo.
-* **v1.1.5:** Integrada la lógica de formateo automático de precios `%.2f €`.
-* **v1.0.0:** Lanzamiento inicial con sistema de roles y carrusel infinito.
+* **v1.4.0:** Refactorización de la base de datos: Clave `usuario` migrada a `correo` y adición del campo `nombre`.
+* **v1.3.5:** Solucionado el conflicto de visibilidad solapada en el perfil mediante lógica de estado estricta.
+* **v1.3.0:** Añadida jerarquía de **Admin Jefe** y sistema de códigos de invitación efímeros.
+* **v1.2.5:** Rediseño del panel de gestión con contenedores en gris oscuro.
+* **v1.1.0:** Refactorización de nomenclatura XML a estándares oficiales de Android.
 
 ---
 © 2026 ArcadiaGames - Desarrollado para la gestión moderna de videojuegos.
