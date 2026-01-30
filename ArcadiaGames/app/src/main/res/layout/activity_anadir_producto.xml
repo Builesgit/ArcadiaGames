@@ -11,13 +11,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="24dp">
 
-        <!-- Logo -->
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="123dp"
-            android:layout_height="123dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:contentDescription="Logo de la aplicación"
             android:src="@drawable/marco_logo"
             app:layout_constraintTop_toTopOf="parent"
@@ -25,83 +24,80 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"/>
 
-        <!-- Título -->
         <TextView
             android:id="@+id/titulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CREAR / AÑADIR PRODUCTO"
+            android:text="AÑADIR PRODUCTO"
             android:textColor="#FFFFFF"
-            android:textSize="26sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="20dp"/>
 
-        <!-- Categoría -->
         <Spinner
             android:id="@+id/spinner_categoria"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="56dp"
-            android:padding="12dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/spinner_background"
-            app:layout_constraintTop_toBottomOf="@id/titulo"
-            app:layout_constraintStart_toStartOf="parent"
+            android:padding="12dp"
+            android:overlapAnchor="false"
+            android:spinnerMode="dropdown"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="12dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titulo" />
 
-        <!-- Nombre del Juego -->
         <EditText
             android:id="@+id/et_nombre_juego"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="56dp"
+            android:layout_height="56dp"
             android:padding="12dp"
             android:hint="Nombre del Juego"
-            android:background="@color/Azul_Fondo_Botones"
+            android:background="@drawable/edittext_background"
             android:textColor="#FFFFFF"
             android:textColorHint="#AAAAAA"
+            android:inputType="textPersonName"
             app:layout_constraintTop_toBottomOf="@id/spinner_categoria"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"/>
 
-        <!-- Plataforma -->
-        <Spinner
-            android:id="@+id/spinner_plataforma"
+        <TextView
+            android:id="@+id/tv_plataformas_seleccionadas"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="56dp"
-            android:padding="12dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/spinner_background"
-            app:layout_constraintTop_toBottomOf="@id/et_nombre_juego"
-            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:text="Selecciona plataforma"
+            android:textColor="#AAAAAA"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="12dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_nombre_juego" />
 
-        <!-- Stock -->
         <Spinner
             android:id="@+id/spinner_stock"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="56dp"
+            android:layout_height="56dp"
             android:padding="12dp"
             android:background="@drawable/spinner_background"
-            app:layout_constraintTop_toBottomOf="@id/spinner_plataforma"
+            app:layout_constraintTop_toBottomOf="@id/tv_plataformas_seleccionadas"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"/>
 
 
-        <!-- Descripción -->
         <EditText
             android:id="@+id/et_descripcion"
             android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:hint="Descripción"
-            android:background="@color/Azul_Fondo_Botones"
+            android:layout_height="120dp"
+            android:hint="Descripción del producto..."
+            android:background="@drawable/edittext_background"
             android:textColor="#FFFFFF"
             android:textColorHint="#AAAAAA"
             app:layout_constraintTop_toBottomOf="@id/spinner_stock"
@@ -112,14 +108,13 @@
             android:gravity="top|start"
             android:inputType="textMultiLine"/>
 
-        <!-- Precio -->
         <EditText
             android:id="@+id/et_precio"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Precio"
+            android:layout_height="56dp"
+            android:hint="Precio (€)"
             android:inputType="numberDecimal"
-            android:background="@color/Azul_Fondo_Botones"
+            android:background="@drawable/edittext_background"
             android:textColor="#FFFFFF"
             android:textColorHint="#AAAAAA"
             app:layout_constraintTop_toBottomOf="@id/et_descripcion"
@@ -128,9 +123,8 @@
             android:layout_marginTop="12dp"
             android:padding="12dp"/>
 
-        <!-- Contenedor para los botones -->
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/layout_imagenes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/et_precio"
@@ -140,64 +134,83 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <!-- Botón SUBIR IMAGEN/ES -->
             <Button
                 android:id="@+id/btn_subir_imagen"
                 android:layout_width="0dp"
-                android:layout_height="63dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:backgroundTint="@color/Amarillo"
-                android:padding="12dp"
-                android:text="SUBIR IMAGEN/ES"
+                android:text="SUBIR IMAGEN"
+                android:textAllCaps="true"
                 android:textColor="#000000"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="14sp" />
 
-            <!-- Botón de la cámara -->
             <androidx.cardview.widget.CardView
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:elevation="4dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 app:cardBackgroundColor="@color/Azul_Fondo_Botones"
-                app:cardCornerRadius="37.5dp">
+                app:cardCornerRadius="30dp"
+                app:cardElevation="4dp">
 
                 <ImageButton
                     android:id="@+id/btn_camara"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:contentDescription="Botón de cámara"
-                    android:padding="5dp"
-                    android:scaleType="centerCrop"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Tomar foto"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ico_camara" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <!-- Botón Confirmar -->
+        <!-- Preview de Imagen (Reincorporated) -->
+        <ImageView
+            android:id="@+id/iv_preview"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:scaleType="centerInside"
+            app:layout_constraintTop_toBottomOf="@id/layout_imagenes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible"
+            tools:src="@drawable/ic_launcher_background"/>
+
+        <!-- Progress Bar (Reincorporated) -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/iv_preview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <Button
             android:id="@+id/btn_confirmar"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:text="CONFIRMAR"
-            android:textSize="18sp"
+            android:text="CONFIRMAR PRODUCTO"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:textColor="#000000"
             android:backgroundTint="@color/Amarillo"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@id/progress_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:padding="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="32dp"
             />
 
         <View
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_confirmar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_confirmar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

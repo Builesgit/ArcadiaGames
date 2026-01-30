@@ -7,11 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.carousel.CarouselLayoutManager
-import com.google.android.material.carousel.MultiBrowseCarouselStrategy
 
 class FragmentHome : Fragment() {
-
-    private lateinit var rvNovedades: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -19,16 +16,17 @@ class FragmentHome : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+
         val listaNovedades = listOf(
-            Juego("Cyberpunk 2077", "Desc...", R.drawable.cyberpunk2077, "59.99€", listOf("PC", "Playstation", "Xbox")),
-            Juego("The Witcher 3", "Desc...", R.drawable.wicher3, "29.99€", listOf("PC", "Playstation", "Xbox", "Nintendo")),
-            Juego("Super Mario Odyssey", "Desc...", R.drawable.super_mario_odyssey, "49.99€", listOf("Nintendo")),
-            Juego("Halo Infinite", "Desc...", R.drawable.halo_infinitive, "0.00€", listOf("PC", "Xbox")),
-            Juego("God of War Ragnarok", "Desc...", R.drawable.god_of_war, "69.99€", listOf("Playstation")),
-            Juego("Elden Ring", "Desc...", R.drawable.elden_ring, "59.99€", listOf("PC", "Playstation", "Xbox"))
+            Juego(nombre = "Cyberpunk 2077", descripcion = "Futuro distópico", imagenResId = R.drawable.cyberpunk2077, precio = "59.99€", tags = listOf("PC", "Playstation", "Xbox")),
+            Juego(nombre = "The Witcher 3", descripcion = "Caza monstruos", imagenResId = R.drawable.wicher3, precio = "29.99€", tags = listOf("PC", "Playstation", "Xbox", "Nintendo")),
+            Juego(nombre = "Super Mario Odyssey", descripcion = "Aventura 3D", imagenResId = R.drawable.super_mario_odyssey, precio = "49.99€", tags = listOf("Nintendo")),
+            Juego(nombre = "Halo Infinite", descripcion = "Jefe Maestro", imagenResId = R.drawable.halo_infinitive, precio = "0.00€", tags = listOf("PC", "Xbox")),
+            Juego(nombre = "God of War Ragnarok", descripcion = "Kratos vuelve", imagenResId = R.drawable.god_of_war, precio = "69.99€", tags = listOf("Playstation")),
+            Juego(nombre = "Elden Ring", descripcion = "Sin luz", imagenResId = R.drawable.elden_ring, precio = "59.99€", tags = listOf("PC", "Playstation", "Xbox"))
         )
 
-        // Dentro de onCreateView en FragmentHome.kt
+
         val rvNovedades = view.findViewById<RecyclerView>(R.id.rv_novedades)
         rvNovedades.layoutManager = CarouselLayoutManager()
 

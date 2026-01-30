@@ -55,6 +55,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.0")) // Actualizada a las más reciente
     implementation("com.google.firebase:firebase-auth-ktx") // Corregido: Guion en lugar de punto
     implementation("com.google.firebase:firebase-database") // Versión KTX para Realtime Database
+    implementation("com.google.firebase:firebase-storage") // Añadido para subir imágenes
 
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
@@ -64,5 +65,5 @@ dependencies {
 
 
 
-    
+
 }
