@@ -1,65 +1,78 @@
-# Arcadia Games
+# ArcadiaGames 🎮
 
-Este proyecto es una aplicación de Android desarrollada en **Kotlin** que combina una experiencia visual dinámica con un sistema de autenticación funcional conectado a una base de datos **MySQL** mediante **servicios web (PHP)**.
+**ArcadiaGames** es una aplicación Android nativa moderna diseñada para la gestión integral de una tienda de videojuegos. Destaca por su interfaz de usuario "Dark Gamer Premium", su navegación fluida y una integración robusta con los servicios de Firebase para una experiencia en tiempo real.
 
-## Organización del Repositorio
+## Funcionalidades Principales
 
-Para mejorar la limpieza del código fuente de Android, se ha reestructurado el repositorio de la siguiente manera:
-* **Carpeta Raíz**: Ahora contiene el archivo `README.md`, la carpeta de la base de datos para un acceso rápido y claramente el proyecto de Arcadia Games
-* **Carpeta de Base de Datos**: Contiene los archivos **PHP** (`config.php`, `validar_usuario.php`, `registrar_usuario.php`) y el script **SQL** para la base de datos fuera del proyecto de Android
+### 1. Autenticación y Seguridad por Roles
+* **Seguridad:** Sistema de inicio de sesión y registro gestionado mediante **Firebase Authentication**.
+* **Roles Dinámicos:** El sistema distingue automáticamente entre `admin` y `cliente` consultando **Firebase Realtime Database**.
+    * **Clientes:** Acceso al catálogo, filtrado de juegos y gestión de perfil personal.
+    * **Administradores:** Acceso exclusivo a herramientas de gestión, borrado masivo y edición de inventario.
+* **Reglas de Acceso:** Implementación de reglas JSON en la base de datos para restringir la escritura en el nodo de productos únicamente a perfiles autorizados.
 
-## Características del Proyecto
+### 2. Experiencia de Usuario (UX/UI)
+* **Navigation Rail:** Menú lateral ergonómico que maximiza el espacio vertical en pantallas móviles modernas.
+* **Tema Oscuro:** Diseño visual de alta fidelidad con paleta de colores `#202020`, tarjetas con elevación y acentos vibrantes en verde neón y amarillo.
+* **Transiciones Animadas:** Navegación suave y optimizada entre los diferentes fragmentos de la aplicación.
 
-### 1. Animación de Transición (Splash Screen)
-* **Efecto Flip 3D**: Al iniciar, la aplicación presenta una animación de rotación en el eje Y que simula el giro de una pantalla para revelar el login.
-* **Estado Actual (Imagen Estática)**: La carga del GIF mediante **Glide** se ha desactivado temporalmente para optimizar las pruebas. Actualmente se utiliza una imagen de fondo fija (`fondo_con_logo`).
-* **Documentación**: Toda la lógica del GIF permanece comentada y explicada en el código de `MainActivity.kt` para su posterior activación.
-* **Transiciones Suaves**: Uso de `AccelerateDecelerateInterpolator` para un movimiento natural.
+### 3. Pantalla de Inicio (Home)
+* **Carrusel Infinito:** Implementación de `CarouselLayoutManager` con lógica de scroll circular para destacar las novedades de la tienda.
+* **Datos Híbridos:** Sistema capaz de renderizar contenido promocional estático mientras sincroniza datos dinámicos desde la nube.
 
-### 2. Sistema de Autenticación Funcional
-* **Validación de Datos**: Control de campos vacíos antes del envío.
-* **Comunicación Asíncrona**: Uso de la librería **Volley** para realizar peticiones `POST` al servidor.
-* **Código Comentado**: Se han añadido comentarios detallados en cada bloque de código (View Binding, Animaciones y Red) para facilitar la comprensión del equipo.
+### 4. Catálogo Inteligente
+* **Doble Filtrado:**
+    * **Búsqueda:** Localización de títulos mediante `SearchBar` con filtrado en tiempo real.
+    * **Chips de Plataforma:** Sistema de categorías (PC, PlayStation, Xbox, Nintendo) centrado dinámicamente mediante `HorizontalScrollView` optimizado.
+* **Conectividad:** Sincronización en tiempo real mediante listeners de Firebase para reflejar cambios de stock o nuevos lanzamientos al instante.
 
-### 3. Sistema de Roles Dinámico (Admin vs User)
-* **Diferenciación de Perfiles**: La aplicación detecta el rol del usuario (`admin` o `user`) y adapta la interfaz automáticamente.
-* **Vistas Condicionales**: Los administradores tienen acceso a herramientas de gestión (Inventario, Reportes, Incidencias), mientras que los usuarios ven opciones de compra/venta (Mis Juegos, Intercambios, Chat).
-* **Asignación Automática**: El sistema está preparado para que el primer usuario registrado sea el Administrador principal.
-
----
-
-## CONFIGURACIÓN OBLIGATORIA DEL SERVIDOR (XAMPP)
-
-Para que el sistema de login funcione, cada colaborador debe configurar su entorno local:
-
-### 1. Ubicación de los archivos PHP
-1. Localiza la carpeta de la base de datos en la raíz del repositorio.
-2. Copia su contenido.
-3. Ve a tu directorio de XAMPP: `C:\xampp\htdocs\`.
-4. Crea una carpeta llamada **`arcadia_games_db`**.
-5. Pega dentro los archivos `config.php` y `validar_usuario.php`.
-
-> **Nota**: La aplicación apunta a `http://10.0.2.2/arcadia_games_db/`. Esta IP es necesaria para que el emulador reconozca el localhost de tu PC.
-
-### 2. Preparación de la Base de Datos
-1. Inicia **Apache** y **MySQL** en XAMPP.
-2. Accede a `phpMyAdmin` y crea una base de datos llamada `arcadia_games_db`.
-3. Importa el archivo `.sql` incluido para generar la tabla de usuarios.
+### 5. Gestión de Inventario (Backend)
+* **Editor Avanzado:** Actividad `AnadirProductoActivity` que permite la creación y modificación completa de fichas técnicas.
+* **Gestión de Medios:** Captura de fotos mediante cámara frontal o selección de galería para subida directa a **Firebase Storage**.
+* **Formateo de Precios:** Lógica de validación que asegura que los precios siempre se almacenen con dos decimales y el símbolo correspondiente (ej: `69.00 €`).
 
 ---
 
-## Configuración Técnica (Android Studio)
+## Arquitectura del Proyecto
 
-### Dependencias (build.gradle)
-Asegúrate de tener estas librerías configuradas:
+El proyecto sigue una arquitectura basada en Componentes de Android y vinculación de vistas mediante **ViewBinding**.
 
-```kotlin
-dependencies {
+### 🛠 Lógica (Kotlin - `app/src/main/java/...`)
 
-    // Librería para peticiones HTTP (Volley)
-    implementation("com.android.volley:volley:1.2.1")
-    
-    // Librería para imágenes y GIFs (Glide)
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
-}
+| Componente | Responsabilidad |
+| :--- | :--- |
+| **`MainActivity`** | Punto de entrada. Gestiona el flujo de autenticación y redirección por roles. |
+| **`RegisterActivity`** | Gestión de altas de nuevos usuarios con vinculación de UID a Realtime Database. |
+| **`HomeActivity`** | Contenedor principal que orquesta el `NavigationRail` y los fragmentos. |
+| **`FragmentCatalogo`** | Interfaz principal de juegos con lógica de filtrado centrado y búsqueda. |
+| **`AnadirProductoActivity`** | Formulario con validación de campos, captura de imagen y formateo de moneda. |
+| **`GestionarInventarioActivity`** | Panel administrativo con lógica de borrado individual o masivo asíncrono. |
+| **`FirebaseInventoryManager`** | Clase Singleton que centraliza las operaciones de red con RTDB y Storage. |
+
+### Diseño (XML - `app/src/main/res/layout/`)
+
+* **`activity_register.xml`**: Interfaz de registro optimizada (anteriormente `crearcuenta_layout.xml`).
+* **`fragment_catalogo.xml`**: Layout con `HorizontalScrollView` y contenedores de gravedad para filtros centrados.
+* **`item_juego_catalogo_u.xml`**: Diseño de tarjeta horizontal detallada para el listado de usuarios.
+* **`activity_anadir_producto.xml`**: Formulario de edición con campos numéricos validados para decimales.
+
+---
+
+## Stack Tecnológico
+
+* **Lenguaje:** Kotlin 1.9+.
+* **Plataforma:** Android (minSdk 24).
+* **Servicios Cloud:** Firebase Auth, Realtime Database y Storage.
+* **Librerías:** Material Design 3, Glide (Carga de imágenes) y ViewBinding.
+
+---
+
+## 📝 Notas de Versión
+* **v1.2.0:** Implementado el centrado dinámico de chips de plataforma en el catálogo para evitar alineaciones irregulares.
+* **v1.1.5:** Integrada la lógica de formateo automático de precios `%.2f €` en la creación de productos.
+* **v1.1.0:** Refactorización de nombres de archivos XML (`crearcuenta_layout` -> `activity_register`) para cumplir con los estándares de Android.
+* **v1.0.5:** Añadida funcionalidad de borrado masivo sincronizado con contador de procesos asíncronos en el panel de gestión.
+* **v1.0.0:** Lanzamiento inicial con sistema de roles y carrusel infinito.
+
+---
+© 2026 ArcadiaGames - Desarrollado para la gestión moderna de videojuegos.
