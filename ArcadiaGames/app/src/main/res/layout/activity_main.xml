@@ -63,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
-            android:hint="Usuario"
+            android:hint="Correo Electrónico"
             app:boxBackgroundColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -76,6 +76,7 @@
                 android:id="@+id/edtUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
                 android:textColor="@android:color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 

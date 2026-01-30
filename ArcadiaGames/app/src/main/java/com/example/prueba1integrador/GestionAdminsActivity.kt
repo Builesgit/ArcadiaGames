@@ -77,10 +77,13 @@ class GestionAdminsActivity : AppCompatActivity() {
                     val listaAdmins = mutableListOf<Usuario>()
 
                     for (data in snapshot.children) {
-                        if (data.key != uidJefe) {
+                        val rol = data.child("rol").getValue(String::class.java)
+
+                        if (rol == "admin" && data.key != uidJefe) {
                             val admin = Usuario(
                                 id = data.key ?: "",
-                                usuario = data.child("usuario").getValue(String::class.java) ?: "Sin correo",
+                                nombre = data.child("nombre").getValue(String::class.java) ?: "Sin nombre",
+                                correo = data.child("correo").getValue(String::class.java) ?: "Sin correo",
                                 rol = "admin"
                             )
                             listaAdmins.add(admin)

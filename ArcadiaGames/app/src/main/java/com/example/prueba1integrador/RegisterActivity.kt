@@ -25,21 +25,24 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         binding.btnRegistrar.setOnClickListener {
+            // NUEVO: Capturamos el nombre de usuario
+            val nombreUser = binding.etNombreUsuario.text.toString().trim()
             val email = binding.etUsuario.text.toString().trim()
             val pass = binding.etPass.text.toString().trim()
             val confirm = binding.etConfirmPass.text.toString().trim()
 
-            if (email.isNotEmpty() && pass.isNotEmpty() && pass == confirm) {
-                registrarEnFirebase(email, pass)
+            // MODIFICADO: Añadida validación de nombre
+            if (nombreUser.isNotEmpty() && email.isNotEmpty() && pass.isNotEmpty() && pass == confirm) {
+                registrarEnFirebase(email, pass, nombreUser)
             } else {
-                Toast.makeText(this, "Verifica los campos (correo válido y contraseñas iguales)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Verifica los campos (nombre, correo válido y contraseñas iguales)", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.btnVolverLogin.setOnClickListener { finish() }
     }
 
-    private fun registrarEnFirebase(email: String, pass: String) {
+    private fun registrarEnFirebase(email: String, pass: String, nombre: String) {
         auth.createUserWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -50,8 +53,10 @@ class RegisterActivity : AppCompatActivity() {
                     val database = Firebase.database
                     val myRef = database.getReference("usuarios").child(uid)
 
+                    // MODIFICADO: Guardamos 'nombre' y 'correo'
                     val usuarioData = mapOf(
-                        "usuario" to email, // Usamos el email como nombre de usuario por defecto
+                        "nombre" to nombre,  // El nombre de usuario para el perfil
+                        "correo" to email,  // El correo electrónico
                         "rol" to "user"     // Rol por defecto
                     )
 
