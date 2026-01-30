@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
-         // Ir a Registro
+        // Ir a Registro
         binding.btnRegistrarse?.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }

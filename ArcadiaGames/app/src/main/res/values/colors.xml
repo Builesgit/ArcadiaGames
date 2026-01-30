@@ -10,4 +10,7 @@
     <color name="Azul_Oscuro">#0A1324</color>
     <color name="Amarillo">#FFD240</color>
     <color name="Texto">#4A4459</color>
+    <color name="Texto_Verde">#4ADE80</color>
+    <color name="Fondo_verde">#172E31</color>
+    <color name="Borde_verde">#194c3a</color>
 </resources>
