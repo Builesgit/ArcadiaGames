@@ -1,6 +1,11 @@
 package com.example.prueba1integrador
 
+// Usamos String para el ID porque Firebase usa UIDs alfanuméricos
+// Añadimos valores por defecto (como "" o false) para que Firebase pueda crear el objeto vacío
 data class Usuario(
-    val id: Int,
-    val usuario: String
+    val id: String = "",
+    val nombre: String = "",
+    val usuario: String = "",
+    val rol: String = "user",
+    val esJefe: Boolean = false
 )
