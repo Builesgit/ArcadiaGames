@@ -50,6 +50,13 @@
             android:visibility="visible">
 
             <Button
+                android:id="@+id/btnGestionAdmins"
+                style="@style/BotonMenuPersonalizado"
+                android:text="Gestión Admins"
+                android:visibility="gone"
+                app:icon="@drawable/ico_inventario" />
+
+            <Button
                 android:id="@+id/btnReportes"
                 style="@style/BotonMenuPersonalizado"
                 android:text="Ver Reportes"
@@ -104,6 +111,32 @@
                 style="@style/BotonMenuPersonalizado"
                 android:text="Soporte Técnico"
                 app:icon="@drawable/ico_incidencias" />
+
+            <LinearLayout
+                android:id="@+id/layoutCanjearCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/etCodigoAdmin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Código de invitación Admin"
+                    android:textColorHint="#888888"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#FFEB3B"/>
+
+                <Button
+                    android:id="@+id/btnCanjearCodigo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Convertirse en Admin"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="#FFEB3B"/>
+            </LinearLayout>
         </LinearLayout>
 
         <Button

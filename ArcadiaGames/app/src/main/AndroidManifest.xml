@@ -36,7 +36,11 @@
         <activity
             android:name=".AnadirProductoActivity"
             android:exported="false"
-            android:parentActivityName=".HomeActivity"/> <!-- Flecha para volver atrás -->
+            android:parentActivityName=".HomeActivity"/>
+
+        <activity
+            android:name=".GestionAdminsActivity"
+            android:exported="false"/>
 
         <activity
             android:name=".HomeActivity"
