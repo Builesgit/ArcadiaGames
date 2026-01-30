@@ -49,11 +49,11 @@
         app:layout_constraintStart_toEndOf="@+id/divisor_vertical" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/ly_usuario"
+        android:id="@+id/ly_nombre_usuario"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="@string/Usuario"
+        android:hint="Nombre de Usuario"
         app:boxBackgroundColor="@color/white"
         app:boxBackgroundMode="outline"
         app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
@@ -62,9 +62,30 @@
         android:layout_marginStart="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_nombre_usuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:textColor="@android:color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ly_usuario"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="Correo Electrónico"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
+        app:layout_constraintStart_toStartOf="@+id/ly_nombre_usuario"
+        app:layout_constraintTop_toBottomOf="@id/ly_nombre_usuario"
+        android:layout_marginTop="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_usuario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
             android:textColor="@android:color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 

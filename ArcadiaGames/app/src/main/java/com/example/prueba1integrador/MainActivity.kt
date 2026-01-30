@@ -37,17 +37,6 @@ class MainActivity : AppCompatActivity() {
         binding.loginScreenLayout.visibility = View.VISIBLE
         binding.loginScreenLayout.rotationY = 0f // Aseguramos que el login esté derecho
 
-        // CONFIGURAR EL ESTADO INICIAL DE LA TRANSICION
-        //setupInitialState()
-
-        // CARGAR IMG FONDO LOGO
-        //binding.logoImageView.setImageResource(R.drawable.fondo_con_logo)
-
-        // EJECUTAR LA TRANSICIÓN AUTOMÁTICA (6 segundos de splash)
-        //binding.root.postDelayed({
-        //    executeFlipTransition()
-        //}, 3000)
-
         // INICIALIZAR VARIABLES LOGIN
         edtUsuario = binding.edtUsuario
         edtPassword = binding.edtPassword
@@ -69,38 +58,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*private fun setupInitialState() {
-        val scale = resources.displayMetrics.density
-        val distance = 8000 * scale
-        binding.initialScreenLayout.cameraDistance = distance
-        binding.loginScreenLayout.cameraDistance = distance
-        binding.loginScreenLayout.visibility = View.GONE
-    }*/
-
-    // Función para ejecutar la transición de volteo
-    /*private fun executeFlipTransition() {
-        val duration = 600L
-        val interpolator = AccelerateDecelerateInterpolator()
-
-        binding.initialScreenLayout.animate()
-            .rotationY(90f)
-            .setDuration(duration)
-            .setInterpolator(interpolator)
-            .withEndAction {
-                binding.initialScreenLayout.visibility = View.GONE
-                binding.loginScreenLayout.apply {
-                    rotationY = -90f
-                    visibility = View.VISIBLE
-                    animate()
-                        .rotationY(0f)
-                        .setDuration(duration)
-                        .setInterpolator(interpolator)
-                        .start()
-                }
-            }
-            .start()
-    }*/
-
     private fun loginConFirebase(email: String, pass: String) {
         // Mostrar un mensaje de carga o deshabilitar botón si lo deseas
         auth.signInWithEmailAndPassword(email, pass)
@@ -114,7 +71,9 @@ class MainActivity : AppCompatActivity() {
                     dbRef.get().addOnSuccessListener { snapshot ->
                         // Si el usuario existe en la DB, leemos su rol
                         val rol = snapshot.child("rol").value?.toString() ?: "cliente"
-                        val nombreUsuario = snapshot.child("usuario").value?.toString() ?: email
+
+                        // MODIFICADO: Buscamos el campo 'nombre' que es el nombre de usuario
+                        val nombreUsuario = snapshot.child("nombre").value?.toString() ?: email
 
                         val intent = Intent(this, HomeActivity::class.java)
                         intent.putExtra("ROL_USUARIO", rol)

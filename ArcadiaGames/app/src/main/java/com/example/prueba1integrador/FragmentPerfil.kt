@@ -48,14 +48,14 @@ class FragmentPerfil : Fragment() {
         val userRef = FirebaseDatabase.getInstance().getReference("usuarios").child(uidActual)
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (!isAdded) return // Evita crash si el fragmento ya no está visible
+                if (!isAdded) return
 
-                val rolActual = snapshot.child("rol").getValue(String::class.java) ?: "user"
-                val nombreActual = snapshot.child("nombre").getValue(String::class.java) ?: "Desconocido"
+                val rolActualizado = snapshot.child("rol").getValue(String::class.java) ?: "user"
+                val nombreUser = snapshot.child("nombre").getValue(String::class.java) ?: "Desconocido"
 
-                actualizarInterfaz(nombreActual, rolActual, uidActual, snapshot)
+                // ¡AQUÍ ESTÁ LA CLAVE! Llamamos a la función para que ejecute la lógica de visibilidad
+                actualizarInterfaz(nombreUser, rolActualizado, uidActual, snapshot)
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Log.e("FirebaseError", "Error al escuchar cambios: ${error.message}")
             }
@@ -70,10 +70,12 @@ class FragmentPerfil : Fragment() {
     }
 
     private fun actualizarInterfaz(usuario: String, rol: String, uid: String, snapshot: DataSnapshot) {
+        // Asignamos el nombre de usuario (el campo 'nombre' de la DB)
         binding.txtNombreUsuario.text = usuario
         binding.txtTituloPerfil.text = if (rol == "admin") "ADMINISTRADOR" else "USUARIO"
 
         if (rol == "admin") {
+            // MOSTRAR ADMIN - OCULTAR USER
             binding.layoutAdmin.visibility = View.VISIBLE
             binding.layoutUsuario.visibility = View.GONE
             binding.layoutCanjearCodigo.visibility = View.GONE
@@ -94,9 +96,11 @@ class FragmentPerfil : Fragment() {
                 startActivity(Intent(requireContext(), GestionAdminsActivity::class.java))
             }
         } else {
+            // MOSTRAR USER - OCULTAR ADMIN
             binding.layoutAdmin.visibility = View.GONE
             binding.layoutUsuario.visibility = View.VISIBLE
             binding.layoutCanjearCodigo.visibility = View.VISIBLE
+
             configurarCanje(uid)
 
             binding.btnSubirJuego.setOnClickListener {

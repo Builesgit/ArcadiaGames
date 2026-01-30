@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="15dp"
-            android:text="admin@ejemplo.com"
+            android:text="correo@ejemplo.com"
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:fontFamily="sans-serif-medium"/>

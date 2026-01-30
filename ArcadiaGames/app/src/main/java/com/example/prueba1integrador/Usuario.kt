@@ -4,8 +4,8 @@ package com.example.prueba1integrador
 // Añadimos valores por defecto (como "" o false) para que Firebase pueda crear el objeto vacío
 data class Usuario(
     val id: String = "",
-    val nombre: String = "",
-    val usuario: String = "",
+    val nombre: String = "", // Este será el "Nombre de Usuario"
+    val correo: String = "", // Este será el "Correo"
     val rol: String = "user",
     val esJefe: Boolean = false
 )
