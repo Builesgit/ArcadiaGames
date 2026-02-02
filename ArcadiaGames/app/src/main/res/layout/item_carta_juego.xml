@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/boton_background"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp"
+    android:orientation="horizontal">
+
+    <!-- Imagen juego -->
+    <ImageView
+        android:id="@+id/imgGame"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/god_of_war" />
+
+    <LinearLayout
+        android:layout_marginStart="12dp"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tvGameName"
+            android:text="Nombre del juego"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvPlatform"
+            android:text="PS5"
+            android:textColor="#AAAAAA"
+            android:textSize="13sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:text="€59.99"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Eliminar -->
+    <ImageView
+        android:id="@+id/btnDelete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/icono_borrar"
+        app:tint="#FF6B6B" />
+</LinearLayout>

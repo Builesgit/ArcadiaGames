@@ -1,5 +1,6 @@
 package com.example.prueba1integrador
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -48,6 +49,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.item_menu -> cargarFragmento(FragmentHome())
                 R.id.item_catalogo -> cargarFragmento(FragmentCatalogo())
                 R.id.item_perfil -> cargarFragmento(FragmentPerfil.newInstance(usuario, rol))
+                R.id.item_cesta -> startActivity(Intent(this, CestaActivity::class.java))
             }
             // Cerrar menú al navegar para evitar que tape la vista
             binding.navigationRail.visibility = View.GONE

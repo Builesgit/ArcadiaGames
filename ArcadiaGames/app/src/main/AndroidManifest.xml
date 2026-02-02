@@ -46,6 +46,18 @@
             android:name=".HomeActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".CestaActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".DetalleCestaActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".PagoActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
