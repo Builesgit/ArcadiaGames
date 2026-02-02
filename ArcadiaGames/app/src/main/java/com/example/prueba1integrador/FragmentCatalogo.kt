@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.FragmentCatalogoBinding
 import com.google.android.material.chip.Chip
 import android.content.Intent
+import android.graphics.Color
+import com.example.prueba1integrador.databinding.DialogDetalleJuegoBinding // Asegúrate de crear este layout
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.bumptech.glide.Glide
 
 class FragmentCatalogo : Fragment() {
 
@@ -71,8 +75,64 @@ class FragmentCatalogo : Fragment() {
     private fun setupRecyclerView() {
         // Usamos binding para acceder al RecyclerView sin findViewById
         binding.rvCatalogoCompleto.layoutManager = LinearLayoutManager(context)
-        adapter = JuegoAdapter(listaCompleta)
+        // Inicializamos el adapter con la lambda para abrir el pop-up
+        adapter = JuegoAdapter(listaCompleta, esCarousel = false) { juego ->
+            mostrarPopUpJuego(juego)
+        }
         binding.rvCatalogoCompleto.adapter = adapter
+    }
+
+    // Función para mostrar el detalle del juego en un Pop-up deslizable
+    // Función para mostrar el detalle del juego en un recuadro flotante centrado
+    private fun mostrarPopUpJuego(juego: Juego) {
+        // Creamos el diálogo con un estilo base
+        val dialog = android.app.Dialog(requireContext())
+        val dialogBinding = DialogDetalleJuegoBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        // Hacemos que el fondo de la ventana del diálogo sea transparente
+        // para que se vea nuestro diseño redondeado
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // Asignamos los datos del juego al pop-up
+        dialogBinding.tvDetalleNombre.text = juego.nombre
+        dialogBinding.tvDetalleDescripcion.text = juego.descripcion
+        dialogBinding.tvDetallePrecio.text = juego.precio
+        dialogBinding.tvDetallePlataforma.text = juego.tags.joinToString(", ")
+
+        // Lógica de Stock: Verde si hay, Rojo y 0 si no
+        // Como ahora es Int, la comparación es directa
+        if (juego.stock > 0) {
+            dialogBinding.tvDetalleStock.text = "Stock: ${juego.stock}"
+            dialogBinding.tvDetalleStock.setTextColor(Color.GREEN)
+        } else {
+            dialogBinding.tvDetalleStock.text = "Stock: 0"
+            dialogBinding.tvDetalleStock.setTextColor(Color.RED)
+            dialogBinding.btnComprar.isEnabled = false // Desactivar si no hay stock
+        }
+
+        // Carga de imagen con Glide
+        if (juego.imagenUrl.isNotEmpty()) {
+            Glide.with(this).load(juego.imagenUrl).into(dialogBinding.ivDetalleImagen)
+        } else {
+            dialogBinding.ivDetalleImagen.setImageResource(juego.imagenResId)
+        }
+
+        // Acciones de los botones
+        dialogBinding.btnComprar.setOnClickListener {
+            // Aquí iría tu lógica de compra
+            dialog.dismiss()
+        }
+        dialogBinding.btnAlquilar.setOnClickListener {
+            // Aquí iría tu lógica de alquiler
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
+        // Ajustamos el tamaño del diálogo para que no ocupe toda la pantalla
+        val width = (resources.displayMetrics.widthPixels * 0.90).toInt() // 90% del ancho
+        dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun setupFilters() {

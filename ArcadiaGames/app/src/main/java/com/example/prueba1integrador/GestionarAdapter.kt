@@ -9,12 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-// Clase de datos auxiliar para manejar Juego + Cantidad
-data class ItemInventario(
-    val juego: Juego,
-    val cantidad: Int,
-    val idsAgrupados: List<String> // Guardamos todos los IDs que forman este grupo
-)
+// data class ItemInventario movida a Juego
 
 class GestionarAdapter(
     private var listaInventario: List<ItemInventario>, // Cambiado de List<Juego>
