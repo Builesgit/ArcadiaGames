@@ -10,7 +10,8 @@ import com.bumptech.glide.Glide
 
 class JuegoAdapter(
     private var listaJuego: List<Juego>,
-    private val esCarousel: Boolean = false
+    private val esCarousel: Boolean = false,
+    private val onJuegoClick: (Juego) -> Unit = {} // Se añade '= {}' para que sea opcional y no de error en FragmentHome
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -40,6 +41,11 @@ class JuegoAdapter(
         }
 
         val juego = listaJuego[actualPosition]
+
+        // Añadimos el listener para detectar el clic en el elemento
+        holder.itemView.setOnClickListener {
+            onJuegoClick(juego)
+        }
 
         // Lógica unificada para cargar imagenes (compatible con URL de Firebase o ID de recurso local)
         fun cargarImagen(imageView: ImageView, juego: Juego) {

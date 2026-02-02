@@ -64,10 +64,12 @@ class GestionarInventarioActivity : AppCompatActivity() {
         val listaVisual = agrupados.map { entry ->
             val listaDeEsteJuego = entry.value
             val juegoRepresentante = listaDeEsteJuego.first()
-            val cantidad = listaDeEsteJuego.size
+
+            // Sumamos el stock real de todos los items que tengan el mismo nombre
+            val stockTotal = listaDeEsteJuego.sumOf { it.stock }
             val ids = listaDeEsteJuego.map { it.id }
 
-            ItemInventario(juegoRepresentante, cantidad, ids)
+            ItemInventario(juegoRepresentante, stockTotal, ids)
         }
 
         adapter.actualizarLista(listaVisual)
@@ -75,7 +77,7 @@ class GestionarInventarioActivity : AppCompatActivity() {
 
     private fun confirmarEliminacion(juego: Juego, idsAgrupados: List<String>) {
         val mensaje = if (idsAgrupados.size > 1) {
-            "Hay ${idsAgrupados.size} unidades de '${juego.nombre}'. ¿Quieres eliminar UNA unidad o TODAS?"
+            "Hay múltiples registros de '${juego.nombre}'. ¿Quieres eliminar el registro seleccionado o TODOS?"
         } else {
             "¿Estás seguro de que quieres eliminar '${juego.nombre}'?"
         }
@@ -84,8 +86,7 @@ class GestionarInventarioActivity : AppCompatActivity() {
             .setTitle("Eliminar Producto")
             .setMessage(mensaje)
             .setPositiveButton("Eliminar UNO") { _, _ ->
-                // Eliminar solo el primer ID disponible (el más antiguo o cualquiera)
-                // Esto simula "reducir stock en 1"
+                // Eliminar solo el primer ID disponible
                 if (idsAgrupados.isNotEmpty()) {
                     eliminarJuegoPorId(idsAgrupados.first(), esEliminacionMasiva = false)
                 }
@@ -119,7 +120,7 @@ class GestionarInventarioActivity : AppCompatActivity() {
             override fun onDeleteComplete(exito: Boolean) {
                 if (exito) {
                     if (!esEliminacionMasiva) {
-                        Toast.makeText(this@GestionarInventarioActivity, "Producto eliminado (Stock -1)", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@GestionarInventarioActivity, "Producto eliminado", Toast.LENGTH_SHORT).show()
                         cargarDatos() // Refrescar la lista tras borrar uno solo
                     }
                 } else {
