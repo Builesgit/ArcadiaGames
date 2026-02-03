@@ -14,23 +14,20 @@
     * **Clientes:** Acceso al catálogo, filtrado de juegos y gestión de perfil personal.
 * **Sistema de Invitación:** Generación de códigos aleatorios con **validez de 5 minutos** para ascender usuarios de forma segura.
 
-### 2. Experiencia de Usuario (UX/UI)
-* **Navigation Rail:** Menú lateral ergonómico que maximiza el espacio vertical.
+### 2. Experiencia de Usuario (UX/UI Avanzada)
+* **Navigation Rail Dinámico:** Menú lateral ergonómico que maximiza el espacio vertical, separando los ítems de navegación de las acciones de soporte.
+* **Mando de Control Central:** Integración de un botón flotante ("Mando Púrpura") que actúa como disparador global para abrir y cerrar el menú lateral, mejorando la inmersión temática.
+* **Cierre Inteligente:** El menú lateral implementa una lógica de cierre por proximidad, ocultándose automáticamente al interactuar con el contenido principal de la pantalla.
 * **Tema Oscuro:** Estética de alta fidelidad con paleta `#202020` y acentos neón.
-* **Pop-up de Detalle (Novedad):** Visualización de información detallada de juegos mediante un cuadro de diálogo centrado y estilizado, permitiendo ver descripción, plataforma y stock sin abandonar la lista principal.
+* **Pop-up de Detalle:** Visualización de información detallada de juegos mediante un cuadro de diálogo centrado y estilizado.
 
-### 3. Pantalla de Inicio (Home)
+### 3. Pantalla de Inicio y Ayuda
 * **Carrusel Infinito:** Implementación de `CarouselLayoutManager` con lógica de scroll circular para destacar novedades.
-* **Sincronización Híbrida:** Renderizado de contenido estático y dinámico desde la nube simultáneamente.
+* **Guía de Arcadia:** Nueva sección de ayuda integrada con diseño centrado y tipografía *italic-bold*, ofreciendo instrucciones claras sobre el uso del catálogo y filtros.
 
 ### 4. Catálogo Inteligente
 * **Doble Filtrado:** Localización mediante `SearchBar` y filtrado por plataforma (PC, PS, Xbox, Nintendo) con chips dinámicos.
-* **Gestión de Stock Visual:** Indicadores de disponibilidad mediante colores dinámicos: **Verde** para productos en stock y **Rojo** para agotados (Stock 0).
-
-### 5. Gestión de Inventario (Backend)
-* **Editor Avanzado:** `AnadirProductoActivity` con validación de campos, captura de imagen mediante cámara frontal y previsualización.
-* **Stock Inteligente:** Migración del campo stock a tipo numérico (`Int`), permitiendo una gestión automática y precisa de las unidades disponibles.
-* **Eliminación Granular:** Sistema de gestión que permite eliminar unidades individuales o lotes completos de productos agrupados por nombre.
+* **Gestión de Stock Visual:** Indicadores de disponibilidad mediante colores dinámicos: **Verde** para productos en stock y **Rojo** para agotados.
 
 ---
 
@@ -40,16 +37,16 @@
 
 | Componente | Responsabilidad |
 | :--- | :--- |
-| **`JuegoAdapter`** | Adaptador dual (Lista/Carrusel) que ahora incluye soporte para clics opcionales y apertura de detalles. |
-| **`GestionarAdapter`** | Gestión de inventario con agrupación por nombre y visualización de stock total acumulado. |
-| **`Juego.kt`** | Data Class optimizada con campo `stock` de tipo `Int` para operaciones aritméticas. |
-| **`FirebaseInventoryManager`** | Clase Singleton que centraliza operaciones con Realtime Database y Firebase Storage. |
+| **`HomeActivity`** | Gestiona la visibilidad del Rail mediante el mando púrpura y el cierre al tocar fuera. |
+| **`FragmentGuiaUso`** | Implementa la interfaz de ayuda con scroll y textos centrados para mejorar la legibilidad. |
+| **`JuegoAdapter`** | Adaptador dual que incluye soporte para clics opcionales y apertura de detalles. |
+| **`FirebaseInventoryManager`** | Clase Singleton que centraliza operaciones con la nube. |
 
 ### Diseño (XML - `app/src/main/res/layout/`)
 
-* **`dialog_detalle_juego.xml`**: Interfaz del pop-up centrado con diseño de recuadro negro redondeado y botones de acción.
-* **`item_juego_catalogo_u.xml`**: Tarjeta de producto optimizada para el catálogo del usuario final.
-* **`fondo_popup_negro.xml`**: Drawable personalizado que define la estética de los cuadros de diálogo flotantes.
+* **`rail_header.xml`**: Define el espacio superior de la barra lateral para un espaciado limpio con el logo.
+* **`rail_footer.xml`**: Contenedor anclado al fondo para el acceso rápido a la información de uso ("i").
+* **`fragment_guia_uso.xml`**: Layout optimizado con `ConstraintLayout` y `NestedScrollView` para visualización de textos centrados.
 
 ---
 
@@ -58,17 +55,16 @@
 * **Lenguaje:** Kotlin 1.9+.
 * **Plataforma:** Android (minSdk 24).
 * **Servicios Cloud:** Firebase Auth, Realtime Database y Firebase Storage.
-* **Librerías Externas:** Glide para el procesamiento y caché de imágenes en tiempo real.
+* **Diseño:** Material Design 3 (M3).
 
 ---
 
 ## Notas de Versión
-* **v1.4.0:** Implementado pop-up de detalle centrado, migración de stock a `Int` y lógica de visualización de stock por colores.
-* **v1.3.5:** Añadida funcionalidad de captura de imagen con cámara frontal y previsualización en el editor.
-* **v1.3.0:** Añadida jerarquía de **Admin Jefe**, generación de códigos de 5 min y actualización de perfiles en tiempo real.
-* **v1.2.5:** Rediseño del panel de gestión con contenedores en gris oscuro y visualización de equipo por correo electrónico.
-* **v1.1.5:** Integrada la lógica de formateo automático de precios `%.2f €`.
-* **v1.0.0:** Lanzamiento inicial con sistema de roles y carrusel infinito.
+* **v1.5.0 (Versión Actual):** * Rediseño estructural del **Navigation Rail** para optimizar el espacio de los fragmentos.
+    * Implementación del **Mando Púrpura** como controlador externo de navegación.
+    * Lógica de **cierre automático** de la barra lateral al detectar interacción fuera del menú.
+    * Nueva interfaz de **Guía de Arcadia** con alineación centrada y diseño optimizado para lectura rápida.
+    * Corrección de superposiciones entre el Header, el menú de navegación y el Footer de información.
 
 ---
 © 2026 ArcadiaGames - Desarrollado para la gestión moderna de videojuegos.
