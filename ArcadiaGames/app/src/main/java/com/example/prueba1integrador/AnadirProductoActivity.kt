@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -30,6 +29,7 @@ class AnadirProductoActivity : AppCompatActivity() {
 
     // Listas de datos para spinners
     private val categorias = listOf("Selecciona una categoría", "Acción", "Aventura", "Deportes", "Estrategia", "RPG", "Simulación", "Otros")
+    // Mantenemos los textos para la UI, pero los convertiremos a Int al guardar
     private val stockOpciones = listOf("En stock", "No hay stock")
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -142,7 +142,10 @@ class AnadirProductoActivity : AppCompatActivity() {
 
         // Preseleccionar spinners
         selectSpinnerItem(binding.spinnerCategoria, categorias, juego.categoria)
-        selectSpinnerItem(binding.spinnerStock, stockOpciones, juego.stock)
+
+        // Para el stock, como ahora es Int, seleccionamos basado en el valor
+        val stockTexto = if (juego.stock > 0) "En stock" else "No hay stock"
+        selectSpinnerItem(binding.spinnerStock, stockOpciones, stockTexto)
 
         // Mostrar imagen actual
         if (juego.imagenUrl.isNotEmpty()) {
@@ -226,11 +229,20 @@ class AnadirProductoActivity : AppCompatActivity() {
 
         setLoading(true)
 
+        // Lógica automática de stock:
+        // Si el usuario marca "En stock", el sistema asigna 1 automáticamente (o podrías poner 10 si es lote).
+        // Si es edición, podrías mantener el stock que ya tenía si se selecciona "En stock".
+        val stockAutomatico = if (estadoStock == "En stock") {
+            if (juegoAEditar != null && juegoAEditar!!.stock > 0) juegoAEditar!!.stock else 1
+        } else {
+            0
+        }
+
         if (imagenSeleccionadaUri != null) {
             // Caso A: Nueva imagen (sea alta o edición con cambio de foto)
             inventoryManager.subirImagen(imagenSeleccionadaUri!!, object : FirebaseInventoryManager.ImageUploadCallback {
                 override fun onUrlLoaded(url: String) {
-                    guardarProductoFinal(nombre, desc, precioFormateado, url, categoria, plataforma, estadoStock)
+                    guardarProductoFinal(nombre, desc, precioFormateado, url, categoria, plataforma, stockAutomatico)
                 }
                 override fun onError(mensaje: String) {
                     setLoading(false)
@@ -239,12 +251,12 @@ class AnadirProductoActivity : AppCompatActivity() {
             })
         } else {
             // Caso B: Edición sin cambios de imagen
-            guardarProductoFinal(nombre, desc, precioFormateado, juegoAEditar?.imagenUrl ?: "", categoria, plataforma, estadoStock)
+            guardarProductoFinal(nombre, desc, precioFormateado, juegoAEditar?.imagenUrl ?: "", categoria, plataforma, stockAutomatico)
         }
     }
 
     private fun guardarProductoFinal(nombre: String, desc: String, precio: String, urlImagen: String,
-                                     cat: String, plat: String, stockInfo: String) {
+                                     cat: String, plat: String, stockInfo: Int) {
 
         val tagsGenerados = listOf(cat, plat)
         val idProducto = juegoAEditar?.id ?: "" // Mantiene ID si es edición

@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 class CestaActivity : AppCompatActivity() {
 
@@ -15,49 +17,103 @@ class CestaActivity : AppCompatActivity() {
     private lateinit var btnPay: Button
 
     private lateinit var adapter: CestaAdapter
+    private val listaCesta = mutableListOf<Juego>()
+
+    private val uid = FirebaseAuth.getInstance().currentUser!!.uid
+
+    // Referencia a la cesta del usuario en Firebase
+    private val cestaRef: DatabaseReference by lazy {
+        FirebaseDatabase.getInstance()
+            .getReference("cesta")
+            .child(uid)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cesta)
 
+        // Views
         rvCart = findViewById(R.id.rvCart)
         tvTotal = findViewById(R.id.tvTotal)
         btnPay = findViewById(R.id.btnPay)
 
+        // Adapter de la cesta
         adapter = CestaAdapter(
             onClickItem = { juego ->
-                val i = Intent(this, DetalleCestaActivity::class.java)
-                i.putExtra("JUEGO_CESTA", juego) // Juego es Serializable en tu proyecto ✅
-                startActivity(i)
+                val intent = Intent(this, DetalleCestaActivity::class.java)
+                intent.putExtra("JUEGO_CESTA", juego)
+                startActivity(intent)
             },
             onDeleteAt = { pos ->
-                CestaManager.removeAt(pos)
-                adapter.submitList(CestaManager.items)
-                actualizarTotal()
+                eliminarJuegoFirebase(pos)
             }
         )
 
         rvCart.layoutManager = LinearLayoutManager(this)
         rvCart.adapter = adapter
 
-        adapter.submitList(CestaManager.items)
-        actualizarTotal()
+        // Cargar cesta desde Firebase
+        cargarCestaFirebase()
 
-        // Si quieres que "Proceder al pago" pague el total directo (opcional)
+        // 👉 BOTÓN PROCEDER AL PAGO (CORRECTO)
         btnPay.setOnClickListener {
-            val i = Intent(this, PagoActivity::class.java)
-            i.putExtra("PRECIO_TOTAL", CestaManager.total())
-            startActivity(i)
+
+            val intent = Intent(this, PagoActivity::class.java)
+            intent.putExtra("PRECIO_TOTAL", calcularTotal())
+
+            startActivity(intent)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        adapter.submitList(CestaManager.items)
-        actualizarTotal()
+    /**
+     * Carga la cesta desde Firebase y actualiza la vista
+     */
+    private fun cargarCestaFirebase() {
+
+        cestaRef.addValueEventListener(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaCesta.clear()
+
+                for (snap in snapshot.children) {
+                    val juego = snap.getValue(Juego::class.java)
+                    if (juego != null) {
+                        listaCesta.add(juego)
+                    }
+                }
+
+                adapter.submitList(listaCesta.toList())
+                actualizarTotal()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Error de lectura (opcional)
+            }
+        })
+    }
+
+    /**
+     * Elimina un juego de Firebase
+     */
+    private fun eliminarJuegoFirebase(pos: Int) {
+        val juego = listaCesta[pos]
+        cestaRef.child(juego.id).removeValue()
+    }
+
+    /**
+     * Calcula el total de la cesta
+     */
+    private fun calcularTotal(): Double {
+        return listaCesta.sumOf {
+            it.precio
+                .replace("€", "")
+                .replace(",", ".")
+                .trim()
+                .toDoubleOrNull() ?: 0.0
+        }
     }
 
     private fun actualizarTotal() {
-        tvTotal.text = "Total: €%.2f".format(CestaManager.total())
+        tvTotal.text = "Total: €%.2f".format(calcularTotal())
     }
 }

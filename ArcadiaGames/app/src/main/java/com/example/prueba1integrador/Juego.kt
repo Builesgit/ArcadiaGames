@@ -10,5 +10,12 @@ data class Juego(
     val tags: List<String> = emptyList(),
     val categoria: String = "",
     val plataforma: String = "",
-    val stock: String = "En stock"
+    val stock: Int = 0
 ) : java.io.Serializable
+
+// Clase de datos auxiliar para manejar Juego + Cantidad
+data class ItemInventario(
+    val juego: Juego,
+    val cantidad: Int,
+    val idsAgrupados: List<String> // Guardamos todos los IDs que forman este grupo
+)

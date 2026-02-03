@@ -1,5 +1,6 @@
 package com.example.prueba1integrador
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.FragmentCatalogoBinding
 import com.google.android.material.chip.Chip
-import android.content.Intent
 
 class FragmentCatalogo : Fragment() {
 
@@ -20,6 +20,8 @@ class FragmentCatalogo : Fragment() {
 
     private lateinit var adapter: JuegoAdapter
     private var listaCompleta: List<Juego> = emptyList()
+
+    private val inventoryManager = FirebaseInventoryManager()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,17 +36,17 @@ class FragmentCatalogo : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupData()
         setupRecyclerView()
+        setupData()
         setupFilters()
         setupFab()
     }
 
-    private val inventoryManager = FirebaseInventoryManager()
-
     private fun setupData() {
         // Usamos Firebase para cargar datos reales
-        inventoryManager.consultarInventario(object: FirebaseInventoryManager.InventoryCallback {
+        inventoryManager.consultarInventario(object :
+            FirebaseInventoryManager.InventoryCallback {
+
             override fun onDataLoaded(lista: List<Juego>) {
                 listaCompleta = lista
                 if (::adapter.isInitialized) {
@@ -61,7 +63,9 @@ class FragmentCatalogo : Fragment() {
         if (rolUsuario == "admin") {
             binding.fabAgregarJuego.visibility = View.VISIBLE
             binding.fabAgregarJuego.setOnClickListener {
-                startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
+                startActivity(
+                    Intent(requireContext(), AnadirProductoActivity::class.java)
+                )
             }
         } else {
             binding.fabAgregarJuego.visibility = View.GONE
@@ -69,9 +73,15 @@ class FragmentCatalogo : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        // Usamos binding para acceder al RecyclerView sin findViewById
-        binding.rvCatalogoCompleto.layoutManager = LinearLayoutManager(context)
-        adapter = JuegoAdapter(listaCompleta)
+        // Configuramos el RecyclerView
+        binding.rvCatalogoCompleto.layoutManager = LinearLayoutManager(requireContext())
+
+        // 🔥 ADAPTER SIN LAMBDA (OPCIÓN A)
+        adapter = JuegoAdapter(
+            listaCompleta,
+            esCarousel = false
+        )
+
         binding.rvCatalogoCompleto.adapter = adapter
     }
 
@@ -81,11 +91,14 @@ class FragmentCatalogo : Fragment() {
 
         // Escuchador de texto para búsqueda en tiempo real
         binding.searchViewCatalogo.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(
+                s: CharSequence?, start: Int, count: Int, after: Int
+            ) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(
+                s: CharSequence?, start: Int, before: Int, count: Int
+            ) {
                 val texto = s.toString()
-                // Corrección del error .text: usamos setText()
                 binding.searchBarCatalogo.setText(texto)
                 filtrar(texto)
             }
@@ -102,17 +115,26 @@ class FragmentCatalogo : Fragment() {
 
     private fun filtrar(texto: String) {
         // Obtenemos los nombres de los chips seleccionados
-        val etiquetasSeleccionadas = binding.chipGroupCategorias.checkedChipIds.map { id ->
-            binding.chipGroupCategorias.findViewById<Chip>(id).text.toString()
-        }
+        val etiquetasSeleccionadas =
+            binding.chipGroupCategorias.checkedChipIds.map { id ->
+                binding.chipGroupCategorias
+                    .findViewById<Chip>(id)
+                    .text
+                    .toString()
+            }
 
         // Aplicamos el filtro a la lista completa
         val listaFiltrada = listaCompleta.filter { juego ->
-            val coincideNombre = juego.nombre.contains(texto, ignoreCase = true)
-            val coincideChip = etiquetasSeleccionadas.isEmpty() ||
-                    juego.tags.any { tag ->
-                        etiquetasSeleccionadas.any { selected -> tag.contains(selected, ignoreCase = true) }
-                    }
+            val coincideNombre =
+                juego.nombre.contains(texto, ignoreCase = true)
+
+            val coincideChip =
+                etiquetasSeleccionadas.isEmpty() ||
+                        juego.tags.any { tag ->
+                            etiquetasSeleccionadas.any { selected ->
+                                tag.contains(selected, ignoreCase = true)
+                            }
+                        }
 
             coincideNombre && coincideChip
         }

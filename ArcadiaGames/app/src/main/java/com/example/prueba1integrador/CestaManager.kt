@@ -1,7 +1,7 @@
 package com.example.prueba1integrador
 
 
-object CestaManager {
+class CestaManager {
     private val _items = mutableListOf<Juego>()
     val items: List<Juego> get() = _items
 
