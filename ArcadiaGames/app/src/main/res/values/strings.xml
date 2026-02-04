@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Arcadia Games</string>
+    <string name="app_name" translatable="false">Arcadia Games</string>
     <string name="Buscar">Buscar juegos</string>
     <string name="Catalogo">Catálogo de Juegos</string>
     <string name="Novedades">Novedades</string>
@@ -12,4 +12,22 @@
     <string name="Numero">Número de Teléfono</string>
     <string name="Contraseña">Contraseña</string>
     <string name="Confirmar">Confirmar Contraseña</string>
+    <string name="Gestion">GESTIÓN INVENTARIO</string>
+    <string name="Gestionar">Gestionar incidencias</string>
+    <string name="Añadir">Añadir incidencia</string>
+    <string name="ultimas">ÚLTIMAS ACCIONES</string>
+    <string name="Grafico">Gráfico de actividad semanal</string>
+
+    <string name="Gestionar_admins">GESTIÓN DE ADMINISTRADORES</string>
+    <string name="Gestionar_usuarios">GESTIÓN DE USUARIOS</string>
+    <string name="Generar_codigo">GENERAR CÓDIGO (5 MIN)</string>
+    <string name="Ningun_cod">Ningún código activo</string>
+    <string name="Admins">ADMINS REGISTRADOS</string>
+
+
+
+
+
+
+
 </resources>
