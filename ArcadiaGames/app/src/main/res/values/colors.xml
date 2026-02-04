@@ -13,4 +13,5 @@
     <color name="Texto_Verde">#4ADE80</color>
     <color name="Fondo_verde">#172E31</color>
     <color name="Borde_verde">#194c3a</color>
+    <color name="Morado_alerta">#DE4AA8</color>
 </resources>
