@@ -7,17 +7,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 class JuegoAdapter(
     private var listaJuego: List<Juego>,
     private val esCarousel: Boolean = false,
-    private val onJuegoClick: (Juego) -> Unit = {} // Se añade '= {}' para que sea opcional y no de error en FragmentHome
+    private val onJuegoClick: (Juego) -> Unit = {}
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_LISTA = 1
         private const val VIEW_TYPE_CAROUSEL = 2
-        // Usamos un valor grande pero no infinito (Int.MAX_VALUE) para evitar OutOfMemory
         private const val INFINITE_COUNT = 10000
     }
 
@@ -33,7 +33,6 @@ class JuegoAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        // Obtenemos la posición real dentro de tu lista de juegos
         val actualPosition = if (esCarousel && listaJuego.isNotEmpty()) {
             position % listaJuego.size
         } else {
@@ -42,27 +41,17 @@ class JuegoAdapter(
 
         val juego = listaJuego[actualPosition]
 
-        // Añadimos el listener para detectar el clic en el elemento
         holder.itemView.setOnClickListener {
             onJuegoClick(juego)
         }
 
-        // Lógica unificada para cargar imagenes (compatible con URL de Firebase o ID de recurso local)
         fun cargarImagen(imageView: ImageView, juego: Juego) {
-            if (juego.imagenUrl.isNotEmpty()) {
-                // Prioridad a URL de Firebase
-                Glide.with(imageView.context)
-                    .load(juego.imagenUrl)
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .error(R.drawable.ic_launcher_background)
-                    .into(imageView)
-            } else if (juego.imagenResId != 0) {
-                // Fallback a recurso local si existe y no hay URL
-                imageView.setImageResource(juego.imagenResId)
-            } else {
-                // Fallback final
-                imageView.setImageResource(R.drawable.ic_launcher_background)
-            }
+            // Dentro de tu Adapter, al cargar la imagen con Glide:
+            Glide.with(imageView.context)
+                .load(juego.imagenUrl)
+                .centerCrop() // <--- ESTO es lo que hace que ocupe todo el espacio bien
+                .transition(DrawableTransitionOptions.withCrossFade()) // Hace que aparezca suavemente
+                .into(imageView)
         }
 
         when (holder) {

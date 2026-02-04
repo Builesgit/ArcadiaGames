@@ -31,6 +31,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -57,6 +58,9 @@ dependencies {
     implementation("com.google.firebase:firebase-database") // Versión KTX para Realtime Database
     implementation("com.google.firebase:firebase-storage") // Añadido para subir imágenes
 
+    // Integrado app check
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
+    implementation("com.google.firebase:firebase-appcheck-debug")
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
