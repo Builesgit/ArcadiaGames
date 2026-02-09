@@ -9,20 +9,19 @@
 ### 1. Gestión de Roles y Seguridad
 * **Autenticación:** Sistema gestionado mediante **Firebase Authentication**.
 * **Jerarquía de Usuarios:**
-    * **Admin Jefe:** Único perfil con capacidad para generar códigos de invitación y gestionar al equipo de administración.
-    * **Admin Subordinado:** Acceso a la gestión de inventario y reportes de stock.
-    * **Clientes:** Acceso al catálogo, filtrado de juegos por plataforma y gestión de perfil.
-* **Sistema de Invitación:** Generación de códigos aleatorios con **validez temporal (5 min)** para ascender usuarios de forma segura.
+    * **Admin Jefe:** Único perfil con capacidad para gestionar al equipo y generar códigos.
+    * **Admin Subordinado:** Acceso a inventario, incidencias e historial.
+    * **Clientes:** Acceso al catálogo, historial de compras y soporte técnico.
 
 ### 2. Experiencia de Usuario (UX/UI Avanzada)
-* **View Binding:** Implementación de vinculación de vistas para un código más limpio y eficiente.
-* **Navigation Rail Dinámico:** Menú lateral ergonómico que maximiza el espacio vertical, separando la navegación de las acciones de soporte.
-* **Mando de Control Central:** Botón flotante ("Mando Púrpura") que actúa como disparador global para la navegación lateral.
-* **Tema Dark Premium:** Estética de alta fidelidad con paleta `#202020` y acentos neón.
+* **Perfil Dinámico:** Interfaz de usuario que se adapta en tiempo real según el rol del usuario (Admin/Cliente), mostrando herramientas específicas para cada jerarquía.
+* **Navigation Rail:** Menú lateral ergonómico que optimiza el espacio de trabajo.
+* **Mando de Control:** Acceso global a la navegación mediante el botón flotante temático "Mando Púrpura".
+* **Tema Dark Premium:** Paleta de colores `#202020` con acentos neón para una estética gamer profesional.
 
 ### 3. Catálogo y Multimedia
-* **Optimización con Glide:** Carga eficiente de imágenes mediante `AppGlideModule` (`MyAppGlideModule`), asegurando un rendimiento fluido y gestión de caché inteligente.
-* **Carrusel Infinito:** Uso de `CarouselLayoutManager` con scroll circular para destacar las novedades del catálogo.
+* **Optimización Glide:** Gestión avanzada de imágenes para garantizar fluidez y ahorro de datos.
+* **Filtrado Inteligente:** Búsqueda y filtrado dinámico por plataformas (PC, PS, Xbox, Nintendo).
 
 ---
 
@@ -32,25 +31,34 @@
 
 | Componente | Responsabilidad |
 | :--- | :--- |
-| **`MainActivity`** | Gestiona el flujo de inicio de sesión y la carga dinámica de layouts. |
-| **`HomeActivity`** | Centro neurálgico que controla el Navigation Rail y los fragmentos principales. |
-| **`MyAppGlideModule`** | Configuración centralizada de Glide para la optimización de recursos gráficos. |
-| **`FirebaseInventoryManager`** | Clase Singleton que centraliza las operaciones CRUD con Realtime Database. |
+| **`FragmentPerfil`** | Controla la lógica de visibilidad y nomenclatura de botones según el rol del usuario. |
+| **`HomeActivity`** | Gestiona la navegación principal y el inflado de fragmentos. |
+| **`MyAppGlideModule`** | Módulo de configuración para la optimización multimedia. |
+
+### Diseño (XML - `app/src/main/res/layout/`)
+
+| Archivo | Descripción |
+| :--- | :--- |
+| **`activity_perfil.xml`** | Layout de perfil con secciones modulares para administradores y usuarios estándar. |
+| **`activity_register.xml`** | Interfaz de registro de nuevos usuarios. |
 
 ---
 
 ## Stack Tecnológico
 
 * **Lenguaje:** Kotlin 1.9+.
-* **Plataforma:** Android (minSdk 27 - targetSdk 34).
-* **Servicios Cloud:** Firebase Auth, Realtime Database y Firebase Storage.
-* **Librerías:** Glide 4.16, Material Design 3 (M3).
+* **Plataforma:** Android (minSdk 27).
+* **Servicios Cloud:** Firebase Auth, Realtime Database, Firebase Storage.
+* **Librerías:** Glide 4.16, Material Design 3.
 
 ---
 
-## Notas de la Versión (v1.7.0)
-* **Eliminación de App Check:** Desvinculación completa de los proveedores de App Check tanto en el código fuente como en las dependencias de Gradle para agilizar el desarrollo y las pruebas en emuladores.
-* **Implementación de MyAppGlideModule:** Creación del módulo generado de Glide para optimizar la carga de imágenes, eliminando advertencias en el Logcat y mejorando la fluidez visual de la app.
+## Notas de la Versión (v1.8.0)
+* **Rediseño de Interfaz de Perfil:** Se ha simplificado la vista de usuario para mejorar la claridad visual, manteniendo los botones de "Subir Juego" y "Mis Intercambios" comentados en el código para futuras implementaciones.
+* **Actualización de Nomenclatura:**
+    * **Admin:** El botón "Ver Reportes" ha sido renombrado a **"Historial"** para una mejor identificación semántica.
+    * **Usuario:** El botón "Mis Juegos" ha sido renombrado a **"Mis Compras"** para reflejar su función actual.
+* **Optimización de FragmentPerfil:** Mejora en la lógica de escucha en tiempo real de Firebase para actualizar la interfaz del perfil instantáneamente al cambiar el rol del usuario.
 
 ---
 © 2026 ArcadiaGames - Desarrollado para la gestión moderna de videojuegos.

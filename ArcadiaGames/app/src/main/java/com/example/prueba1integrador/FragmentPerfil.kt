@@ -102,10 +102,6 @@ class FragmentPerfil : Fragment() {
             binding.layoutCanjearCodigo.visibility = View.VISIBLE
 
             configurarCanje(uid)
-
-            binding.btnSubirJuego.setOnClickListener {
-                startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
-            }
         }
     }
 
