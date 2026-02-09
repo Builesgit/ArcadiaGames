@@ -59,7 +59,7 @@
             <Button
                 android:id="@+id/btnReportes"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Ver Reportes"
+                android:text="Historial"
                 app:icon="@drawable/ico_incidencias" />
 
             <Button
@@ -89,22 +89,10 @@
             android:visibility="visible">
 
             <Button
-                android:id="@+id/btnMisJuegos"
+                android:id="@+id/btnMisCompras"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Mis Juegos"
+                android:text="Mis Compras"
                 app:icon="@drawable/ico_juego" />
-
-            <Button
-                android:id="@+id/btnSubirJuego"
-                style="@style/BotonMenuPersonalizado"
-                android:text="Subir Juego"
-                app:icon="@drawable/ico_juego" />
-
-            <Button
-                android:id="@+id/btnIntercambios"
-                style="@style/BotonMenuPersonalizado"
-                android:text="Mis Intercambios"
-                app:icon="@drawable/ico_intercambio" />
 
             <Button
                 android:id="@+id/btnSoporteTecnico"
