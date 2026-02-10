@@ -10,7 +10,7 @@ data class Juego(
     val tags: List<String> = emptyList(),
     val categoria: String = "",
     val plataforma: String = "",
-    val stock: Int = 0
+    val stock: Int = 1
 ) : java.io.Serializable
 
 // Clase de datos auxiliar para manejar Juego + Cantidad

@@ -10,7 +10,7 @@
         android:id="@+id/tv_titulo_gestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gestionar Inventario"
+        android:text="Inventario"
         android:textSize="22sp"
         android:textStyle="bold"
         android:layout_margin="16dp"

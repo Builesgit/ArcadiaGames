@@ -17,7 +17,8 @@ import com.google.firebase.database.FirebaseDatabase
 
 class JuegoAdapter(
     private var listaJuego: List<Juego>,
-    private val esCarousel: Boolean = false
+    private val esCarousel: Boolean = false,
+    private val esAdmin: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -53,9 +54,10 @@ class JuegoAdapter(
 
         val juego = listaJuego[actualPosition]
 
-        // 👉 Al pulsar un juego, abrimos el popup con detalle
         holder.itemView.setOnClickListener {
-            mostrarDialogoDetalle(holder.itemView, juego)
+            if (!esAdmin) {
+                mostrarDialogoDetalle(holder.itemView, juego)
+            }
         }
 
         fun cargarImagen(imageView: ImageView) {
@@ -83,7 +85,15 @@ class JuegoAdapter(
                 holder.tvTitulo.text = juego.nombre
                 holder.tvDescripcion.text = juego.descripcion
                 holder.tvPrecio.text = juego.precio
-                holder.tvTags.text = juego.tags.joinToString(" • ")
+
+                // ✅ SEPARACIÓN CORRECTA
+                holder.tvCategoria.text = juego.categoria
+
+                holder.tvPlataformas.text =
+                    juego.plataforma.ifEmpty {
+                        juego.tags.joinToString(" · ")
+                    }
+
                 cargarImagen(holder.ivPortada)
             }
         }
@@ -102,18 +112,19 @@ class JuegoAdapter(
         val tvTitulo: TextView = view.findViewById(R.id.tv_juego_titulo)
         val tvDescripcion: TextView = view.findViewById(R.id.tv_juego_descripcion)
         val tvPrecio: TextView = view.findViewById(R.id.tv_juego_precio)
-        val tvTags: TextView = view.findViewById(R.id.tv_juego_tags)
+
+        // 🆕 NUEVOS CAMPOS
+        val tvCategoria: TextView = view.findViewById(R.id.tv_juego_categoria)
+        val tvPlataformas: TextView = view.findViewById(R.id.tv_juego_plataformas)
     }
 
     /**
      * Popup de detalle del juego
-     * Desde aquí se puede comprar el juego
      */
     private fun mostrarDialogoDetalle(view: View, juego: Juego) {
 
         val context = view.context
 
-        // ✅ USAMOS VIEWBINDING (AQUÍ ESTABA EL FALLO)
         val dialogBinding = DialogoDetalleJuegoBinding.inflate(
             LayoutInflater.from(context)
         )
@@ -122,15 +133,17 @@ class JuegoAdapter(
             .setView(dialogBinding.root)
             .create()
 
-        // ---------------- RELLENAR DATOS ----------------
-
         dialogBinding.tvDetalleNombre.text = juego.nombre
         dialogBinding.tvDetalleDescripcion.text = juego.descripcion
         dialogBinding.tvDetallePrecio.text = juego.precio
-        dialogBinding.tvDetallePlataforma.text =
-            juego.tags.joinToString(", ")
 
-        // Stock
+        dialogBinding.tvDetalleCategoria.text = juego.categoria
+
+        dialogBinding.tvDetallePlataformas.text =
+            juego.plataforma.ifEmpty {
+                juego.tags.joinToString(" · ")
+            }
+
         if (juego.stock > 0) {
             dialogBinding.tvDetalleStock.text = "Stock: ${juego.stock}"
             dialogBinding.tvDetalleStock.setTextColor(Color.GREEN)
@@ -141,7 +154,6 @@ class JuegoAdapter(
             dialogBinding.btnComprar.isEnabled = false
         }
 
-        // Imagen
         if (juego.imagenUrl.isNotEmpty()) {
             Glide.with(context)
                 .load(juego.imagenUrl)
@@ -149,8 +161,6 @@ class JuegoAdapter(
         } else {
             dialogBinding.ivDetalleImagen.setImageResource(juego.imagenResId)
         }
-
-        // ---------------- BOTÓN COMPRAR ----------------
 
         dialogBinding.btnComprar.setOnClickListener {
 
@@ -162,7 +172,6 @@ class JuegoAdapter(
                 .child(juego.id)
                 .setValue(juego)
                 .addOnSuccessListener {
-
                     Toast.makeText(
                         context,
                         "Juego añadido a la cesta",
@@ -184,15 +193,18 @@ class JuegoAdapter(
                 }
         }
 
-        // Botón alquilar (por ahora solo cierra)
         dialogBinding.btnAlquilar.setOnClickListener {
+
+            val intent = Intent(context, AlquilarJuegoActivity::class.java)
+            intent.putExtra("JUEGO", juego)
+            context.startActivity(intent)
+
             dialog.dismiss()
         }
 
         dialog.show()
     }
 
-    // Para filtros de búsqueda
     fun setFilteredList(filteredList: List<Juego>) {
         listaJuego = filteredList
         notifyDataSetChanged()

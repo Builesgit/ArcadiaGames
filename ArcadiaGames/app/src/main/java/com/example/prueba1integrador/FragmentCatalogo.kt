@@ -14,7 +14,6 @@ import com.google.android.material.chip.Chip
 
 class FragmentCatalogo : Fragment() {
 
-    // Gestión del Binding para evitar fugas de memoria en Fragments
     private var _binding: FragmentCatalogoBinding? = null
     private val binding get() = _binding!!
 
@@ -28,7 +27,6 @@ class FragmentCatalogo : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflamos el layout usando ViewBinding
         _binding = FragmentCatalogoBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,12 +41,15 @@ class FragmentCatalogo : Fragment() {
     }
 
     private fun setupData() {
-        // Usamos Firebase para cargar datos reales
         inventoryManager.consultarInventario(object :
             FirebaseInventoryManager.InventoryCallback {
 
             override fun onDataLoaded(lista: List<Juego>) {
+
+                // ✅ ORDEN A → Z POR NOMBRE
                 listaCompleta = lista
+                    .sortedBy { it.nombre.trim().lowercase() }
+
                 if (::adapter.isInitialized) {
                     adapter.setFilteredList(listaCompleta)
                 }
@@ -57,7 +58,6 @@ class FragmentCatalogo : Fragment() {
     }
 
     private fun setupFab() {
-        // Lógica para mostrar/ocultar FAB según rol
         val rolUsuario = activity?.intent?.getStringExtra("ROL_USUARIO") ?: "cliente"
 
         if (rolUsuario == "admin") {
@@ -73,23 +73,24 @@ class FragmentCatalogo : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        // Configuramos el RecyclerView
-        binding.rvCatalogoCompleto.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvCatalogoCompleto.layoutManager =
+            LinearLayoutManager(requireContext())
 
-        // 🔥 ADAPTER SIN LAMBDA (OPCIÓN A)
+        val rolUsuario = activity?.intent?.getStringExtra("ROL_USUARIO") ?: "cliente"
+        val esAdmin = rolUsuario == "admin"
+
         adapter = JuegoAdapter(
-            listaCompleta,
-            esCarousel = false
+            listaJuego = listaCompleta,
+            esCarousel = false,
+            esAdmin = esAdmin
         )
 
         binding.rvCatalogoCompleto.adapter = adapter
     }
 
     private fun setupFilters() {
-        // Configuramos la conexión entre SearchBar y SearchView
         binding.searchViewCatalogo.setupWithSearchBar(binding.searchBarCatalogo)
 
-        // Escuchador de texto para búsqueda en tiempo real
         binding.searchViewCatalogo.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 s: CharSequence?, start: Int, count: Int, after: Int
@@ -106,7 +107,6 @@ class FragmentCatalogo : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Escuchador para cambios en los Chips de categorías
         binding.chipGroupCategorias.setOnCheckedStateChangeListener { _, _ ->
             val textoBusqueda = binding.searchViewCatalogo.text.toString()
             filtrar(textoBusqueda)
@@ -114,7 +114,7 @@ class FragmentCatalogo : Fragment() {
     }
 
     private fun filtrar(texto: String) {
-        // Obtenemos los nombres de los chips seleccionados
+
         val etiquetasSeleccionadas =
             binding.chipGroupCategorias.checkedChipIds.map { id ->
                 binding.chipGroupCategorias
@@ -123,29 +123,41 @@ class FragmentCatalogo : Fragment() {
                     .toString()
             }
 
-        // Aplicamos el filtro a la lista completa
         val listaFiltrada = listaCompleta.filter { juego ->
+
             val coincideNombre =
                 juego.nombre.contains(texto, ignoreCase = true)
 
             val coincideChip =
                 etiquetasSeleccionadas.isEmpty() ||
+
+                        // ✅ Coincide por plataforma
+                        etiquetasSeleccionadas.any { chip ->
+                            juego.plataforma.contains(chip, ignoreCase = true)
+                        } ||
+
+                        // ✅ Coincide por tags
                         juego.tags.any { tag ->
-                            etiquetasSeleccionadas.any { selected ->
-                                tag.contains(selected, ignoreCase = true)
+                            etiquetasSeleccionadas.any { chip ->
+                                tag.contains(chip, ignoreCase = true)
                             }
                         }
 
             coincideNombre && coincideChip
         }
 
-        // Actualizamos el adaptador con la nueva lista
-        adapter.setFilteredList(listaFiltrada)
+        adapter.setFilteredList(
+            listaFiltrada.sortedBy { it.nombre.trim().lowercase() }
+        )
+
+    // 🔤 MANTENEMOS ORDEN A → Z TAMBIÉN TRAS FILTRAR
+        adapter.setFilteredList(
+            listaFiltrada.sortedBy { it.nombre.trim().lowercase() }
+        )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Limpiamos el binding para evitar fugas de memoria
         _binding = null
     }
 }

@@ -58,6 +58,10 @@
             android:name=".PagoActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".AlquilarJuegoActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
