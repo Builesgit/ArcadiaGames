@@ -12,4 +12,10 @@
     <string name="Numero">Número de Teléfono</string>
     <string name="Contraseña">Contraseña</string>
     <string name="Confirmar">Confirmar Contraseña</string>
+
+    <string name="Gestion">GESTIÓN INVENTARIO</string>
+    <string name="Gestionar">Gestionar incidencias</string>
+    <string name="Añadir">Añadir incidencia</string>
+    <string name="ultimas">ÚLTIMAS ACCIONES</string>
+    <string name="Grafico">Gráfico de actividad semanal</string>
 </resources>
