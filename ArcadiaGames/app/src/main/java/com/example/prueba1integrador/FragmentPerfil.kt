@@ -95,6 +95,10 @@ class FragmentPerfil : Fragment() {
             binding.btnGestionAdmins.setOnClickListener {
                 startActivity(Intent(requireContext(), GestionAdminsActivity::class.java))
             }
+
+            binding.btnHistorial.setOnClickListener {
+                startActivity(Intent(requireContext(), HistorialActivity::class.java))
+            }
         } else {
             // MOSTRAR USER - OCULTAR ADMIN
             binding.layoutAdmin.visibility = View.GONE

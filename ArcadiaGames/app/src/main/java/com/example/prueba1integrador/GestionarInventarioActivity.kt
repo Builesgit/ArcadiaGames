@@ -88,7 +88,8 @@ class GestionarInventarioActivity : AppCompatActivity() {
             .setPositiveButton("Eliminar UNO") { _, _ ->
                 // Eliminar solo el primer ID disponible
                 if (idsAgrupados.isNotEmpty()) {
-                    eliminarJuegoPorId(idsAgrupados.first(), esEliminacionMasiva = false)
+                    // Pasamos el nombre del juego para que el historial lo registre
+                    eliminarJuegoPorId(idsAgrupados.first(), juego.nombre, esEliminacionMasiva = false)
                 }
             }
             .setNegativeButton("Cancelar", null)
@@ -97,12 +98,16 @@ class GestionarInventarioActivity : AppCompatActivity() {
             builder.setNeutralButton("Eliminar TODOS") { _, _ ->
                 // Para eliminar todos, controlamos cuando termine el último para refrescar
                 var procesados = 0
+                val nombreJuegoParaLog = juego.nombre // Guardamos el nombre antes de borrar
+
                 for (id in idsAgrupados) {
                     inventoryManager.eliminarProducto(id, object : FirebaseInventoryManager.DeleteCallback {
                         override fun onDeleteComplete(exito: Boolean) {
                             procesados++
                             // Cuando hayamos procesado todos los IDs, refrescamos la lista
                             if (procesados == idsAgrupados.size) {
+                                // CORRECCIÓN: Pasamos el nombre del juego (String), no el objeto completo
+                                inventoryManager.registrarEnHistorial("Admin", "eliminó masivamente", nombreJuegoParaLog, 0)
                                 Toast.makeText(this@GestionarInventarioActivity, "Productos eliminados correctamente", Toast.LENGTH_SHORT).show()
                                 cargarDatos()
                             }
@@ -115,11 +120,13 @@ class GestionarInventarioActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun eliminarJuegoPorId(id: String, esEliminacionMasiva: Boolean) {
+    private fun eliminarJuegoPorId(id: String, nombreJuego: String, esEliminacionMasiva: Boolean) {
         inventoryManager.eliminarProducto(id, object : FirebaseInventoryManager.DeleteCallback {
             override fun onDeleteComplete(exito: Boolean) {
                 if (exito) {
                     if (!esEliminacionMasiva) {
+                        // Registramos en el historial la eliminación individual
+                        inventoryManager.registrarEnHistorial("Admin", "eliminó", nombreJuego, 0)
                         Toast.makeText(this@GestionarInventarioActivity, "Producto eliminado", Toast.LENGTH_SHORT).show()
                         cargarDatos() // Refrescar la lista tras borrar uno solo
                     }

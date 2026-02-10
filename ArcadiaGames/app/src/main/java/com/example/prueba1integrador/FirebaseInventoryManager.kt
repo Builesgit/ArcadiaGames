@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -33,9 +34,12 @@ class FirebaseInventoryManager {
         fun onDataLoaded(lista: List<Juego>)
     }
 
-    /**
-     * Sube una imagen usando callbacks clásicos (Interfaces).
-     */
+    interface DeleteCallback {
+        fun onDeleteComplete(exito: Boolean)
+    }
+
+    // Sube una imagen usando callbacks clásicos (Interfaces).
+
     fun subirImagen(imageUri: Uri, callback: ImageUploadCallback) {
         val fileName = "img_${System.currentTimeMillis()}.jpg"
         val fileRef = storageReference.child(fileName)
@@ -58,9 +62,7 @@ class FirebaseInventoryManager {
         })
     }
 
-    /**
-     * Sube un producto usando callbacks clásicos.
-     */
+    // Sube un producto usando callbacks clásicos.
     fun subirProducto(videojuego: Juego, callback: ProductSaveCallback) {
         val id = videojuego.id.ifEmpty { dbReference.push().key ?: "" }
         val productoConId = videojuego.copy(id = id)
@@ -68,6 +70,8 @@ class FirebaseInventoryManager {
         dbReference.child(id).setValue(productoConId)
             .addOnSuccessListener(object : OnSuccessListener<Void> {
                 override fun onSuccess(aVoid: Void?) {
+                    // Al subir con éxito, registramos la acción en el historial
+                    registrarEnHistorial("Admin", "añadió/actualizó", videojuego.nombre, videojuego.stock)
                     callback.onSaveComplete(true)
                 }
             })
@@ -78,9 +82,8 @@ class FirebaseInventoryManager {
             })
     }
 
-    /**
-     * Consulta el inventario usando callbacks clásicos.
-     */
+    // Consulta el inventario usando callbacks clásicos.
+
     fun consultarInventario(callback: InventoryCallback) {
         dbReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -104,18 +107,14 @@ class FirebaseInventoryManager {
         })
     }
 
-    // --- Nueva Interfaz para Eliminar ---
-    interface DeleteCallback {
-        fun onDeleteComplete(exito: Boolean)
-    }
-
-    /**
-     * Elimina un producto de la base de datos por su ID.
-     */
+    // Elimina un producto de la base de datos por su ID.
+    // RESTAURADA: Se vuelve a usar solo idJuego y callback para evitar errores de compilación
     fun eliminarProducto(idJuego: String, callback: DeleteCallback) {
         dbReference.child(idJuego).removeValue()
             .addOnSuccessListener(object : OnSuccessListener<Void> {
                 override fun onSuccess(aVoid: Void?) {
+                    // Nota: El log de borrado se recomienda llamarlo desde la Activity
+                    // donde aún tenemos acceso al nombre del juego antes de borrarlo.
                     callback.onDeleteComplete(true)
                 }
             })
@@ -124,5 +123,14 @@ class FirebaseInventoryManager {
                     callback.onDeleteComplete(false)
                 }
             })
+    }
+
+    // Registra una acción en el nodo historial de la base de datos
+    fun registrarEnHistorial(nombreUser: String, accion: String, producto: String, cant: Int = 1) {
+        val ref = FirebaseDatabase.getInstance().getReference("historial")
+        val idLog = ref.push().key ?: return
+
+        val nuevoLog = AccionHistorial(idLog, nombreUser, accion, producto, cant)
+        ref.child(idLog).setValue(nuevoLog)
     }
 }
