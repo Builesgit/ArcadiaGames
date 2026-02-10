@@ -60,7 +60,8 @@
                 android:id="@+id/btnReportes"
                 style="@style/BotonMenuPersonalizado"
                 android:text="Ver Reportes"
-                app:icon="@drawable/ico_incidencias" />
+                app:icon="@drawable/ico_incidencias"
+                />
 
             <Button
                 android:id="@+id/btnInventario"
@@ -136,6 +137,8 @@
                     android:text="Convertirse en Admin"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:textColor="#FFEB3B"/>
+
+
             </LinearLayout>
         </LinearLayout>
 
@@ -149,6 +152,7 @@
             android:textStyle="bold"
             android:layout_marginTop="40dp"
             app:cornerRadius="12dp"/>
+
 
     </LinearLayout>
 </ScrollView>

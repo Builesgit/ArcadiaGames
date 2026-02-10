@@ -88,9 +88,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Alquilar"
+            android:text="@string/Alquilar"
             android:textColor="@color/white"
-            app:strokeColor="@color/white" />
+            app:strokeColor="@color/white"
+            app:shapeAppearance="@style/ShapeAppearance.RoundedSquare"/>
 
         <Button
             android:id="@+id/btn_comprar"
@@ -99,8 +100,9 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:backgroundTint="@color/Texto_Verde"
-            android:text="Comprar"
-            android:textColor="@color/white" />
+            android:text="@string/Comprar"
+            android:textColor="@color/white"
+            app:shapeAppearance="@style/ShapeAppearance.RoundedSquare"/>
 
     </LinearLayout>
 

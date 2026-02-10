@@ -106,6 +106,13 @@ class FragmentPerfil : Fragment() {
             binding.btnSubirJuego.setOnClickListener {
                 startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
             }
+
+            binding.btnMisJuegos.setOnClickListener {
+                startActivity(Intent(requireContext(), MisJuegos::class.java))
+            }
+
+
+
         }
     }
 

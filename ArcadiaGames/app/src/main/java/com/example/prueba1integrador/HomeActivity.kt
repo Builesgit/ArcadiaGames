@@ -7,17 +7,25 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.prueba1integrador.databinding.ActivityHomeBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private var userRole: String = "user"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        reemplazarFragmento(FragmentHome())
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
+
+        checkUserRoleAndLoadHome()
         setupNavigation()
         setupRailViews()
 
@@ -30,16 +38,42 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        // Cerrar al tocar en la zona de juegos
+        // Cerrar al tocar en la zona de fragmentos
         binding.mainHomeUFragment.setOnClickListener {
             binding.navigationRail.visibility = View.GONE
+        }
+    }
+
+    private fun checkUserRoleAndLoadHome() {
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            database.getReference("usuarios").child(uid).child("rol")
+                .get().addOnSuccessListener { snapshot ->
+                    userRole = snapshot.value?.toString() ?: "user"
+                    if (userRole == "admin") {
+                        reemplazarFragmento(FragmentHomeA())
+                    } else {
+                        reemplazarFragmento(FragmentHome())
+                    }
+                }.addOnFailureListener {
+                    // Si falla la red, cargamos el home de usuario por defecto
+                    reemplazarFragmento(FragmentHome())
+                }
+        } else {
+            reemplazarFragmento(FragmentHome())
         }
     }
 
     private fun setupNavigation() {
         binding.navigationRail.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.item_menu -> reemplazarFragmento(FragmentHome())
+                R.id.item_menu -> {
+                    if (userRole == "admin") {
+                        reemplazarFragmento(FragmentHomeA())
+                    } else {
+                        reemplazarFragmento(FragmentHome())
+                    }
+                }
                 R.id.item_catalogo -> reemplazarFragmento(FragmentCatalogo())
                 R.id.item_perfil -> reemplazarFragmento(FragmentPerfil())
                 else -> false
@@ -56,12 +90,8 @@ class HomeActivity : AppCompatActivity() {
         binding.navigationRail.addHeaderView(headerView)
 
         // 2. Añadir el Footer (Información)
-        // IMPORTANTE: NO usamos addView, usamos un contenedor que el Rail gestione o
-        // simplemente lo inflamos como footer si tu versión lo permite.
-        // Si addFooterView te dio error antes, usaremos este método seguro:
         val footerView = inflater.inflate(R.layout.rail_footer, binding.navigationRail, false)
 
-        // En lugar de MATCH_PARENT, usamos WRAP_CONTENT y gravedad inferior
         val params = android.widget.FrameLayout.LayoutParams(
             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
             android.view.ViewGroup.LayoutParams.WRAP_CONTENT

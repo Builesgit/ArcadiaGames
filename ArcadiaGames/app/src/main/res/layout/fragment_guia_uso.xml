@@ -10,7 +10,7 @@
         android:id="@+id/tv_guia_titulo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="GUÍA DE ARCADIA"
+        android:text="@string/Guía_uso"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold|italic"
@@ -18,60 +18,93 @@
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" /> <androidx.core.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_marginTop="20dp"
-    app:layout_constraintTop_toBottomOf="@id/tv_guia_titulo"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/gradient_black"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_guia_titulo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bienvenido a ArcadiaGames. Aquí puedes gestionar tu catálogo gamer de forma premium."
-            android:textColor="#CCCCCC"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"/> <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="1. Catálogo"
-            android:textColor="@color/Texto_Verde"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:gravity="center"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pulsa en cualquier juego para ver detalles, stock y opciones de compra o alquiler."
-            android:textColor="#AAAAAA"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:orientation="vertical"
+            android:background="@drawable/precio_background"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Bienvenido"
+                android:textColor="#CCCCCC"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:layout_marginBottom="6dp"/>
+        </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="2. Filtros"
-            android:textColor="@color/Texto_Verde"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:gravity="center"/>
+            android:orientation="vertical"
+            android:background="@drawable/precio_background"
+            android:padding="8dp"
+            android:layout_marginTop="10dp">
 
-        <TextView
+            <TextView
+                android:id="@+id/tv_catalogo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Catalogogo"
+                android:textColor="@color/Texto_Verde"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/Buscar_juegos"
+                android:textColor="#AAAAAA" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Usa la barra de búsqueda superior o los chips de plataforma para encontrar lo que buscas al instante."
-            android:textColor="#AAAAAA"
-            android:gravity="center"
-            android:layout_marginBottom="12dp"/>
+            android:orientation="vertical"
+            android:background="@drawable/precio_background"
+            android:padding="8dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Filtros"
+                android:textColor="@color/Texto_Verde"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Barra_busqueda"
+                android:textColor="#AAAAAA"
+                android:gravity="center"
+                android:layout_marginBottom="12dp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

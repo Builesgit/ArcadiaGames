@@ -50,12 +50,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ly_nombre_usuario"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:hint="Nombre de Usuario"
         app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="outline"
         app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
         app:layout_constraintTop_toBottomOf="@id/divisor_horizontal"
         android:layout_marginTop="20dp"
@@ -71,12 +70,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ly_usuario"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:hint="Correo Electrónico"
         app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="outline"
         app:layout_constraintStart_toStartOf="@+id/ly_nombre_usuario"
         app:layout_constraintTop_toBottomOf="@id/ly_nombre_usuario"
         android:layout_marginTop="10dp">
@@ -91,12 +89,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ly_pass"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:hint="@string/Contraseña"
         app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="outline"
         app:endIconMode="password_toggle"
         app:layout_constraintStart_toStartOf="@+id/ly_usuario"
         app:layout_constraintTop_toBottomOf="@id/ly_usuario"
@@ -112,12 +109,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ly_confirm_pass"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:hint="@string/Confirmar"
         app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="outline"
         app:layout_constraintStart_toStartOf="@+id/ly_pass"
         app:layout_constraintTop_toBottomOf="@id/ly_pass"
         android:layout_marginTop="10dp">
@@ -135,11 +131,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Crear"
-        android:backgroundTint="@color/Amarillo"
         android:textColor="@color/Texto"
         app:layout_constraintTop_toBottomOf="@id/ly_confirm_pass"
         app:layout_constraintStart_toStartOf="@id/ly_confirm_pass"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/Amarillo"
+        app:shapeAppearance="@style/ShapeAppearance.RoundedSquare"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_volver_login"

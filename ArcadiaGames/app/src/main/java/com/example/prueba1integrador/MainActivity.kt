@@ -9,6 +9,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prueba1integrador.databinding.ActivityMainBinding
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -25,6 +27,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            DebugAppCheckProviderFactory.getInstance()
+        )
 
         // Inicializar Firebase Auth
         auth = Firebase.auth
@@ -60,39 +66,56 @@ class MainActivity : AppCompatActivity() {
 
     private fun loginConFirebase(email: String, pass: String) {
         // Mostrar un mensaje de carga o deshabilitar botón si lo deseas
+        //un log
+        Log.d("DEBUG_APP", "Intentando login para: $email")
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
+                    //log
+                    Log.d("DEBUG_APP", "Login Auth exitoso. UID: ${user?.uid}")
 
                     // Buscamos el rol del usuario en la base de datos (nodo "usuarios")
                     val dbRef = Firebase.database.getReference("usuarios").child(user?.uid ?: "")
 
                     dbRef.get().addOnSuccessListener { snapshot ->
-                        // Si el usuario existe en la DB, leemos su rol
-                        val rol = snapshot.child("rol").value?.toString() ?: "cliente"
+                        if (snapshot.exists()) {
+                            Log.d("DEBUG_APP", "Datos de usuario encontrados en DB")
+                            val rol = snapshot.child("rol").value?.toString() ?: "cliente"
+                            val nombreUsuario = snapshot.child("nombre").value?.toString() ?: email
 
-                        // MODIFICADO: Buscamos el campo 'nombre' que es el nombre de usuario
-                        val nombreUsuario = snapshot.child("nombre").value?.toString() ?: email
+                            val intent = Intent(this, HomeActivity::class.java)
+                            intent.putExtra("ROL_USUARIO", rol)
+                            intent.putExtra("USUARIO_LOGUEADO", nombreUsuario)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Log.w("DEBUG_APP", "El UID existe en Auth pero NO en el nodo 'usuarios' de la base de datos")
+                            Toast.makeText(this, "Error: Usuario no registrado en la base de datos", Toast.LENGTH_LONG).show()
+                        }
+                    }.addOnFailureListener { e ->
+                        Log.e("DEBUG_APP", "Error al leer Base de Datos: ${e.message}")
+                        Toast.makeText(this, "Error de red o permisos de base de datos", Toast.LENGTH_SHORT).show()
 
-                        val intent = Intent(this, HomeActivity::class.java)
-                        intent.putExtra("ROL_USUARIO", rol)
-                        intent.putExtra("USUARIO_LOGUEADO", nombreUsuario)
-
-                        startActivity(intent)
-                        finish()
-                    }.addOnFailureListener {
                         // Si falla la lectura de la DB, entra como cliente básico
                         val intent = Intent(this, HomeActivity::class.java)
                         intent.putExtra("ROL_USUARIO", "cliente")
                         startActivity(intent)
                         finish()
+
                     }
                 } else {
                     // Si el login falla (contraseña mal, usuario no existe, etc)
                     Log.e("FirebaseLogin", "Error: ${task.exception?.message}")
                     Toast.makeText(this, "Error: Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+
+                    // AQUÍ ESTÁ LA CLAVE: Ver el error real de Firebase
+                    val error = task.exception?.message
+                    Log.e("DEBUG_APP", "Error al leer Base de Datos: ${task.exception?.message}")
+                    Toast.makeText(this, "Error de red o permisos de base de datos", Toast.LENGTH_SHORT).show()
+
                 }
             }
     }
+
 }

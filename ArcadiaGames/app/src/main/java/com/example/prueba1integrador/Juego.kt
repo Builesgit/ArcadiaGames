@@ -19,3 +19,4 @@ data class ItemInventario(
     val cantidad: Int,
     val idsAgrupados: List<String> // Guardamos todos los IDs que forman este grupo
 )
+
