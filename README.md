@@ -1,58 +1,45 @@
 # ArcadiaGames 
 
-**ArcadiaGames** es una aplicación Android nativa moderna diseñada para la gestión integral de una tienda de videojuegos. Destaca por su interfaz de usuario "Dark Gamer Premium", su navegación fluida y una integración robusta con los servicios de Firebase para una experiencia en tiempo real y segura.
+**ArcadiaGames** es una aplicación Android nativa diseñada para la gestión premium de una tienda de videojuegos. Utiliza una arquitectura orientada a servicios de Firebase para ofrecer control total sobre el inventario, usuarios y auditoría en tiempo real.
 
 ---
 
-## Funcionalidades Principales
+## Funcionalidades del Dashboard Administrativo (v1.10.0)
 
-### 1. Gestión de Roles y Seguridad
-* **Autenticación:** Sistema gestionado mediante **Firebase Authentication**.
-* **Seguridad por Roles:** Reglas de Firebase personalizadas que protegen nodos sensibles como `historial`, `usuarios` y `productos` según el nivel de acceso (Admin/Cliente).
-* **Jerarquía de Usuarios:**
-    * **Admin Jefe:** Capacidad exclusiva para gestionar el equipo y generar códigos de invitación.
-    * **Administradores:** Acceso a inventario, gestión de incidencias y auditoría de movimientos.
-    * **Clientes:** Acceso al catálogo, historial de compras y soporte técnico.
+El panel de control ha sido rediseñado para ofrecer una experiencia técnica y formal, optimizando el flujo de trabajo de los administradores.
 
-### 2. Registro de Actividad (Auditoría)
-* **Historial Filtrado:** Sistema de pestañas (`TabLayout`) que permite a los administradores alternar entre logs de **Administradores** (altas/bajas de stock) y **Usuarios** (compras/actividad).
-* **Logs en Tiempo Real:** Seguimiento automático de cada acción relevante en la app, almacenando usuario, tipo de acción, producto y marca de tiempo.
-* **Interfaz Glassmorphism:** Tarjetas con diseño translúcido y tiempos relativos (ej: "hace 5 min") para una lectura rápida y estética.
+### 1. Panel de Control Operativo
+* **Acceso Rápido:** Tarjetas táctiles unificadas para las tareas de **Inventario** y **Añadir Producto**.
+* **Estética Formal:** Diseño con bordes técnicos de `8dp` y fondos sobrios en azul profundo (`#1A2634`), eliminando distracciones visuales.
+* **Jerarquía Visual:** Uso de títulos en **Amarillo Huevo** (`#FBC02D`) para una navegación rápida y profesional.
 
-### 3. Experiencia de Usuario (UX/UI Avanzada)
-* **Perfil Dinámico:** Adaptación inmediata de la interfaz según el rol detectado en la base de datos.
-* **Navigation Rail:** Menú lateral ergonómico para una navegación optimizada en pantallas modernas.
-* **Tema Dark Premium:** Paleta `#202020` con acentos neón y optimización multimedia mediante **Glide**.
+### 2. Gestión de Soporte y Tickets
+* **Módulo de Incidencias:** Consola unificada para la revisión de reportes técnicos y errores enviados por los usuarios.
+* **Iconografía Minimalista:** Todos los iconos han sido estandarizados en color blanco para mantener la sobriedad del entorno administrativo.
+
+### 3. Consola de Historial (Monitor de Sistema)
+* **Visualización Técnica:** Implementación del `historial_background`, un marco con borde de `3dp` en azul claro que resalta la actividad reciente del sistema.
+* **Auditoría en Tiempo Real:** El historial general de la tienda se integra directamente en la pantalla de inicio, eliminando elementos de carga (ProgressBars) para una respuesta visual inmediata.
 
 ---
 
-## Arquitectura del Proyecto
+## Arquitectura de Interfaz
 
-### Componentes de Auditoría (`v1.9.0`)
+### Recursos de Diseño (`v1.10.0`)
 
-| Clase / Archivo | Responsabilidad |
+| Recurso | Descripción |
 | :--- | :--- |
-| **`HistorialActivity`** | Gestiona el filtrado dinámico de logs mediante pestañas y Firebase. |
-| **`HistorialAdapter`** | Vincula los datos de auditoría con la interfaz visual estilo "gamer". |
-| **`AccionHistorial`** | Modelo de datos (POJO) para la trazabilidad de acciones. |
-| **`item_historial.xml`** | Diseño de tarjeta personalizada para los registros del historial. |
+| **`historial_background`** | Shape XML con fondo `#0A1324` y stroke técnico para la consola de monitoreo. |
+| **`fragment_home.xml`** | Layout dinámico que alterna entre el catálogo para usuarios y el Dashboard para admins. |
+| **`colors.xml`** | Paleta actualizada con acentos amarillo huevo y sombras azul oscuro. |
 
 ---
 
-## Stack Tecnológico
-
-* **Lenguaje:** Kotlin 1.9+.
-* **Plataforma:** Android (minSdk 27).
-* **Servicios Cloud:** Firebase Auth, Realtime Database (con reglas de auditoría), Storage.
-* **Librerías:** Glide 4.16, Material Design 3, ViewBinding.
-
----
-
-## Notas de la Versión (v1.9.0)
-* **Módulo de Auditoría Avanzada:** Implementación del Historial con filtros para diferenciar las acciones de gestión de las acciones de los clientes.
-* **Seguridad de Datos:** Actualización de las reglas de Realtime Database para securizar el nodo `historial`, permitiendo lectura exclusiva a administradores.
-* **Optimización de FirebaseInventoryManager:** Integración de disparadores automáticos de logs al añadir, editar o eliminar productos del inventario.
-* **Rediseño Visual:** Implementación de tarjetas de historial con títulos dinámicos y cálculo de tiempo relativo.
+## Notas de la Versión (v1.10.0)
+* **Dashboard Admin v2:** Evolución del menú de administración a un panel de control formal basado en tarjetas operativas.
+* **Unificación Estética:** Sincronización de tonalidades entre los módulos de inventario, incidencias e historial.
+* **Optimización de UX:** Reducción del radio de curvatura en componentes para un aspecto más "industrial/técnico".
+* **Depuración Visual:** Limpieza de iconos de carga y colores secundarios (verdes) para centrar la atención en los datos críticos.
 
 ---
-© 2026 ArcadiaGames - Desarrollado para la gestión moderna de videojuegos.
+© 2026 ArcadiaGames - Consola de Administración Profesional.
