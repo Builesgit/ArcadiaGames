@@ -57,7 +57,7 @@
                 app:icon="@drawable/ico_inventario" />
 
             <Button
-                android:id="@+id/btnReportes"
+                android:id="@+id/btnHistorial"
                 style="@style/BotonMenuPersonalizado"
                 android:text="Historial"
                 app:icon="@drawable/ico_incidencias" />

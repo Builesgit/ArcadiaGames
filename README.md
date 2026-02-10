@@ -8,39 +8,34 @@
 
 ### 1. Gestión de Roles y Seguridad
 * **Autenticación:** Sistema gestionado mediante **Firebase Authentication**.
+* **Seguridad por Roles:** Reglas de Firebase personalizadas que protegen nodos sensibles como `historial`, `usuarios` y `productos` según el nivel de acceso (Admin/Cliente).
 * **Jerarquía de Usuarios:**
-    * **Admin Jefe:** Único perfil con capacidad para gestionar al equipo y generar códigos.
-    * **Admin Subordinado:** Acceso a inventario, incidencias e historial.
+    * **Admin Jefe:** Capacidad exclusiva para gestionar el equipo y generar códigos de invitación.
+    * **Administradores:** Acceso a inventario, gestión de incidencias y auditoría de movimientos.
     * **Clientes:** Acceso al catálogo, historial de compras y soporte técnico.
 
-### 2. Experiencia de Usuario (UX/UI Avanzada)
-* **Perfil Dinámico:** Interfaz de usuario que se adapta en tiempo real según el rol del usuario (Admin/Cliente), mostrando herramientas específicas para cada jerarquía.
-* **Navigation Rail:** Menú lateral ergonómico que optimiza el espacio de trabajo.
-* **Mando de Control:** Acceso global a la navegación mediante el botón flotante temático "Mando Púrpura".
-* **Tema Dark Premium:** Paleta de colores `#202020` con acentos neón para una estética gamer profesional.
+### 2. Registro de Actividad (Auditoría)
+* **Historial Filtrado:** Sistema de pestañas (`TabLayout`) que permite a los administradores alternar entre logs de **Administradores** (altas/bajas de stock) y **Usuarios** (compras/actividad).
+* **Logs en Tiempo Real:** Seguimiento automático de cada acción relevante en la app, almacenando usuario, tipo de acción, producto y marca de tiempo.
+* **Interfaz Glassmorphism:** Tarjetas con diseño translúcido y tiempos relativos (ej: "hace 5 min") para una lectura rápida y estética.
 
-### 3. Catálogo y Multimedia
-* **Optimización Glide:** Gestión avanzada de imágenes para garantizar fluidez y ahorro de datos.
-* **Filtrado Inteligente:** Búsqueda y filtrado dinámico por plataformas (PC, PS, Xbox, Nintendo).
+### 3. Experiencia de Usuario (UX/UI Avanzada)
+* **Perfil Dinámico:** Adaptación inmediata de la interfaz según el rol detectado en la base de datos.
+* **Navigation Rail:** Menú lateral ergonómico para una navegación optimizada en pantallas modernas.
+* **Tema Dark Premium:** Paleta `#202020` con acentos neón y optimización multimedia mediante **Glide**.
 
 ---
 
 ## Arquitectura del Proyecto
 
-### Lógica (Kotlin - `app/src/main/java/...`)
+### Componentes de Auditoría (`v1.9.0`)
 
-| Componente | Responsabilidad |
+| Clase / Archivo | Responsabilidad |
 | :--- | :--- |
-| **`FragmentPerfil`** | Controla la lógica de visibilidad y nomenclatura de botones según el rol del usuario. |
-| **`HomeActivity`** | Gestiona la navegación principal y el inflado de fragmentos. |
-| **`MyAppGlideModule`** | Módulo de configuración para la optimización multimedia. |
-
-### Diseño (XML - `app/src/main/res/layout/`)
-
-| Archivo | Descripción |
-| :--- | :--- |
-| **`activity_perfil.xml`** | Layout de perfil con secciones modulares para administradores y usuarios estándar. |
-| **`activity_register.xml`** | Interfaz de registro de nuevos usuarios. |
+| **`HistorialActivity`** | Gestiona el filtrado dinámico de logs mediante pestañas y Firebase. |
+| **`HistorialAdapter`** | Vincula los datos de auditoría con la interfaz visual estilo "gamer". |
+| **`AccionHistorial`** | Modelo de datos (POJO) para la trazabilidad de acciones. |
+| **`item_historial.xml`** | Diseño de tarjeta personalizada para los registros del historial. |
 
 ---
 
@@ -48,17 +43,16 @@
 
 * **Lenguaje:** Kotlin 1.9+.
 * **Plataforma:** Android (minSdk 27).
-* **Servicios Cloud:** Firebase Auth, Realtime Database, Firebase Storage.
-* **Librerías:** Glide 4.16, Material Design 3.
+* **Servicios Cloud:** Firebase Auth, Realtime Database (con reglas de auditoría), Storage.
+* **Librerías:** Glide 4.16, Material Design 3, ViewBinding.
 
 ---
 
-## Notas de la Versión (v1.8.0)
-* **Rediseño de Interfaz de Perfil:** Se ha simplificado la vista de usuario para mejorar la claridad visual, manteniendo los botones de "Subir Juego" y "Mis Intercambios" comentados en el código para futuras implementaciones.
-* **Actualización de Nomenclatura:**
-    * **Admin:** El botón "Ver Reportes" ha sido renombrado a **"Historial"** para una mejor identificación semántica.
-    * **Usuario:** El botón "Mis Juegos" ha sido renombrado a **"Mis Compras"** para reflejar su función actual.
-* **Optimización de FragmentPerfil:** Mejora en la lógica de escucha en tiempo real de Firebase para actualizar la interfaz del perfil instantáneamente al cambiar el rol del usuario.
+## Notas de la Versión (v1.9.0)
+* **Módulo de Auditoría Avanzada:** Implementación del Historial con filtros para diferenciar las acciones de gestión de las acciones de los clientes.
+* **Seguridad de Datos:** Actualización de las reglas de Realtime Database para securizar el nodo `historial`, permitiendo lectura exclusiva a administradores.
+* **Optimización de FirebaseInventoryManager:** Integración de disparadores automáticos de logs al añadir, editar o eliminar productos del inventario.
+* **Rediseño Visual:** Implementación de tarjetas de historial con títulos dinámicos y cálculo de tiempo relativo.
 
 ---
 © 2026 ArcadiaGames - Desarrollado para la gestión moderna de videojuegos.
