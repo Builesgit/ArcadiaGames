@@ -47,9 +47,10 @@ class HistorialActivity : AppCompatActivity() {
     private fun filtrarLista(posicion: Int) {
         val listaFiltrada = if (posicion == 0) {
             listaCompleta.filter {
-                it.accion.contains("añadió", ignoreCase = true) ||
-                        it.accion.contains("eliminó", ignoreCase = true) ||
-                        it.accion.contains("actualizó", ignoreCase = true)
+                it.accion.contains("añadió", true) ||
+                        it.accion.contains("eliminó", true) ||
+                        it.accion.contains("actualizó", true) ||
+                        it.accion.contains("stock", true)
             }
         } else {
             // Acciones Comerciales (Usuarios)
