@@ -7,10 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
-class HistorialAdapter(private val lista: List<AccionHistorial>) :
-    RecyclerView.Adapter<HistorialAdapter.ViewHolder>() {
+class HistorialAdapter(
+    private val lista: List<AccionHistorial>,
+    private val esModoMenu: Boolean = false // Nuevo parámetro para alternar vistas
+) : RecyclerView.Adapter<HistorialAdapter.ViewHolder>() {
 
-    // ViewHolder actualizado con los nuevos IDs de tu diseño premium
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtTipoAccion: TextView = view.findViewById(R.id.txtTipoAccion)
         val txtDetalleAccion: TextView = view.findViewById(R.id.txtDetalleAccion)
@@ -18,28 +19,27 @@ class HistorialAdapter(private val lista: List<AccionHistorial>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // Inflamos el nuevo layout item_historial
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_historial, parent, false)
+        // Seleccionamos el layout según el contexto (Home vs Vista Completa)
+        val layout = if (esModoMenu) R.layout.item_menu_historial else R.layout.item_historial
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = lista[position]
 
-        // 1. Título dinámico basado en la acción (estilo gamer)
+        // 1. Título dinámico basado en la acción
         holder.txtTipoAccion.text = when {
             item.accion.contains("compró", ignoreCase = true) -> "Compra Realizada"
-            item.accion.contains("añadió", ignoreCase = true) -> "Nuevo Producto Añadido"
+            item.accion.contains("añadió", ignoreCase = true) -> "Nuevo Producto"
             item.accion.contains("eliminó", ignoreCase = true) -> "Producto Eliminado"
-            item.accion.contains("intercambió", ignoreCase = true) -> "Juego Intercambiado"
-            else -> "Actividad Detectada"
+            else -> "Actividad"
         }
 
-        // 2. Detalle de la acción (Quién hizo qué)
-        // Ejemplo: "Admin añadió: 'Elden Ring'" o "Juan compró: 'FIFA 24'"
+        // 2. Detalle de la acción
         holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
 
-        // 3. Lógica de tiempo relativo (hace X min / hace X h)
+        // 3. Lógica de tiempo relativo
         val ahora = System.currentTimeMillis()
         val diff = ahora - item.fecha
 
@@ -49,7 +49,7 @@ class HistorialAdapter(private val lista: List<AccionHistorial>) :
         val dias = horas / 24
 
         holder.txtTiempo.text = when {
-            minutos < 1 -> "ahora mismo"
+            minutos < 1 -> "ahora"
             minutos < 60 -> "hace $minutos min"
             horas < 24 -> "hace $horas h"
             else -> "hace $dias d"
