@@ -30,17 +30,30 @@
         app:layout_constraintStart_toEndOf="@id/iv_detalle_imagen"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- 🟢 CATEGORÍA -->
     <TextView
-        android:id="@+id/tv_detalle_plataforma"
+        android:id="@+id/tv_detalle_categoria"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="#00FF00"
         android:textSize="13sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_detalle_nombre"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_detalle_nombre" />
+
+    <!-- 🔵 PLATAFORMAS -->
+    <TextView
+        android:id="@+id/tv_detalle_plataformas"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="#CCCCCC"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@id/tv_detalle_nombre"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_detalle_categoria" />
 
     <TextView
         android:id="@+id/tv_detalle_precio"
@@ -51,7 +64,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/tv_detalle_nombre"
-        app:layout_constraintTop_toBottomOf="@id/tv_detalle_plataforma" />
+        app:layout_constraintTop_toBottomOf="@id/tv_detalle_plataformas" />
 
     <TextView
         android:id="@+id/tv_detalle_stock"

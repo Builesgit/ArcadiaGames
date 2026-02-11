@@ -28,21 +28,21 @@ class HistorialAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = lista[position]
 
-        // 1. Título dinámico basado en la acción
+        // 1. Título dinámico (Priorizamos "añadió" sobre "actualizó")
         holder.txtTipoAccion.text = when {
+            item.accion.equals("añadió", ignoreCase = true) -> "Nuevo Producto"
             item.accion.contains("actualizó", ignoreCase = true) -> "Producto Actualizado"
             item.accion.contains("alquiló", ignoreCase = true) -> "Producto Alquilado"
-            item.accion.contains("añadió", ignoreCase = true) -> "Nuevo Producto"
             item.accion.contains("eliminó", ignoreCase = true) -> "Producto Eliminado"
             item.accion.contains("compró", ignoreCase = true) -> "Compra Realizada"
             else -> "Actividad"
         }
 
-        // 2. Detalle de la acción
+        // 2. Detalle de la acción (Limpiamos para que no salga "añadir/actualizar")
         val accionLimpia = when {
+            item.accion.contains("añadió", ignoreCase = true) -> "añadió"
             item.accion.contains("actualizó", ignoreCase = true) -> "actualizó"
             item.accion.contains("alquiló", ignoreCase = true) -> "alquiló"
-            item.accion.contains("añadió", ignoreCase = true) -> "añadió"
             item.accion.contains("eliminó", ignoreCase = true) -> "eliminó"
             item.accion.contains("compró", ignoreCase = true) -> "compró"
             else -> item.accion

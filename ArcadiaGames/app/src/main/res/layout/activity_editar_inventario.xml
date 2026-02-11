@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@drawable/fondo_sin_logo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <!-- LOGO -->
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/marco_logo"
+            android:contentDescription="Logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <!-- TÍTULO -->
+        <TextView
+            android:id="@+id/titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EDITAR INVENTARIO"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"/>
+
+        <!-- LABEL CATEGORÍA -->
+        <TextView
+            android:id="@+id/lbl_categoria"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Categoría"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/titulo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"/>
+
+        <!-- CATEGORÍA (BLOQUEADA) -->
+        <EditText
+            android:id="@+id/et_categoria"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:enabled="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:background="@drawable/edittext_background"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_categoria"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"/>
+
+        <!-- LABEL PLATAFORMA -->
+        <TextView
+            android:id="@+id/lbl_plataforma"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Plataforma"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/et_categoria"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"/>
+
+        <!-- PLATAFORMA (BLOQUEADA) -->
+        <EditText
+            android:id="@+id/et_plataforma"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:enabled="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:background="@drawable/edittext_background"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_plataforma"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"/>
+
+        <!-- LABEL JUEGO -->
+        <TextView
+            android:id="@+id/lbl_juego"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Juego"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/et_plataforma"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"/>
+
+        <!-- NOMBRE (BLOQUEADO) -->
+        <EditText
+            android:id="@+id/et_nombre_juego"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:enabled="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:background="@drawable/edittext_background"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_juego"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"/>
+
+        <!-- LABEL PRECIO -->
+        <TextView
+            android:id="@+id/lbl_precio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Precio"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/et_nombre_juego"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"/>
+
+        <!-- PRECIO (BLOQUEADO) -->
+        <EditText
+            android:id="@+id/et_precio"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:enabled="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:background="@drawable/edittext_background"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_precio"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"/>
+
+        <!-- LABEL STOCK -->
+        <TextView
+            android:id="@+id/lbl_stock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cantidad de stock"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/et_precio"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"/>
+
+        <!-- STOCK (EDITABLE) -->
+        <EditText
+            android:id="@+id/et_stock"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:hint="Ej: 40"
+            android:inputType="number"
+            android:background="@drawable/edittext_background"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_stock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"/>
+
+        <!-- IMAGEN (SOLO VISUAL) -->
+        <ImageView
+            android:id="@+id/iv_imagen_juego"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/edittext_background"
+            app:layout_constraintTop_toBottomOf="@id/et_stock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"/>
+
+        <!-- GUARDAR -->
+        <Button
+            android:id="@+id/btn_guardar_stock"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:text="GUARDAR STOCK"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:backgroundTint="@color/Amarillo"
+            app:layout_constraintTop_toBottomOf="@id/iv_imagen_juego"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="32dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

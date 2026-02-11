@@ -46,11 +46,18 @@ class HistorialActivity : AppCompatActivity() {
 
     private fun filtrarLista(posicion: Int) {
         val listaFiltrada = if (posicion == 0) {
-            // Filtrar acciones realizadas por Admins
-            listaCompleta.filter { it.accion.contains("añadió") || it.accion.contains("eliminó") }
+            listaCompleta.filter {
+                it.accion.contains("añadió", ignoreCase = true) ||
+                        it.accion.contains("eliminó", ignoreCase = true) ||
+                        it.accion.contains("actualizó", ignoreCase = true)
+            }
         } else {
-            // Filtrar acciones realizadas por Usuarios
-            listaCompleta.filter { it.accion.contains("compró") || it.accion.contains("intercambió") }
+            // Acciones Comerciales (Usuarios)
+            listaCompleta.filter {
+                it.accion.contains("compró", ignoreCase = true) ||
+                        it.accion.contains("intercambió", ignoreCase = true) ||
+                        it.accion.contains("alquiló", ignoreCase = true)
+            }
         }
         binding.rvHistorial.adapter = HistorialAdapter(listaFiltrada)
     }
