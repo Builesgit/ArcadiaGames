@@ -28,31 +28,33 @@ class HistorialAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = lista[position]
 
-        // 1. TÍTULO DINÁMICO (Mejorado para detectar las nuevas acciones de stock)
+        // 1. TÍTULO DINÁMICO
         holder.txtTipoAccion.text = when {
+            item.accion.contains("realizado", ignoreCase = true) -> "Alquiler Realizado"
+            item.accion.contains("devuelto", ignoreCase = true) -> "Alquiler Devuelto"
             item.accion.contains("añadió", ignoreCase = true) -> "Nuevo Producto"
             item.accion.contains("eliminó", ignoreCase = true) -> "Producto Eliminado"
             item.accion.contains("redujo", ignoreCase = true) ||
-                    item.accion.contains("stock", ignoreCase = true) -> "Stock Actualizado" // <--- NUEVO
+                    item.accion.contains("stock", ignoreCase = true) -> "Stock Actualizado"
             item.accion.contains("actualizó", ignoreCase = true) -> "Producto Actualizado"
-            item.accion.contains("alquiló", ignoreCase = true) -> "Producto Alquilado"
             item.accion.contains("compró", ignoreCase = true) -> "Compra Realizada"
             else -> "Actividad"
         }
 
         // 2. DETALLE DE LA ACCIÓN
-        // Corregido: usando txtDetalleAccion para que coincida con tu ViewHolder
         val accionAMostrar = when {
+            item.accion.contains("realizado", ignoreCase = true) -> "realizó un alquiler"
+            item.accion.contains("devuelto", ignoreCase = true) -> "devolvió un alquiler"
             item.accion.contains("redujo", ignoreCase = true) -> "redujo stock"
             item.accion.contains("añadió", ignoreCase = true) -> "añadió"
             item.accion.contains("eliminó", ignoreCase = true) -> "eliminó"
             item.accion.contains("actualizó", ignoreCase = true) -> "actualizó"
-            item.accion.contains("alquiló", ignoreCase = true) -> "alquiló"
             item.accion.contains("compró", ignoreCase = true) -> "compró"
             else -> item.accion
         }
 
-        // Usamos el nombre correcto de la variable: txtDetalleAccion
+        // Usamos txtDetalleAccion (corregido el nombre de la variable)
+        // Si la acción ya viene con formato de stock manual (con paréntesis), la mostramos directa
         if (item.accion.contains("(")) {
             holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
         } else {

@@ -45,6 +45,8 @@ class CestaActivity : AppCompatActivity() {
             if (listaCesta.isNotEmpty()) {
                 val intent = Intent(this, PagoActivity::class.java)
                 intent.putExtra("PRECIO_TOTAL", calcularTotal())
+                // ENVIAMOS LA LISTA: Para descontar stock en PagoActivity
+                intent.putExtra("LISTA_PRODUCTOS", ArrayList(listaCesta))
                 startActivity(intent)
             }
         }
