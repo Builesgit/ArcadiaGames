@@ -30,14 +30,25 @@ class HistorialAdapter(
 
         // 1. Título dinámico basado en la acción
         holder.txtTipoAccion.text = when {
-            item.accion.contains("compró", ignoreCase = true) -> "Compra Realizada"
+            item.accion.contains("actualizó", ignoreCase = true) -> "Producto Actualizado"
+            item.accion.contains("alquiló", ignoreCase = true) -> "Producto Alquilado"
             item.accion.contains("añadió", ignoreCase = true) -> "Nuevo Producto"
             item.accion.contains("eliminó", ignoreCase = true) -> "Producto Eliminado"
+            item.accion.contains("compró", ignoreCase = true) -> "Compra Realizada"
             else -> "Actividad"
         }
 
         // 2. Detalle de la acción
-        holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
+        val accionLimpia = when {
+            item.accion.contains("actualizó", ignoreCase = true) -> "actualizó"
+            item.accion.contains("alquiló", ignoreCase = true) -> "alquiló"
+            item.accion.contains("añadió", ignoreCase = true) -> "añadió"
+            item.accion.contains("eliminó", ignoreCase = true) -> "eliminó"
+            item.accion.contains("compró", ignoreCase = true) -> "compró"
+            else -> item.accion
+        }
+
+        holder.txtDetalleAccion.text = "${item.usuarioNombre} $accionLimpia: '${item.productoNombre}'"
 
         // 3. Lógica de tiempo relativo
         val ahora = System.currentTimeMillis()
