@@ -47,6 +47,26 @@
             android:exported="false" />
 
         <activity
+            android:name=".CestaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".DetalleCestaActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".PagoActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".AlquilarJuegoActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".EditarInventarioActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".HistorialActivity"
             android:exported="false" />
 

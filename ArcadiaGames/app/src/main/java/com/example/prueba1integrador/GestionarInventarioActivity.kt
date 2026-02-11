@@ -33,15 +33,16 @@ class GestionarInventarioActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
 
-        adapter = GestionarAdapter(emptyList(),
+        adapter = GestionarAdapter(
+            listaInventario = emptyList(),
             onEditClick = { juego ->
-                // Abrir AnadirProductoActivity pasando el objeto juego para editar
-                val intent = Intent(this, AnadirProductoActivity::class.java)
-                intent.putExtra("JUEGO_A_EDITAR", juego)
+                // CAMBIO: Ahora abrimos EditarInventarioActivity
+                val intent = Intent(this, EditarInventarioActivity::class.java)
+                intent.putExtra("JUEGO", juego) // Pasamos el objeto con la clave "JUEGO"
                 startActivity(intent)
             },
-            onDeleteClick = { juego, idsAgrupados ->
-                confirmarEliminacion(juego, idsAgrupados)
+            onDeleteClick = { juego, ids ->
+                confirmarEliminacion(juego, ids)
             }
         )
         binding.rvInventarioGestion.adapter = adapter

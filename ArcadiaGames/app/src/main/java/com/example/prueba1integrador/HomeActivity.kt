@@ -1,5 +1,6 @@
 package com.example.prueba1integrador
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,34 +18,59 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Recuperamos el rol para saber si ocultar la cesta
+        val rol = intent.getStringExtra("ROL_USUARIO") ?: "cliente"
+
         reemplazarFragmento(FragmentHome())
-        setupNavigation()
+        setupNavigation(rol)
         setupRailViews()
 
         // El mando púrpura abre y cierra el menú
         binding.btnAbrirRail.setOnClickListener {
-            if (binding.navigationRail.visibility == View.VISIBLE) {
-                binding.navigationRail.visibility = View.GONE
+            binding.navigationRail.visibility = if (binding.navigationRail.visibility == View.VISIBLE) {
+                View.GONE
             } else {
-                binding.navigationRail.visibility = View.VISIBLE
+                View.VISIBLE
             }
         }
 
-        // Cerrar al tocar en la zona de juegos
+        // Cerrar al tocar en la zona de fragmentos
         binding.mainHomeUFragment.setOnClickListener {
             binding.navigationRail.visibility = View.GONE
         }
     }
 
-    private fun setupNavigation() {
+    private fun setupNavigation(rol: String) {
+        // --- LOGICA PARA OCULTAR LA CESTA A ADMINS ---
+        if (rol == "admin") {
+            val menu = binding.navigationRail.menu
+            val itemCesta = menu.findItem(R.id.item_cesta)
+            itemCesta?.isVisible = false
+        }
+
         binding.navigationRail.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.item_menu -> reemplazarFragmento(FragmentHome())
-                R.id.item_catalogo -> reemplazarFragmento(FragmentCatalogo())
-                R.id.item_perfil -> reemplazarFragmento(FragmentPerfil())
+                R.id.item_menu -> {
+                    reemplazarFragmento(FragmentHome())
+                    true
+                }
+                R.id.item_catalogo -> {
+                    reemplazarFragmento(FragmentCatalogo())
+                    true
+                }
+                R.id.item_perfil -> {
+                    reemplazarFragmento(FragmentPerfil())
+                    true
+                }
+                R.id.item_cesta -> {
+                    // Solo permitimos abrir la cesta si NO es admin
+                    if (rol != "admin") {
+                        startActivity(Intent(this, CestaActivity::class.java))
+                    }
+                    true
+                }
                 else -> false
             }
-            true
         }
     }
 
@@ -55,13 +81,8 @@ class HomeActivity : AppCompatActivity() {
         val headerView = inflater.inflate(R.layout.rail_header, binding.navigationRail, false)
         binding.navigationRail.addHeaderView(headerView)
 
-        // 2. Añadir el Footer (Información)
-        // IMPORTANTE: NO usamos addView, usamos un contenedor que el Rail gestione o
-        // simplemente lo inflamos como footer si tu versión lo permite.
-        // Si addFooterView te dio error antes, usaremos este método seguro:
+        // 2. Añadir el Footer (Botón de Info)
         val footerView = inflater.inflate(R.layout.rail_footer, binding.navigationRail, false)
-
-        // En lugar de MATCH_PARENT, usamos WRAP_CONTENT y gravedad inferior
         val params = android.widget.FrameLayout.LayoutParams(
             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
             android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -73,6 +94,7 @@ class HomeActivity : AppCompatActivity() {
 
         footerView.findViewById<ImageButton>(R.id.btn_info_uso)?.setOnClickListener {
             reemplazarFragmento(FragmentGuiaUso())
+            binding.navigationRail.visibility = View.GONE // Cerramos el rail tras elegir
         }
     }
 
