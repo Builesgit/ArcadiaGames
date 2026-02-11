@@ -4,42 +4,49 @@
 
 ---
 
-## Funcionalidades del Dashboard Administrativo (v1.10.0)
+## Funcionalidades del Dashboard Administrativo (v1.12.0)
 
-El panel de control ha sido rediseñado para ofrecer una experiencia técnica y formal, optimizando el flujo de trabajo de los administradores.
+El panel de control ha sido optimizado para ofrecer una experiencia técnica y formal, garantizando la integridad de los datos en cada operación.
 
-### 1. Panel de Control Operativo
-* **Acceso Rápido:** Tarjetas táctiles unificadas para las tareas de **Inventario** y **Añadir Producto**.
-* **Estética Formal:** Diseño con bordes técnicos de `8dp` y fondos sobrios en azul profundo (`#1A2634`), eliminando distracciones visuales.
-* **Jerarquía Visual:** Uso de títulos en **Amarillo Huevo** (`#FBC02D`) para una navegación rápida y profesional.
+### 1. Gestión Inteligente de Inventario y Stock
+* **Control de Bajas Multinivel:** Implementación de un sistema de borrado lógico que diferencia entre la reducción de existencias y la eliminación de registros.
+    * **Baja Unitaria:** Descuento rápido de una sola unidad mediante actualización de atributo.
+    * **Baja Específica:** Diálogo con entrada numérica para retirar lotes concretos del inventario (ej: por rotura o devolución).
+    * **Eliminación Total:** Purga completa del nodo en Firebase cuando el stock llega a cero o por decisión administrativa definitiva.
+* **Integridad de Datos:** Bloqueo automático de campos críticos (Nombre, Categoría, Plataforma, Precio) durante la edición para evitar inconsistencias en la base de datos, permitiendo únicamente la modificación del flujo de stock.
 
-### 2. Gestión de Soporte y Tickets
-* **Módulo de Incidencias:** Consola unificada para la revisión de reportes técnicos y errores enviados por los usuarios.
-* **Iconografía Minimalista:** Todos los iconos han sido estandarizados en color blanco para mantener la sobriedad del entorno administrativo.
+### 2. Monitor de Auditoría y Trazabilidad (Consola de Historial)
+* **Detección de Acciones Críticas:** El sistema ahora diferencia y etiqueta automáticamente las actividades para una supervisión precisa:
+    * **`Nuevo Producto`**: Identificación estricta de altas iniciales en el catálogo.
+    * **`Stock Actualizado`**: Registro detallado de variaciones numéricas (ej: "Admin redujo stock -5").
+    * **`Producto Alquilado/Comprado`**: Monitorización en tiempo real de las transacciones de los usuarios.
+* **Sistema de Tiempos Relativos:** Visualización técnica del tiempo transcurrido desde la última acción (ej: "ahora", "hace 15 min", "hace 2 d").
+* **Filtrado por Tabs:** Consola dividida mediante `TabLayout` que separa la actividad administrativa de la actividad comercial.
 
-### 3. Consola de Historial (Monitor de Sistema)
-* **Visualización Técnica:** Implementación del `historial_background`, un marco con borde de `3dp` en azul claro que resalta la actividad reciente del sistema.
-* **Auditoría en Tiempo Real:** El historial general de la tienda se integra directamente en la pantalla de inicio, eliminando elementos de carga (ProgressBars) para una respuesta visual inmediata.
+### 3. Seguridad y Navegación Dinámica
+* **Perfiles de Acceso:** Ocultación automática del módulo de "Cesta" para perfiles administrativos mediante la manipulación del `NavigationRail` en tiempo de ejecución.
+* **Consola de Soporte:** Módulo unificado para la revisión de incidencias técnicas y reportes enviados por los usuarios finales.
 
 ---
 
-## Arquitectura de Interfaz
+## Arquitectura de Interfaz y Recursos
 
-### Recursos de Diseño (`v1.10.0`)
+### Componentes de Datos (`v1.12.0`)
 
 | Recurso | Descripción |
 | :--- | :--- |
+| **`EditarInventarioActivity`** | Clase especializada en la gestión de stock con validación de integridad y bloqueo de campos. |
+| **`GestionarAdapter`** | Controlador de RecyclerView que soporta la lógica de borrado inteligente y visualización de stock agrupado. |
+| **`DialogoDetalleJuegoBinding`** | Implementación de ViewBinding para pop-ups informativos, alquileres y compras. |
 | **`historial_background`** | Shape XML con fondo `#0A1324` y stroke técnico para la consola de monitoreo. |
-| **`fragment_home.xml`** | Layout dinámico que alterna entre el catálogo para usuarios y el Dashboard para admins. |
-| **`colors.xml`** | Paleta actualizada con acentos amarillo huevo y sombras azul oscuro. |
 
 ---
 
-## Notas de la Versión (v1.10.0)
-* **Dashboard Admin v2:** Evolución del menú de administración a un panel de control formal basado en tarjetas operativas.
-* **Unificación Estética:** Sincronización de tonalidades entre los módulos de inventario, incidencias e historial.
-* **Optimización de UX:** Reducción del radio de curvatura en componentes para un aspecto más "industrial/técnico".
-* **Depuración Visual:** Limpieza de iconos de carga y colores secundarios (verdes) para centrar la atención en los datos críticos.
+## Notas de la Versión (v1.12.0)
+* **Gestión de Stock Avanzada:** Transición de un sistema de borrado de nodos a una actualización dinámica de atributos numéricos.
+* **Refactorización de Historial:** Limpieza de etiquetas de acción para evitar mensajes genéricos ("Actividad") y mejorar la claridad de la auditoría.
+* **Optimización de UX:** Implementación de diálogos de confirmación dinámicos con entradas numéricas para prevenir la pérdida accidental de datos.
+* **Corrección de ViewBinding:** Unificación de layouts de diálogo (`dialogo_detalle_juego.xml`) para garantizar una compilación robusta.
 
 ---
 © 2026 ArcadiaGames - Consola de Administración Profesional.

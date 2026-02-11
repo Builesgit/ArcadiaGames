@@ -28,27 +28,36 @@ class HistorialAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = lista[position]
 
-        // 1. Título dinámico (Priorizamos "añadió" sobre "actualizó")
+        // 1. TÍTULO DINÁMICO (Mejorado para detectar las nuevas acciones de stock)
         holder.txtTipoAccion.text = when {
-            item.accion.equals("añadió", ignoreCase = true) -> "Nuevo Producto"
+            item.accion.contains("añadió", ignoreCase = true) -> "Nuevo Producto"
+            item.accion.contains("eliminó", ignoreCase = true) -> "Producto Eliminado"
+            item.accion.contains("redujo", ignoreCase = true) ||
+                    item.accion.contains("stock", ignoreCase = true) -> "Stock Actualizado" // <--- NUEVO
             item.accion.contains("actualizó", ignoreCase = true) -> "Producto Actualizado"
             item.accion.contains("alquiló", ignoreCase = true) -> "Producto Alquilado"
-            item.accion.contains("eliminó", ignoreCase = true) -> "Producto Eliminado"
             item.accion.contains("compró", ignoreCase = true) -> "Compra Realizada"
             else -> "Actividad"
         }
 
-        // 2. Detalle de la acción (Limpiamos para que no salga "añadir/actualizar")
-        val accionLimpia = when {
+        // 2. DETALLE DE LA ACCIÓN
+        // Corregido: usando txtDetalleAccion para que coincida con tu ViewHolder
+        val accionAMostrar = when {
+            item.accion.contains("redujo", ignoreCase = true) -> "redujo stock"
             item.accion.contains("añadió", ignoreCase = true) -> "añadió"
+            item.accion.contains("eliminó", ignoreCase = true) -> "eliminó"
             item.accion.contains("actualizó", ignoreCase = true) -> "actualizó"
             item.accion.contains("alquiló", ignoreCase = true) -> "alquiló"
-            item.accion.contains("eliminó", ignoreCase = true) -> "eliminó"
             item.accion.contains("compró", ignoreCase = true) -> "compró"
             else -> item.accion
         }
 
-        holder.txtDetalleAccion.text = "${item.usuarioNombre} $accionLimpia: '${item.productoNombre}'"
+        // Usamos el nombre correcto de la variable: txtDetalleAccion
+        if (item.accion.contains("(")) {
+            holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
+        } else {
+            holder.txtDetalleAccion.text = "${item.usuarioNombre} $accionAMostrar: '${item.productoNombre}'"
+        }
 
         // 3. Lógica de tiempo relativo
         val ahora = System.currentTimeMillis()

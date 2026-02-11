@@ -2,12 +2,15 @@ package com.example.prueba1integrador
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.ActivityGestionarInventarioBinding
+import com.google.firebase.database.FirebaseDatabase
 
 class GestionarInventarioActivity : AppCompatActivity() {
 
@@ -19,30 +22,26 @@ class GestionarInventarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGestionarInventarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupRecyclerView()
-        // cargarDatos()  Se quita para que no se llame doble al iniciar
     }
 
-    // El método onResume se ejecuta CADA VEZ que la pantalla vuelve a estar visible
     override fun onResume() {
         super.onResume()
-        cargarDatos() // Esto refresca la lista al volver de AnadirProductoActivity
+        cargarDatos()
     }
 
     private fun setupRecyclerView() {
         binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
-
         adapter = GestionarAdapter(
             listaInventario = emptyList(),
             onEditClick = { juego ->
-                // CAMBIO: Ahora abrimos EditarInventarioActivity
                 val intent = Intent(this, EditarInventarioActivity::class.java)
-                intent.putExtra("JUEGO", juego) // Pasamos el objeto con la clave "JUEGO"
+                intent.putExtra("JUEGO", juego)
                 startActivity(intent)
             },
             onDeleteClick = { juego, ids ->
-                confirmarEliminacion(juego, ids)
+                // Pasamos el objeto juego completo que contiene el stock actual
+                confirmarEliminacionNueva(juego)
             }
         )
         binding.rvInventarioGestion.adapter = adapter
@@ -59,82 +58,76 @@ class GestionarInventarioActivity : AppCompatActivity() {
     }
 
     private fun procesarYMostrarLista(lista: List<Juego>) {
-        // Agrupamos por nombre (normalizado) para contar duplicados
+        // Mantenemos tu lógica de agrupación por si hay registros duplicados con el mismo nombre
         val agrupados = lista.groupBy { it.nombre.trim().lowercase() }
-
         val listaVisual = agrupados.map { entry ->
             val listaDeEsteJuego = entry.value
             val juegoRepresentante = listaDeEsteJuego.first()
-
-            // Sumamos el stock real de todos los items que tengan el mismo nombre
             val stockTotal = listaDeEsteJuego.sumOf { it.stock }
             val ids = listaDeEsteJuego.map { it.id }
-
             ItemInventario(juegoRepresentante, stockTotal, ids)
         }
-
         adapter.actualizarLista(listaVisual)
     }
 
-    private fun confirmarEliminacion(juego: Juego, idsAgrupados: List<String>) {
-        val mensaje = if (idsAgrupados.size > 1) {
-            "Hay múltiples registros de '${juego.nombre}'. ¿Quieres eliminar el registro seleccionado o TODOS?"
-        } else {
-            "¿Estás seguro de que quieres eliminar '${juego.nombre}'?"
-        }
+    private fun confirmarEliminacionNueva(juego: Juego) {
+        val opciones = arrayOf("Eliminar 1 unidad", "Eliminar cantidad específica", "Eliminar producto completo")
 
-        val builder = AlertDialog.Builder(this)
-            .setTitle("Eliminar Producto")
-            .setMessage(mensaje)
-            .setPositiveButton("Eliminar UNO") { _, _ ->
-                // Eliminar solo el primer ID disponible
-                if (idsAgrupados.isNotEmpty()) {
-                    // Pasamos el nombre del juego para que el historial lo registre
-                    eliminarJuegoPorId(idsAgrupados.first(), juego.nombre, esEliminacionMasiva = false)
+        AlertDialog.Builder(this)
+            .setTitle("Gestionar eliminación: ${juego.nombre}")
+            .setItems(opciones) { _, which ->
+                when (which) {
+                    0 -> ejecutarBaja(juego, 1) // Eliminar 1
+                    1 -> mostrarDialogoCantidad(juego) // Cantidad personalizada
+                    2 -> ejecutarBaja(juego, juego.stock) // Eliminar todo
                 }
             }
             .setNegativeButton("Cancelar", null)
-
-        if (idsAgrupados.size > 1) {
-            builder.setNeutralButton("Eliminar TODOS") { _, _ ->
-                // Para eliminar todos, controlamos cuando termine el último para refrescar
-                var procesados = 0
-                val nombreJuegoParaLog = juego.nombre // Guardamos el nombre antes de borrar
-
-                for (id in idsAgrupados) {
-                    inventoryManager.eliminarProducto(id, object : FirebaseInventoryManager.DeleteCallback {
-                        override fun onDeleteComplete(exito: Boolean) {
-                            procesados++
-                            // Cuando hayamos procesado todos los IDs, refrescamos la lista
-                            if (procesados == idsAgrupados.size) {
-                                // CORRECCIÓN: Pasamos el nombre del juego (String), no el objeto completo
-                                inventoryManager.registrarEnHistorial("Admin", "eliminó masivamente", nombreJuegoParaLog, 0)
-                                Toast.makeText(this@GestionarInventarioActivity, "Productos eliminados correctamente", Toast.LENGTH_SHORT).show()
-                                cargarDatos()
-                            }
-                        }
-                    })
-                }
-            }
-        }
-
-        builder.show()
+            .show()
     }
 
-    private fun eliminarJuegoPorId(id: String, nombreJuego: String, esEliminacionMasiva: Boolean) {
-        inventoryManager.eliminarProducto(id, object : FirebaseInventoryManager.DeleteCallback {
-            override fun onDeleteComplete(exito: Boolean) {
-                if (exito) {
-                    if (!esEliminacionMasiva) {
-                        // Registramos en el historial la eliminación individual
-                        inventoryManager.registrarEnHistorial("Admin", "eliminó", nombreJuego, 0)
-                        Toast.makeText(this@GestionarInventarioActivity, "Producto eliminado", Toast.LENGTH_SHORT).show()
-                        cargarDatos() // Refrescar la lista tras borrar uno solo
+    private fun mostrarDialogoCantidad(juego: Juego) {
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        input.hint = "Stock actual: ${juego.stock}"
+
+        AlertDialog.Builder(this)
+            .setTitle("¿Cuántas unidades eliminar?")
+            .setView(input)
+            .setPositiveButton("Eliminar") { _, _ ->
+                val cantidadStr = input.text.toString()
+                val cantidadAEliminar = cantidadStr.toIntOrNull()
+
+                if (cantidadAEliminar != null && cantidadAEliminar > 0) {
+                    if (cantidadAEliminar > juego.stock) {
+                        Toast.makeText(this, "No puedes eliminar más de lo que hay", Toast.LENGTH_SHORT).show()
+                    } else {
+                        ejecutarBaja(juego, cantidadAEliminar)
                     }
-                } else {
-                    Toast.makeText(this@GestionarInventarioActivity, "Error al eliminar", Toast.LENGTH_SHORT).show()
                 }
             }
-        })
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun ejecutarBaja(juego: Juego, cantidadAEliminar: Int) {
+        val nuevoStock = juego.stock - cantidadAEliminar
+        val ref = FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
+
+        if (nuevoStock <= 0) {
+            // Si el stock llega a 0, eliminamos el registro por completo
+            ref.removeValue().addOnSuccessListener {
+                inventoryManager.registrarEnHistorial("Admin", "eliminó producto (stock 0)", juego.nombre, 0)
+                Toast.makeText(this, "${juego.nombre} eliminado del inventario", Toast.LENGTH_SHORT).show()
+                cargarDatos()
+            }
+        } else {
+            // Si todavía queda stock, solo actualizamos el número
+            ref.child("stock").setValue(nuevoStock).addOnSuccessListener {
+                inventoryManager.registrarEnHistorial("Admin", "redujo stock (-$cantidadAEliminar)", juego.nombre, nuevoStock)
+                Toast.makeText(this, "Stock actualizado: $nuevoStock", Toast.LENGTH_SHORT).show()
+                cargarDatos()
+            }
+        }
     }
 }
