@@ -66,11 +66,13 @@
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="16dp"
                 app:cardBackgroundColor="@android:color/transparent">
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:src="@drawable/oferta" />
+
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
@@ -108,17 +110,20 @@
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="0dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:background="@drawable/boton_background">
+
                         <ImageView
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:src="@drawable/ico_inventario"
                             app:tint="@color/white" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -127,6 +132,7 @@
                             android:textStyle="bold"
                             android:textSize="11sp"
                             android:layout_marginTop="8dp"/>
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -139,17 +145,20 @@
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="0dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:background="@drawable/boton_background">
+
                         <ImageView
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:src="@drawable/ico_juego"
                             app:tint="@color/white" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -158,6 +167,7 @@
                             android:textStyle="bold"
                             android:textSize="11sp"
                             android:layout_marginTop="8dp"/>
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </GridLayout>
@@ -180,6 +190,7 @@
                 app:cardBackgroundColor="@android:color/transparent"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -187,17 +198,20 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="14dp">
+
                     <ImageView
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:src="@drawable/ico_incidencias"
                         app:tint="@color/white"/>
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="14dp"
                         android:orientation="vertical">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -205,12 +219,14 @@
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:textSize="15sp"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Cola de reportes activos"
                             android:textColor="#9E9E9E"
                             android:textSize="12sp"/>
+
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -241,8 +257,6 @@
                     android:background="@drawable/boton_background"
                     android:padding="8dp"/>
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
