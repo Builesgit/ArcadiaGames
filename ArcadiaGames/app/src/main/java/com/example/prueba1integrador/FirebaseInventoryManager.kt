@@ -19,8 +19,6 @@ class FirebaseInventoryManager {
     private val storageReference = FirebaseStorage.getInstance().reference.child("imagenes_productos")
 
     // --- INTERFACES ( callbacks clásicos ) ---
-    // Definen los métodos que se ejecutarán al terminar las tareas asíncronas
-
     interface ImageUploadCallback {
         fun onUrlLoaded(url: String)
         fun onError(mensaje: String)
@@ -38,20 +36,16 @@ class FirebaseInventoryManager {
         fun onDeleteComplete(exito: Boolean)
     }
 
-    // Sube una imagen usando callbacks clásicos (Interfaces).
-
+    // --- MÉTODOS DE IMAGEN ---
     fun subirImagen(imageUri: Uri, callback: ImageUploadCallback) {
         val fileName = "img_${System.currentTimeMillis()}.jpg"
         val fileRef = storageReference.child(fileName)
 
-
         fileRef.putFile(imageUri).addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot> {
             override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot?) {
-                // Si sube bien, pedimos la URL pública
                 fileRef.downloadUrl.addOnSuccessListener(object : OnSuccessListener<Uri> {
                     override fun onSuccess(uri: Uri?) {
-                        val urlString = uri.toString()
-                        callback.onUrlLoaded(urlString)
+                        callback.onUrlLoaded(uri.toString())
                     }
                 })
             }
@@ -62,7 +56,7 @@ class FirebaseInventoryManager {
         })
     }
 
-    // Sube un producto usando callbacks clásicos.
+    // --- MÉTODOS DE PRODUCTO ---
     fun subirProducto(videojuego: Juego, callback: ProductSaveCallback) {
         val id = videojuego.id.ifEmpty { dbReference.push().key ?: "" }
         val productoConId = videojuego.copy(id = id)
@@ -70,8 +64,8 @@ class FirebaseInventoryManager {
         dbReference.child(id).setValue(productoConId)
             .addOnSuccessListener(object : OnSuccessListener<Void> {
                 override fun onSuccess(aVoid: Void?) {
-                    // Al subir con éxito, registramos la acción en el historial
-                    registrarEnHistorial("Admin", "añadió/actualizó", videojuego.nombre, videojuego.stock)
+                    // Se registra la acción. El adapter/activity determinará si es "añadió" o "actualizó"
+                    registrarEnHistorial("Admin", "gestionó producto", videojuego.nombre, videojuego.stock)
                     callback.onSaveComplete(true)
                 }
             })
@@ -81,8 +75,6 @@ class FirebaseInventoryManager {
                 }
             })
     }
-
-    // Consulta el inventario usando callbacks clásicos.
 
     fun consultarInventario(callback: InventoryCallback) {
         dbReference.addValueEventListener(object : ValueEventListener {
@@ -95,26 +87,19 @@ class FirebaseInventoryManager {
                             listaJuegos.add(juego)
                         }
                     } catch (e: Exception) {
-                        // Si hay un dato corrupto o antiguo, lo ignoramos para que no cierre la app
                         e.printStackTrace()
                     }
                 }
                 callback.onDataLoaded(listaJuegos)
             }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
 
-    // Elimina un producto de la base de datos por su ID.
-    // RESTAURADA: Se vuelve a usar solo idJuego y callback para evitar errores de compilación
     fun eliminarProducto(idJuego: String, callback: DeleteCallback) {
         dbReference.child(idJuego).removeValue()
             .addOnSuccessListener(object : OnSuccessListener<Void> {
                 override fun onSuccess(aVoid: Void?) {
-                    // Nota: El log de borrado se recomienda llamarlo desde la Activity
-                    // donde aún tenemos acceso al nombre del juego antes de borrarlo.
                     callback.onDeleteComplete(true)
                 }
             })
@@ -125,12 +110,51 @@ class FirebaseInventoryManager {
             })
     }
 
-    // Registra una acción en el nodo historial de la base de datos
+    // --- MÉTODOS DE HISTORIAL Y ALQUILERES ---
+
     fun registrarEnHistorial(nombreUser: String, accion: String, producto: String, cant: Int = 1) {
         val ref = FirebaseDatabase.getInstance().getReference("historial")
         val idLog = ref.push().key ?: return
 
-        val nuevoLog = AccionHistorial(idLog, nombreUser, accion, producto, cant)
+        // Creamos el objeto siguiendo tu data class AccionHistorial
+        val nuevoLog = AccionHistorial(
+            id = idLog,
+            usuarioNombre = nombreUser,
+            accion = accion,
+            productoNombre = producto,
+            cantidad = cant,
+            fecha = System.currentTimeMillis()
+        )
         ref.child(idLog).setValue(nuevoLog)
+    }
+
+    fun revisarAlquileresVencidos() {
+        val ahora = System.currentTimeMillis()
+        val refAlquileres = FirebaseDatabase.getInstance().getReference("alquileres")
+
+        refAlquileres.get().addOnSuccessListener { snapshot ->
+            for (usuarioSnap in snapshot.children) {
+                for (alquilerSnap in usuarioSnap.children) {
+                    val expiracion = alquilerSnap.child("fechaExpiracion").getValue(Long::class.java) ?: 0L
+                    val juegoId = alquilerSnap.child("juegoId").getValue(String::class.java) ?: ""
+                    val nombreJuego = alquilerSnap.child("nombre").getValue(String::class.java) ?: "Juego"
+                    val devuelto = alquilerSnap.child("devuelto").getValue(Boolean::class.java) ?: false
+
+                    if (ahora > expiracion && !devuelto) {
+                        val productoRef = dbReference.child(juegoId)
+                        productoRef.child("stock").get().addOnSuccessListener { stockSnap ->
+                            val stockActual = stockSnap.getValue(Int::class.java) ?: 0
+
+                            productoRef.child("stock").setValue(stockActual + 1).addOnSuccessListener {
+                                alquilerSnap.ref.child("devuelto").setValue(true)
+
+                                // CAMBIO AQUÍ: Mensaje específico de devolución
+                                registrarEnHistorial("Sistema", "Alquiler devuelto", nombreJuego)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -88,14 +88,12 @@ class JuegoAdapter(
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        // Asignación de datos
         dialogBinding.tvDetalleNombre.text = juego.nombre
         dialogBinding.tvDetalleDescripcion.text = juego.descripcion
         dialogBinding.tvDetallePrecio.text = juego.precio
         dialogBinding.tvDetalleCategoria.text = juego.categoria
         dialogBinding.tvDetallePlataformas.text = juego.plataforma
 
-        // Lógica de Stock (Asignado automáticamente como 1 al crear)
         if (juego.stock > 0) {
             dialogBinding.tvDetalleStock.text = "Stock: ${juego.stock}"
             dialogBinding.tvDetalleStock.setTextColor(Color.parseColor("#4CAF50"))
@@ -110,7 +108,6 @@ class JuegoAdapter(
 
         Glide.with(context).load(juego.imagenUrl).into(dialogBinding.ivDetalleImagen)
 
-        // Botón Comprar
         dialogBinding.btnComprar.setOnClickListener {
             val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             if (uid.isEmpty()) {
@@ -118,6 +115,7 @@ class JuegoAdapter(
                 return@setOnClickListener
             }
 
+            // SOLO AÑADIR A CESTA: La compra real ocurre en PagoActivity
             FirebaseDatabase.getInstance().getReference("cesta").child(uid).child(juego.id).setValue(juego)
                 .addOnSuccessListener {
                     Toast.makeText(context, "Añadido a la cesta", Toast.LENGTH_SHORT).show()
@@ -126,7 +124,6 @@ class JuegoAdapter(
                 }
         }
 
-        // Botón Alquilar
         dialogBinding.btnAlquilar.setOnClickListener {
             val intent = Intent(context, AlquilarJuegoActivity::class.java)
             intent.putExtra("JUEGO", juego)

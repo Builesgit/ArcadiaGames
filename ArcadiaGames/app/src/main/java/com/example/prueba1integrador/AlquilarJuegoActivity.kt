@@ -108,5 +108,33 @@ class AlquilarJuegoActivity : AppCompatActivity() {
         dpd.show()
     }
 
+    private fun confirmarAlquilerFinal(juego: Juego) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val inventoryManager = FirebaseInventoryManager()
+
+        // 1. Guardar el registro de alquiler
+        val alquilerRef = FirebaseDatabase.getInstance().getReference("alquileres").child(uid).child(juego.id)
+        val fechaExpiracion = System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000) // 7 días
+
+        val datos = mapOf(
+            "juegoId" to juego.id,
+            "nombre" to juego.nombre,
+            "fechaExpiracion" to fechaExpiracion,
+            "devuelto" to false
+        )
+
+        alquilerRef.setValue(datos).addOnSuccessListener {
+            // 2. REGISTRO EN HISTORIAL: Mensaje específico de éxito
+            inventoryManager.registrarEnHistorial(
+                nombreUser = "Usuario",
+                accion = "Alquiler realizado",
+                producto = juego.nombre
+            )
+
+            Toast.makeText(this, "Alquiler realizado correctamente ✅", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
     private fun formatearFecha(c: Calendar) = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(c.time)
 }
