@@ -1,91 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="6dp"
+    android:background="@drawable/historial_background"
+    android:orientation="horizontal"
+    android:padding="12dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#25324A"> <ImageView
+        android:id="@+id/iv_juego_mgmt"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_foreground" />
+    </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/iv_juego_mgmt"
-            android:layout_width="60dp"
-            android:layout_height="80dp"
-            android:scaleType="centerCrop"
-            android:background="#EEE"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:src="@drawable/ic_launcher_background"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_nombre_mgmt"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:text="Nombre del Juego"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/iv_juego_mgmt"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_editar_mgmt"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_precio_mgmt"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="59.99€"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintStart_toEndOf="@id/iv_juego_mgmt"
-            app:layout_constraintTop_toBottomOf="@id/tv_nombre_mgmt"/>
+            android:text="0.00€"
+            android:textColor="#2196F3"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_cantidad_mgmt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="x1"
-            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:text="Stock: 10"
+            android:textColor="#4CAF50"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/badge_background"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="2dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@id/tv_precio_mgmt"
-            app:layout_constraintBottom_toBottomOf="@id/tv_precio_mgmt"
-            app:layout_constraintTop_toTopOf="@id/tv_precio_mgmt"/>
+            android:fontFamily="monospace"/>
+    </LinearLayout>
 
-        <!-- Botón Editar -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <ImageButton
             android:id="@+id/btn_editar_mgmt"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_editar"
-            app:tint="#2196F3"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintEnd_toStartOf="@id/btn_eliminar_mgmt"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:src="@android:drawable/ic_menu_edit"
+            app:tint="#B0BEC5" />
 
-        <!-- Botón Eliminar -->
         <ImageButton
             android:id="@+id/btn_eliminar_mgmt"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="#F44336"
+            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="#EF5350" />
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.cardview.widget.CardView>
+</LinearLayout>
