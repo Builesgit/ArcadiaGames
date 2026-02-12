@@ -1,18 +1,25 @@
 package com.example.prueba1integrador
 
+import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.database.FirebaseDatabase
 
 class GestionarAdapter(
     private var listaInventario: List<ItemInventario>,
     private val onEditClick: (Juego) -> Unit,
-    private val onDeleteClick: (Juego, List<String>) -> Unit
+    private val onDataChanged: () -> Unit
 ) : RecyclerView.Adapter<GestionarAdapter.GestionViewHolder>() {
 
     class GestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -36,20 +43,20 @@ class GestionarAdapter(
         holder.tvNombre.text = juego.nombre
         holder.tvPrecio.text = juego.precio
 
-        // Mostrar cantidad de stock de forma simple
+        // Stock en Color Verde técnico
         holder.tvCantidad.text = "Stock: ${item.cantidad}"
-        holder.tvCantidad.visibility = View.VISIBLE
+        holder.tvCantidad.setTextColor(Color.parseColor("#4CAF50"))
 
         Glide.with(holder.itemView.context)
             .load(juego.imagenUrl)
             .placeholder(R.drawable.ic_launcher_foreground)
             .into(holder.ivImagen)
 
-        // Al pulsar editar, se ejecuta la lambda que abre EditarInventarioActivity
         holder.btnEditar.setOnClickListener { onEditClick(juego) }
 
-        // Al pulsar eliminar, se pasan los IDs para el borrado (individual o masivo)
-        holder.btnEliminar.setOnClickListener { onDeleteClick(juego, item.idsAgrupados) }
+        holder.btnEliminar.setOnClickListener {
+            mostrarDialogoEliminarPro(item, holder.itemView.context)
+        }
     }
 
     override fun getItemCount(): Int = listaInventario.size
@@ -57,5 +64,76 @@ class GestionarAdapter(
     fun actualizarLista(nuevaLista: List<ItemInventario>) {
         this.listaInventario = nuevaLista
         notifyDataSetChanged()
+    }
+
+    private fun mostrarDialogoEliminarPro(item: ItemInventario, context: Context) {
+        val juego = item.juego
+        val stockActual = item.cantidad
+
+        val builder = AlertDialog.Builder(context)
+        val view = LayoutInflater.from(context).inflate(R.layout.dialogo_eliminar_producto, null)
+        builder.setView(view)
+
+        val tvTitulo = view.findViewById<TextView>(R.id.tvTituloEliminar)
+        tvTitulo.text = "GESTIONAR: ${juego.nombre.uppercase()}"
+
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val etCantidad = view.findViewById<EditText>(R.id.etCantidadEliminar)
+        val btnRetirarLote = view.findViewById<Button>(R.id.btnRetirarCantidad)
+        val btnRetirarUno = view.findViewById<Button>(R.id.btnRetirarUno)
+        val btnEliminarTodo = view.findViewById<Button>(R.id.btnEliminarTodo)
+
+        // BAJA UNITARIA (-1)
+        btnRetirarUno.setOnClickListener {
+            val nuevaCant = (stockActual - 1).coerceAtLeast(0)
+            ejecutarActualizacion(juego, nuevaCant, "redujo stock (-1)")
+            dialog.dismiss()
+        }
+
+        // BAJA POR LOTE
+        btnRetirarLote.setOnClickListener {
+            val cantStr = etCantidad.text.toString()
+            if (cantStr.isNotEmpty()) {
+                val cantARetirar = cantStr.toInt()
+                if (cantARetirar > stockActual) {
+                    Toast.makeText(context, "No hay suficiente stock", Toast.LENGTH_SHORT).show()
+                } else {
+                    val nuevaCant = stockActual - cantARetirar
+                    ejecutarActualizacion(juego, nuevaCant, "redujo stock (-$cantARetirar)")
+                    dialog.dismiss()
+                }
+            }
+        }
+
+        // ELIMINAR TODO EL GRUPO (Borra todos los IDs asociados a este nombre)
+        btnEliminarTodo.setOnClickListener {
+            val dbRef = FirebaseDatabase.getInstance().getReference("productos")
+            item.idsAgrupados.forEach { id ->
+                dbRef.child(id).removeValue()
+            }
+            FirebaseInventoryManager().registrarEnHistorial("Admin", "eliminó producto completo", juego.nombre, 0)
+            onDataChanged()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun ejecutarActualizacion(juego: Juego, nuevaCant: Int, msgLog: String) {
+        val ref = FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
+
+        if (nuevaCant <= 0) {
+            ref.removeValue().addOnSuccessListener {
+                FirebaseInventoryManager().registrarEnHistorial("Admin", "eliminó (stock 0)", juego.nombre, 0)
+                onDataChanged()
+            }
+        } else {
+            ref.child("stock").setValue(nuevaCant).addOnSuccessListener {
+                FirebaseInventoryManager().registrarEnHistorial("Admin", msgLog, juego.nombre, nuevaCant)
+                onDataChanged()
+            }
+        }
     }
 }

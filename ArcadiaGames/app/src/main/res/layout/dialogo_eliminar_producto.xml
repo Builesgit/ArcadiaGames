@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/historial_background"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvTituloEliminar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GESTIÓN DE EXISTENCIAS"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:id="@+id/tvSubtitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Seleccione el método de salida de inventario para este producto."
+        android:textColor="#B0BEC5"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etCantidadEliminar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#1A2436"
+        android:hint="Cantidad a retirar"
+        android:inputType="number"
+        android:padding="12dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#546E7A" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnRetirarCantidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#2196F3"
+            android:text="RETIRAR LOTE ESPECÍFICO"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnRetirarUno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#37474F"
+            android:text="BAJA UNITARIA (-1)"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnEliminarTodo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#B71C1C"
+            android:text="ELIMINAR REGISTRO TOTAL"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+</LinearLayout>
