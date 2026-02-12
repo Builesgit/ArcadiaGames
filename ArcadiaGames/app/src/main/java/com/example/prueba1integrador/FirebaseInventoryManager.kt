@@ -58,23 +58,166 @@ class FirebaseInventoryManager {
 
     // --- MÉTODOS DE PRODUCTO ---
     fun subirProducto(videojuego: Juego, callback: ProductSaveCallback) {
-        val id = videojuego.id.ifEmpty { dbReference.push().key ?: "" }
-        val productoConId = videojuego.copy(id = id)
 
-        dbReference.child(id).setValue(productoConId)
-            .addOnSuccessListener(object : OnSuccessListener<Void> {
-                override fun onSuccess(aVoid: Void?) {
-                    // Se registra la acción. El adapter/activity determinará si es "añadió" o "actualizó"
-                    registrarEnHistorial("Admin", "gestionó producto", videojuego.nombre, videojuego.stock)
-                    callback.onSaveComplete(true)
+        // Si tiene ID → es edición normal
+        if (videojuego.id.isNotEmpty()) {
+            dbReference.child(videojuego.id).setValue(videojuego)
+                .addOnSuccessListener { callback.onSaveComplete(true) }
+                .addOnFailureListener { callback.onSaveComplete(false) }
+            return
+        }
+
+        // 🔥 BUSCAR SOLO POR NOMBRE (independiente de plataforma)
+        dbReference.get().addOnSuccessListener { snapshot ->
+
+            var juegoExistente: Juego? = null
+            var idExistente: String? = null
+
+            for (data in snapshot.children) {
+                val juego = data.getValue(Juego::class.java)
+                if (juego != null &&
+                    juego.nombre.equals(videojuego.nombre, ignoreCase = true)
+                ) {
+                    juegoExistente = juego
+                    idExistente = juego.id
+                    break
                 }
-            })
-            .addOnFailureListener(object : OnFailureListener {
-                override fun onFailure(e: Exception) {
-                    callback.onSaveComplete(false)
+            }
+
+            if (juegoExistente != null && idExistente != null) {
+
+                // 🔥 SUMAR STOCK
+                val nuevoStock = juegoExistente.stock + videojuego.stock
+
+                // 🔥 UNIR PLATAFORMAS SIN REPETIR
+                val plataformasActuales =
+                    juegoExistente.plataforma
+                        .split(",")
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
+                        .toMutableSet()
+
+                val nuevasPlataformas =
+                    videojuego.plataforma
+                        .split(",")
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
+
+                plataformasActuales.addAll(nuevasPlataformas)
+
+                val plataformasFinal =
+                    plataformasActuales.joinToString(", ")
+
+                val actualizacion = mapOf(
+                    "stock" to nuevoStock,
+                    "plataforma" to plataformasFinal
+                )
+
+                dbReference.child(idExistente)
+                    .updateChildren(actualizacion)
+                    .addOnSuccessListener { callback.onSaveComplete(true) }
+                    .addOnFailureListener { callback.onSaveComplete(false) }
+
+            } else {
+
+                // 🔥 NO EXISTE → CREAR NUEVO
+                val id = dbReference.push().key ?: return@addOnSuccessListener
+                val productoConId = videojuego.copy(id = id)
+
+                dbReference.child(id).setValue(productoConId)
+                    .addOnSuccessListener { callback.onSaveComplete(true) }
+                    .addOnFailureListener { callback.onSaveComplete(false) }
+            }
+
+        }.addOnFailureListener {
+            callback.onSaveComplete(false)
+        }
+
+        // SI ES NUEVO PRODUCTO → VALIDAMOS DUPLICADOS
+        dbReference.get().addOnSuccessListener { snapshot ->
+
+            var juegoExistenteId: String? = null
+            var stockActual = 0
+
+            for (data in snapshot.children) {
+                val juego = data.getValue(Juego::class.java)
+
+                if (juego != null &&
+                    juego.nombre.equals(videojuego.nombre, ignoreCase = true) &&
+                    juego.plataforma.equals(videojuego.plataforma, ignoreCase = true)
+                ) {
+                    juegoExistenteId = juego.id
+                    stockActual = juego.stock
+                    break
                 }
-            })
+            }
+
+            if (juegoExistenteId != null) {
+                // YA EXISTE → SUMAMOS STOCK
+                val nuevoStock = stockActual + videojuego.stock
+
+                dbReference.child(juegoExistenteId)
+                    .child("stock")
+                    .setValue(nuevoStock)
+                    .addOnSuccessListener {
+                        callback.onSaveComplete(true)
+                    }
+                    .addOnFailureListener {
+                        callback.onSaveComplete(false)
+                    }
+
+            } else {
+                // NO EXISTE → CREAR NUEVO
+                val id = dbReference.push().key ?: return@addOnSuccessListener
+                val productoConId = videojuego.copy(id = id)
+
+                dbReference.child(id).setValue(productoConId)
+                    .addOnSuccessListener {
+                        callback.onSaveComplete(true)
+                    }
+                    .addOnFailureListener {
+                        callback.onSaveComplete(false)
+                    }
+            }
+
+        }.addOnFailureListener {
+            callback.onSaveComplete(false)
+        }
     }
+
+    fun actualizarPreciosSegunPlataforma(callback: (Boolean) -> Unit) {
+
+        dbReference.get().addOnSuccessListener { snapshot ->
+
+            for (data in snapshot.children) {
+
+                val juego = data.getValue(Juego::class.java)
+                val id = data.key ?: continue
+
+                if (juego != null) {
+
+                    val nuevoPrecio = when {
+                        juego.plataforma.contains("PlayStation", true) ||
+                                juego.plataforma.contains("PC", true) -> "69.99 €"
+
+                        juego.plataforma.contains("Xbox", true) -> "59.99 €"
+
+                        juego.plataforma.contains("Nintendo", true) -> "49.99 €"
+
+                        else -> juego.precio
+                    }
+
+                    dbReference.child(id).child("precio").setValue(nuevoPrecio)
+                }
+            }
+
+            callback(true)
+
+        }.addOnFailureListener {
+            callback(false)
+        }
+    }
+
 
     fun consultarInventario(callback: InventoryCallback) {
         dbReference.addValueEventListener(object : ValueEventListener {
