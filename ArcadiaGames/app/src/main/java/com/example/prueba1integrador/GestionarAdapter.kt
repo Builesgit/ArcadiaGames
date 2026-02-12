@@ -43,9 +43,14 @@ class GestionarAdapter(
         holder.tvNombre.text = juego.nombre
         holder.tvPrecio.text = juego.precio
 
-        // Stock en Color Verde técnico
-        holder.tvCantidad.text = "Stock: ${item.cantidad}"
-        holder.tvCantidad.setTextColor(Color.parseColor("#4CAF50"))
+        // Lógica visual: Verde si hay stock, Rojo si está agotado
+        if (item.cantidad <= 0) {
+            holder.tvCantidad.text = "AGOTADO (0)"
+            holder.tvCantidad.setTextColor(Color.parseColor("#EF5350")) // Rojo
+        } else {
+            holder.tvCantidad.text = "Stock: ${item.cantidad}"
+            holder.tvCantidad.setTextColor(Color.parseColor("#4CAF50")) // Verde
+        }
 
         Glide.with(holder.itemView.context)
             .load(juego.imagenUrl)
@@ -107,13 +112,20 @@ class GestionarAdapter(
             }
         }
 
-        // ELIMINAR TODO EL GRUPO (Borra todos los IDs asociados a este nombre)
+        // ELIMINAR TODO EL GRUPO (Ahora solo pone stock a 0)
         btnEliminarTodo.setOnClickListener {
             val dbRef = FirebaseDatabase.getInstance().getReference("productos")
+            // No usamos removeValue(), actualizamos el campo stock a 0 para todos los IDs
             item.idsAgrupados.forEach { id ->
-                dbRef.child(id).removeValue()
+                dbRef.child(id).child("stock").setValue(0)
             }
-            FirebaseInventoryManager().registrarEnHistorial("Admin", "eliminó producto completo", juego.nombre, 0)
+            FirebaseInventoryManager().registrarEnHistorial(
+                nombreUser = "Admin",
+                accion = "vació stock (Borrado lógico)",
+                producto = juego.nombre,
+                cant = 0
+            )
+            Toast.makeText(context, "Producto marcado como agotado", Toast.LENGTH_SHORT).show()
             onDataChanged()
             dialog.dismiss()
         }
@@ -124,16 +136,10 @@ class GestionarAdapter(
     private fun ejecutarActualizacion(juego: Juego, nuevaCant: Int, msgLog: String) {
         val ref = FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
 
-        if (nuevaCant <= 0) {
-            ref.removeValue().addOnSuccessListener {
-                FirebaseInventoryManager().registrarEnHistorial("Admin", "eliminó (stock 0)", juego.nombre, 0)
-                onDataChanged()
-            }
-        } else {
-            ref.child("stock").setValue(nuevaCant).addOnSuccessListener {
-                FirebaseInventoryManager().registrarEnHistorial("Admin", msgLog, juego.nombre, nuevaCant)
-                onDataChanged()
-            }
+        // Siempre usamos setValue para mantener el registro vivo en la DB
+        ref.child("stock").setValue(nuevaCant).addOnSuccessListener {
+            FirebaseInventoryManager().registrarEnHistorial("Admin", msgLog, juego.nombre, nuevaCant)
+            onDataChanged()
         }
     }
 }

@@ -15,10 +15,11 @@ class EditarInventarioActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Corregido: ActivityEditarInventarioBinding
         binding = ActivityEditarInventarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Recibimos el juego enviado desde el GestionarAdapter con la clave correcta
+        // Recibimos el juego enviado desde el GestionarAdapter
         val juegoRecibido = intent.getSerializableExtra("JUEGO_EDITAR") as? Juego
         if (juegoRecibido == null) {
             Toast.makeText(this, "Error: No se pudo cargar la información", Toast.LENGTH_SHORT).show()
@@ -70,9 +71,9 @@ class EditarInventarioActivity : AppCompatActivity() {
             .getReference("productos")
             .child(juego.id)
 
+        // Guardamos el nuevo valor (borrado lógico: puede ser 0)
         productoRef.child("stock").setValue(nuevoStock)
             .addOnSuccessListener {
-                // CORRECCIÓN: Usamos 'cant' que es como lo tienes en tu FirebaseInventoryManager
                 inventoryManager.registrarEnHistorial(
                     nombreUser = "Admin",
                     accion = "actualizó stock",
