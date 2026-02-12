@@ -18,7 +18,11 @@ class GestionarInventarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGestionarInventarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setupRecyclerView()
+
+        // 🔥 Actualiza precios silenciosamente
+        inventoryManager.actualizarPreciosSegunPlataforma { }
     }
 
     override fun onResume() {
@@ -32,7 +36,7 @@ class GestionarInventarioActivity : AppCompatActivity() {
             listaInventario = listaVisualInventario,
             onEditClick = { juego ->
                 val intent = Intent(this, EditarInventarioActivity::class.java)
-                intent.putExtra("JUEGO_EDITAR", juego) // Clave: JUEGO_EDITAR
+                intent.putExtra("JUEGO_EDITAR", juego)
                 startActivity(intent)
             },
             onDataChanged = { cargarDatos() }
@@ -42,7 +46,8 @@ class GestionarInventarioActivity : AppCompatActivity() {
 
     private fun cargarDatos() {
         binding.progressBarGestion.visibility = View.VISIBLE
-        inventoryManager.consultarInventario(object : FirebaseInventoryManager.InventoryCallback {
+        inventoryManager.consultarInventario(object :
+            FirebaseInventoryManager.InventoryCallback {
             override fun onDataLoaded(lista: List<Juego>) {
                 binding.progressBarGestion.visibility = View.GONE
                 procesarYMostrarLista(lista)
@@ -51,11 +56,14 @@ class GestionarInventarioActivity : AppCompatActivity() {
     }
 
     private fun procesarYMostrarLista(lista: List<Juego>) {
+
         val listaVisual = lista.groupBy { it.nombre.trim().lowercase() }
             .map { (_, listaDeEsteJuego) ->
+
                 val juegoRepresentante = listaDeEsteJuego.first()
                 val stockTotal = listaDeEsteJuego.sumOf { it.stock }
                 val ids = listaDeEsteJuego.map { it.id }
+
                 ItemInventario(juegoRepresentante, stockTotal, ids)
             }
 
