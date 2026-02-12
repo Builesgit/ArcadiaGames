@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.prueba1integrador.databinding.ActivityAnadirProductoBinding
 import com.bumptech.glide.Glide
-import java.util.Locale
 
 class AnadirProductoActivity : AppCompatActivity() {
 
@@ -40,21 +39,25 @@ class AnadirProductoActivity : AppCompatActivity() {
         "Otros"
     )
 
-    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            imagenSeleccionadaUri = uri
-            mostrarPrevisualizacion(uri)
+    private val pickMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                imagenSeleccionadaUri = uri
+                mostrarPrevisualizacion(uri)
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAnadirProductoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 🔥 Precio bloqueado pero vacío
+        binding.etPrecio.isEnabled = false
+        binding.etPrecio.setText("")
+
         val tvPlataforma = findViewById<TextView>(R.id.tv_plataformas_seleccionadas)
         tvPlataforma.setOnClickListener {
-            // Solo permitimos cambiar plataformas si no estamos editando (según el bloqueo de integridad)
             if (juegoAEditar == null) {
                 mostrarDialogoPlataformas(tvPlataforma)
             }
@@ -78,7 +81,11 @@ class AnadirProductoActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnSubirImagen.setOnClickListener {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickMedia.launch(
+                PickVisualMediaRequest(
+                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                )
+            )
         }
 
         binding.btnConfirmar.setOnClickListener {
@@ -87,12 +94,13 @@ class AnadirProductoActivity : AppCompatActivity() {
     }
 
     private fun validarYSubir() {
+
         val nombre = binding.etNombreJuego.text.toString().trim()
         val desc = binding.etDescripcion.text.toString().trim()
-        val precioInput = binding.etPrecio.text.toString().trim()
         val categoria = binding.spinnerCategoria.selectedItem.toString()
+        val precioFormateado = binding.etPrecio.text.toString()
 
-        if (nombre.isEmpty() || desc.isEmpty() || precioInput.isEmpty()) {
+        if (nombre.isEmpty() || desc.isEmpty() || precioFormateado.isEmpty()) {
             Toast.makeText(this, "Por favor completa los campos", Toast.LENGTH_SHORT).show()
             return
         }
@@ -102,17 +110,6 @@ class AnadirProductoActivity : AppCompatActivity() {
             return
         }
 
-        // Formateo de precio (Integración de seguridad)
-        val precioFormateado = try {
-            val limpiarPrecio = precioInput.replace("€", "").trim()
-            val numero = limpiarPrecio.toDouble()
-            "%.2f €".format(Locale.US, numero)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Introduce un precio válido", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Construir string de plataformas
         val plataformaTexto = if (juegoAEditar != null) {
             juegoAEditar!!.plataforma
         } else {
@@ -124,33 +121,61 @@ class AnadirProductoActivity : AppCompatActivity() {
             return
         }
 
-        setLoading(true)
-
-        // LÓGICA DE STOCK AUTOMÁTICO:
-        // Si es nuevo -> 1. Si es edición (aunque aquí se bloquee) -> mantiene el que tenía.
         val stockFinal = juegoAEditar?.stock ?: 1
 
+        setLoading(true)
+
         if (imagenSeleccionadaUri != null) {
-            inventoryManager.subirImagen(imagenSeleccionadaUri!!, object : FirebaseInventoryManager.ImageUploadCallback {
-                override fun onUrlLoaded(url: String) {
-                    guardarProductoFinal(nombre, desc, precioFormateado, url, categoria, plataformaTexto, stockFinal)
-                }
-                override fun onError(mensaje: String) {
-                    setLoading(false)
-                    Toast.makeText(this@AnadirProductoActivity, mensaje, Toast.LENGTH_LONG).show()
-                }
-            })
+            inventoryManager.subirImagen(
+                imagenSeleccionadaUri!!,
+                object : FirebaseInventoryManager.ImageUploadCallback {
+                    override fun onUrlLoaded(url: String) {
+                        guardarProductoFinal(
+                            nombre,
+                            desc,
+                            precioFormateado,
+                            url,
+                            categoria,
+                            plataformaTexto,
+                            stockFinal
+                        )
+                    }
+
+                    override fun onError(mensaje: String) {
+                        setLoading(false)
+                        Toast.makeText(
+                            this@AnadirProductoActivity,
+                            mensaje,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
         } else {
-            guardarProductoFinal(nombre, desc, precioFormateado, juegoAEditar?.imagenUrl ?: "", categoria, plataformaTexto, stockFinal)
+            guardarProductoFinal(
+                nombre,
+                desc,
+                precioFormateado,
+                juegoAEditar?.imagenUrl ?: "",
+                categoria,
+                plataformaTexto,
+                stockFinal
+            )
         }
     }
 
-    private fun guardarProductoFinal(nombre: String, desc: String, precio: String, urlImagen: String, cat: String, plat: String, stock: Int) {
+    private fun guardarProductoFinal(
+        nombre: String,
+        desc: String,
+        precio: String,
+        urlImagen: String,
+        cat: String,
+        plat: String,
+        stock: Int
+    ) {
 
-        // Si juegoAEditar es null, es que es un registro totalmente nuevo
         val esNuevo = juegoAEditar == null
         val idProducto = if (esNuevo) "" else juegoAEditar!!.id
-        val accionHistorial = if (esNuevo) "añadió" else "actualizó" // <--- CLAVE: Definir acción limpia
+        val accionHistorial = if (esNuevo) "añadió" else "actualizó"
 
         val nuevoJuego = Juego(
             id = idProducto,
@@ -164,30 +189,97 @@ class AnadirProductoActivity : AppCompatActivity() {
             stock = stock
         )
 
-        inventoryManager.subirProducto(nuevoJuego, object : FirebaseInventoryManager.ProductSaveCallback {
-            override fun onSaveComplete(exito: Boolean) {
-                setLoading(false)
-                if (exito) {
-                    // REGISTRO EN HISTORIAL: Enviamos la acción limpia
-                    inventoryManager.registrarEnHistorial("Admin", accionHistorial, nombre, stock)
-
-                    val msj = if (esNuevo) "¡Producto añadido!" else "¡Producto actualizado!"
-                    Toast.makeText(this@AnadirProductoActivity, msj, Toast.LENGTH_LONG).show()
-                    finish()
+        inventoryManager.subirProducto(
+            nuevoJuego,
+            object : FirebaseInventoryManager.ProductSaveCallback {
+                override fun onSaveComplete(exito: Boolean) {
+                    setLoading(false)
+                    if (exito) {
+                        inventoryManager.registrarEnHistorial(
+                            "Admin",
+                            accionHistorial,
+                            nombre,
+                            stock
+                        )
+                        Toast.makeText(
+                            this@AnadirProductoActivity,
+                            if (esNuevo) "¡Producto añadido!" else "¡Producto actualizado!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        finish()
+                    }
                 }
+            })
+    }
+
+    private fun mostrarDialogoPlataformas(textView: TextView) {
+
+        val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+        builder.setTitle("Selecciona Plataformas")
+        builder.setCancelable(false)
+
+        builder.setMultiChoiceItems(plataformasArray, seleccionados) { _, which, isChecked ->
+            if (isChecked) {
+                if (!listaPlataformasElegidas.contains(which))
+                    listaPlataformasElegidas.add(which)
+            } else {
+                listaPlataformasElegidas.remove(which)
             }
-        })
+        }
+
+        builder.setPositiveButton("Aceptar") { _, _ ->
+
+            if (listaPlataformasElegidas.isEmpty()) {
+                textView.text = "Selecciona plataforma"
+                textView.setTextColor(Color.parseColor("#AAAAAA"))
+                binding.etPrecio.setText("")
+            } else {
+
+                val plataformasSeleccionadas =
+                    listaPlataformasElegidas.sorted()
+                        .joinToString(", ") { plataformasArray[it] }
+
+                textView.text = plataformasSeleccionadas
+                textView.setTextColor(Color.WHITE)
+
+                // 🔥 PRECIO AUTOMÁTICO EN PANTALLA
+                val precioAutomatico = when {
+                    plataformasSeleccionadas.contains("PlayStation", true) ||
+                            plataformasSeleccionadas.contains("PC", true) -> "69.99 €"
+
+                    plataformasSeleccionadas.contains("Xbox", true) -> "59.99 €"
+
+                    plataformasSeleccionadas.contains("Nintendo", true) -> "49.99 €"
+
+                    else -> "0.00 €"
+                }
+
+                binding.etPrecio.setText(precioAutomatico)
+            }
+        }
+
+        builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+
+        val dialog = builder.create()
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setTextColor(ContextCompat.getColor(this, R.color.Amarillo))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            .setTextColor(Color.WHITE)
+    }
+
+    private fun mostrarPrevisualizacion(uri: Uri) {
+        binding.ivPreview.visibility = View.VISIBLE
+        Glide.with(this).load(uri).into(binding.ivPreview)
     }
 
     private fun setupModoEdicion() {
         val juego = juegoAEditar ?: return
 
-        // Ajustamos la UI para el modo de "Solo Consulta/Gestión"
         binding.titulo.text = "DETALLES DEL PRODUCTO"
         binding.btnConfirmar.text = "VOLVER"
 
-        // Si el Admin solo puede editar el stock en EditarInventarioActivity,
-        // aquí bloqueamos todo para evitar cambios accidentales
         binding.etNombreJuego.setText(juego.nombre)
         binding.etNombreJuego.isEnabled = false
 
@@ -197,19 +289,18 @@ class AnadirProductoActivity : AppCompatActivity() {
         binding.etPrecio.setText(juego.precio)
         binding.etPrecio.isEnabled = false
 
-        // Bloqueo de Spinner y Botón de Imagen
         binding.spinnerCategoria.isEnabled = false
         binding.btnSubirImagen.visibility = View.GONE
 
         val indexCat = categorias.indexOf(juego.categoria)
-        if (indexCat >= 0) binding.spinnerCategoria.setSelection(indexCat)
+        if (indexCat >= 0)
+            binding.spinnerCategoria.setSelection(indexCat)
 
         if (juego.imagenUrl.isNotEmpty()) {
             binding.ivPreview.visibility = View.VISIBLE
             Glide.with(this).load(juego.imagenUrl).into(binding.ivPreview)
         }
 
-        // Al estar todo bloqueado, el botón confirmar puede simplemente cerrar la actividad
         binding.btnConfirmar.setOnClickListener { finish() }
     }
 
@@ -219,45 +310,11 @@ class AnadirProductoActivity : AppCompatActivity() {
         spinner.adapter = adapter
     }
 
-    private fun mostrarDialogoPlataformas(textView: TextView) {
-        val builder = AlertDialog.Builder(this, R.style.CustomAlertDialog)
-        builder.setTitle("Selecciona Plataformas")
-        builder.setCancelable(false)
-
-        builder.setMultiChoiceItems(plataformasArray, seleccionados) { _, which, isChecked ->
-            if (isChecked) {
-                if (!listaPlataformasElegidas.contains(which)) listaPlataformasElegidas.add(which)
-            } else {
-                listaPlataformasElegidas.remove(which)
-            }
-        }
-
-        builder.setPositiveButton("Aceptar") { _, _ ->
-            if (listaPlataformasElegidas.isEmpty()) {
-                textView.text = "Selecciona plataforma"
-                textView.setTextColor(Color.parseColor("#AAAAAA"))
-            } else {
-                textView.text = listaPlataformasElegidas.sorted().joinToString(", ") { plataformasArray[it] }
-                textView.setTextColor(Color.WHITE)
-            }
-        }
-
-        builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
-        val dialog = builder.create()
-        dialog.show()
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this, R.color.Amarillo))
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE)
-    }
-
-    private fun mostrarPrevisualizacion(uri: Uri) {
-        binding.ivPreview.visibility = View.VISIBLE
-        Glide.with(this).load(uri).into(binding.ivPreview)
-    }
-
     private fun setLoading(loading: Boolean) {
-        binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.progressBar.visibility =
+            if (loading) View.VISIBLE else View.GONE
         binding.btnConfirmar.isEnabled = !loading
-        if (juegoAEditar == null) binding.btnSubirImagen.isEnabled = !loading
+        if (juegoAEditar == null)
+            binding.btnSubirImagen.isEnabled = !loading
     }
 }
