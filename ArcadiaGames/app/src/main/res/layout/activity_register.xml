@@ -147,6 +147,7 @@
         android:textColor="@color/Azul_claro"
         app:layout_constraintStart_toStartOf="@+id/btn_registrar"
         app:layout_constraintTop_toBottomOf="@id/btn_registrar"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        app:shapeAppearance="@style/ShapeAppearance.RoundedSquare"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -82,6 +82,8 @@ class CrearIncidencia : AppCompatActivity() {
     private fun registrarEnFirebase(tema: String, descripcion: String, info: String, tipo: String) {
         val userId = auth.currentUser?.uid ?: "Anonimo"
         val reference = database.getReference("incidencias")
+        val userEmail = auth.currentUser?.email ?: "Sin email" // Obtener el email del usuario logueado
+
         val id = reference.push().key
 
         val incidencia = Incidencia(
@@ -89,8 +91,9 @@ class CrearIncidencia : AppCompatActivity() {
             tema = tema,
             descripcion = descripcion,
             infoAdicional = info,
-            tipo = tipo,
-            usuarioId = userId
+            usuarioId = userId,
+            usuarioEmail = userEmail, // Guardamos el email
+            tipo = tipo
         )
 
         if (id != null) {

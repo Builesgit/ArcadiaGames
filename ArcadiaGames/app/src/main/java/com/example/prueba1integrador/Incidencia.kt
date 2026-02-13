@@ -7,5 +7,6 @@ data class Incidencia(
     val infoAdicional: String = "",
     val tipo: String = "",
     val usuarioId: String = "",
+    val usuarioEmail: String = "",
     val timestamp: Long = System.currentTimeMillis()
 ) : java.io.Serializable

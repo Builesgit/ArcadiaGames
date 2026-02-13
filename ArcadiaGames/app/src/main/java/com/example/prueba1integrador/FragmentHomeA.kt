@@ -25,18 +25,27 @@ class FragmentHomeA : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configuración del botón para añadir incidencia
-        // Nota: El ID 'cardAñadir' en XML se convierte a 'cardAadir' en ViewBinding
+        // 1. Botón para ir a la Activity de Crear Incidencia
+        // Usamos el ID cardAnadir que está presente en tu XML
         binding.cardAnadir.setOnClickListener {
             val intent = Intent(requireContext(), CrearIncidencia::class.java)
             startActivity(intent)
         }
 
-        // Configuración del RecyclerView con datos vacíos o dummy por ahora
-        binding.recyclerViewAdmin.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = AdminAdapter(emptyList()) { _ ->
-            // Acción vacía por ahora
+
+        binding.cardGestionDeIncidencias.setOnClickListener {
+            val fragmentoIncidencias = FragmentMostrarIncidencias()
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                // CAMBIA 'main_home_U_fragment' POR EL ID DEL CONTENEDOR DE TU ACTIVITY
+                .replace(R.id.main_home_U_fragment, fragmentoIncidencias)
+                .addToBackStack(null)
+                .commit()
         }
+
+        // 3. Configuración del RecyclerView del Admin
+        binding.recyclerViewAdmin.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = AdminAdapter(emptyList()) { _ -> }
         binding.recyclerViewAdmin.adapter = adapter
     }
 
