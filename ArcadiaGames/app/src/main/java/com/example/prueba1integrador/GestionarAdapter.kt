@@ -127,10 +127,10 @@ class GestionarAdapter(
 
         btnEliminarTodo.setOnClickListener {
             val dbRef = FirebaseDatabase.getInstance().getReference("productos")
-            item.idsAgrupados.forEach { id ->
-                dbRef.child(id).child("stock").setValue(0)
-            }
-            FirebaseInventoryManager().registrarEnHistorial("Admin", "vació stock (Borrado lógico)", juego.nombre, 0)
+            item.idsAgrupados.forEach { dbRef.child(it).child("stock").setValue(0) }
+
+            // Forzamos el mensaje de agotado enviando un 0
+            FirebaseInventoryManager().registrarEnHistorial("Admin", "borró el producto", juego.nombre, 0)
             onDataChanged()
             dialog.dismiss()
         }
@@ -140,6 +140,7 @@ class GestionarAdapter(
     private fun ejecutarActualizacion(juego: Juego, nuevaCant: Int, msgLog: String) {
         FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
             .child("stock").setValue(nuevaCant).addOnSuccessListener {
+                // Pasamos nuevaCant para que el Manager detecte si es 0
                 FirebaseInventoryManager().registrarEnHistorial("Admin", msgLog, juego.nombre, nuevaCant)
                 onDataChanged()
             }

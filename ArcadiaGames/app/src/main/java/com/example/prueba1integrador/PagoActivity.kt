@@ -35,16 +35,28 @@ class PagoActivity : AppCompatActivity() {
         val db = FirebaseDatabase.getInstance()
         val inventoryManager = FirebaseInventoryManager()
 
+        // Dentro de procesarFinalizacionPago en PagoActivity.kt
         listaProductos.forEach { juego ->
             val nuevoStock = (juego.stock - 1).coerceAtLeast(0)
             db.getReference("productos").child(juego.id).child("stock").setValue(nuevoStock)
 
+            // 1er REGISTRO: La acción de compra
             inventoryManager.registrarEnHistorial(
                 nombreUser = cliente,
                 accion = "compró",
                 producto = juego.nombre,
-                cant = 1
+                cant = nuevoStock
             )
+
+            // 2do REGISTRO: El aviso de agotado (solo si el stock llegó a 0)
+            if (nuevoStock == 0) {
+                inventoryManager.registrarEnHistorial(
+                    nombreUser = "Sistema", // O el nombre que prefieras
+                    accion = "Agotado el stock",
+                    producto = juego.nombre,
+                    cant = 0
+                )
+            }
         }
 
         // Una vez vaciada la cesta, redirigimos a HomeActivity
