@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.prueba1integrador.databinding.DialogoDetalleJuegoBinding
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -71,9 +72,7 @@ class JuegoAdapter(
                 holder.tvPrecio.text = juego.precio
                 holder.tvDescripcion.text = juego.descripcion
                 holder.tvCategoria.text = juego.categoria
-                holder.tvPlataformas.text = juego.plataforma.ifEmpty {
-                    juego.tags.joinToString(" · ")
-                }
+                holder.tvPlataformas.text = juego.plataforma
             }
         }
     }
@@ -84,30 +83,35 @@ class JuegoAdapter(
 
         val builder = AlertDialog.Builder(context)
         builder.setView(dialogBinding.root)
+        builder.setCancelable(true) // Asegura que se pueda cerrar pulsando fuera
 
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
+        // Configuración de textos
         dialogBinding.tvDetalleNombre.text = juego.nombre
         dialogBinding.tvDetalleDescripcion.text = juego.descripcion
         dialogBinding.tvDetallePrecio.text = juego.precio
         dialogBinding.tvDetalleCategoria.text = juego.categoria
-        dialogBinding.tvDetallePlataformas.text = juego.plataforma
 
-        if (juego.stock > 0) {
-            dialogBinding.tvDetalleStock.text = "Stock: ${juego.stock}"
-            dialogBinding.tvDetalleStock.setTextColor(Color.parseColor("#4CAF50"))
-            dialogBinding.btnComprar.isEnabled = true
-            dialogBinding.btnAlquilar.isEnabled = true
-        } else {
-            dialogBinding.tvDetalleStock.text = "Agotado"
-            dialogBinding.tvDetalleStock.setTextColor(Color.RED)
-            dialogBinding.btnComprar.isEnabled = false
-            dialogBinding.btnAlquilar.isEnabled = false
+        // 1. CHIPS DE PLATAFORMA
+        dialogBinding.chipGroupPlataformasDetalle.removeAllViews()
+        val plataformas = juego.plataforma.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+
+        plataformas.forEachIndexed { index, plat ->
+            val chip = Chip(context)
+            chip.text = plat
+            chip.isCheckable = true
+            chip.isCheckedIconVisible = false
+            chip.setTextColor(Color.WHITE)
+            chip.setChipBackgroundColorResource(R.color.chip_selector_azul)
+            dialogBinding.chipGroupPlataformasDetalle.addView(chip)
+            if (index == 0) chip.isChecked = true
         }
 
         Glide.with(context).load(juego.imagenUrl).into(dialogBinding.ivDetalleImagen)
 
+        // 2. BOTÓN COMPRAR (Añadir a Cesta)
         dialogBinding.btnComprar.setOnClickListener {
             val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             if (uid.isEmpty()) {
@@ -115,15 +119,27 @@ class JuegoAdapter(
                 return@setOnClickListener
             }
 
-            // SOLO AÑADIR A CESTA: La compra real ocurre en PagoActivity
-            FirebaseDatabase.getInstance().getReference("cesta").child(uid).child(juego.id).setValue(juego)
+            val selectedId = dialogBinding.chipGroupPlataformasDetalle.checkedChipId
+            if (selectedId == View.NO_ID) {
+                Toast.makeText(context, "Selecciona una plataforma", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val chipSeleccionado = dialogBinding.chipGroupPlataformasDetalle.findViewById<Chip>(selectedId)
+            val plataformaElegida = chipSeleccionado.text.toString()
+            val juegoCompra = juego.copy(plataforma = plataformaElegida)
+
+            FirebaseDatabase.getInstance().getReference("cesta").child(uid).child(juego.id).setValue(juegoCompra)
                 .addOnSuccessListener {
-                    Toast.makeText(context, "Añadido a la cesta", Toast.LENGTH_SHORT).show()
-                    context.startActivity(Intent(context, CestaActivity::class.java))
+                    Toast.makeText(context, "Añadido a la cesta: $plataformaElegida", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
+                    val intent = Intent(context, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    context.startActivity(intent)
                 }
         }
 
+        // 3. BOTÓN ALQUILAR
         dialogBinding.btnAlquilar.setOnClickListener {
             val intent = Intent(context, AlquilarJuegoActivity::class.java)
             intent.putExtra("JUEGO", juego)

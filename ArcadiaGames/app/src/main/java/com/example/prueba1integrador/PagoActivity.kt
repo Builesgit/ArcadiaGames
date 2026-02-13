@@ -1,5 +1,6 @@
 package com.example.prueba1integrador
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,6 @@ class PagoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_pago)
 
         val total = intent.getDoubleExtra("PRECIO_TOTAL", 0.0)
-        // RECUPERAR LISTA: Obtenemos los juegos enviados desde CestaActivity
         listaProductos = intent.getSerializableExtra("LISTA_PRODUCTOS") as? List<Juego> ?: emptyList()
 
         findViewById<TextView>(R.id.tvTotal).text = "TOTAL: €%.2f".format(total)
@@ -35,15 +35,10 @@ class PagoActivity : AppCompatActivity() {
         val db = FirebaseDatabase.getInstance()
         val inventoryManager = FirebaseInventoryManager()
 
-        // 1. ITERAR: Recorremos los juegos para restar stock y registrar historial
         listaProductos.forEach { juego ->
-            // Restamos 1 al stock (evitando negativos con coerceAtLeast)
             val nuevoStock = (juego.stock - 1).coerceAtLeast(0)
-
-            // Actualizamos en el nodo global 'productos'
             db.getReference("productos").child(juego.id).child("stock").setValue(nuevoStock)
 
-            // Registramos la acción en el historial con el nombre del cliente
             inventoryManager.registrarEnHistorial(
                 nombreUser = cliente,
                 accion = "compró",
@@ -52,12 +47,15 @@ class PagoActivity : AppCompatActivity() {
             )
         }
 
-        // 2. LIMPIAR CESTA: Una vez pagado, vaciamos el carrito del usuario
-        db.getReference("cesta").child(uid).removeValue()
+        // Una vez vaciada la cesta, redirigimos a HomeActivity
+        db.getReference("cesta").child(uid).removeValue().addOnSuccessListener {
+            Toast.makeText(this, "¡Compra finalizada con éxito!", Toast.LENGTH_LONG).show()
 
-        Toast.makeText(this, "¡Compra finalizada con éxito! Inventario actualizado.", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
 
-        // Volver a la pantalla principal o cerrar flujo
-        finish()
+            finish() // Cerramos PagoActivity
+        }
     }
 }
