@@ -1,6 +1,5 @@
 package com.example.prueba1integrador
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -20,9 +19,6 @@ class GestionarInventarioActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
-
-        // 🔥 Actualiza precios silenciosamente
-        inventoryManager.actualizarPreciosSegunPlataforma { }
     }
 
     override fun onResume() {
@@ -32,22 +28,23 @@ class GestionarInventarioActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
+
+        // CORRECCIÓN: El onEditClick ya no necesita abrir una Activity.
+        // El adaptador ahora maneja el diálogo internamente.
         adapter = GestionarAdapter(
             listaInventario = listaVisualInventario,
-            onEditClick = { juego ->
-                val intent = Intent(this, EditarInventarioActivity::class.java)
-                intent.putExtra("JUEGO_EDITAR", juego)
-                startActivity(intent)
-            },
-            onDataChanged = { cargarDatos() }
+            onEditClick = { /* No hace falta lógica aquí, el Adapter abre el diálogo */ },
+            onDataChanged = {
+                // Refrescar datos cuando el adapter realice una operación (suma/resta/borrado)
+                cargarDatos()
+            }
         )
         binding.rvInventarioGestion.adapter = adapter
     }
 
     private fun cargarDatos() {
         binding.progressBarGestion.visibility = View.VISIBLE
-        inventoryManager.consultarInventario(object :
-            FirebaseInventoryManager.InventoryCallback {
+        inventoryManager.consultarInventario(object : FirebaseInventoryManager.InventoryCallback {
             override fun onDataLoaded(lista: List<Juego>) {
                 binding.progressBarGestion.visibility = View.GONE
                 procesarYMostrarLista(lista)
@@ -56,19 +53,18 @@ class GestionarInventarioActivity : AppCompatActivity() {
     }
 
     private fun procesarYMostrarLista(lista: List<Juego>) {
+        val agrupados = lista.groupBy { it.nombre.trim().lowercase() }
 
-        val listaVisual = lista.groupBy { it.nombre.trim().lowercase() }
-            .map { (_, listaDeEsteJuego) ->
-
-                val juegoRepresentante = listaDeEsteJuego.first()
-                val stockTotal = listaDeEsteJuego.sumOf { it.stock }
-                val ids = listaDeEsteJuego.map { it.id }
-
-                ItemInventario(juegoRepresentante, stockTotal, ids)
-            }
+        listaVisualInventario = agrupados.map { entry ->
+            val listaDeEsteJuego = entry.value
+            val juegoRepresentante = listaDeEsteJuego.first()
+            val stockTotal = listaDeEsteJuego.sumOf { it.stock }
+            val ids = listaDeEsteJuego.map { it.id }
+            ItemInventario(juegoRepresentante, stockTotal, ids)
+        }
 
         if (::adapter.isInitialized) {
-            adapter.actualizarLista(listaVisual)
+            adapter.actualizarLista(listaVisualInventario)
         }
     }
 }

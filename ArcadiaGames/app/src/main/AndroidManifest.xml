@@ -63,10 +63,6 @@
             android:exported="false"/>
 
         <activity
-            android:name=".EditarInventarioActivity"
-            android:exported="false"/>
-
-        <activity
             android:name=".HistorialActivity"
             android:exported="false" />
 
