@@ -99,14 +99,16 @@ class FirebaseInventoryManager {
         })
     }
 
+    // Busca esta función en FirebaseInventoryManager.kt y reemplázala:
     fun registrarEnHistorial(nombreUser: String, accion: String, producto: String, cant: Int = 1) {
         val ref = FirebaseDatabase.getInstance().getReference("historial")
         val idLog = ref.push().key ?: return
 
+        // GUARDAR ACCIÓN PURA: Sin añadidos manuales aquí
         val nuevoLog = AccionHistorial(
             id = idLog,
             usuarioNombre = nombreUser,
-            accion = accion,
+            accion = accion, // Aquí llegará solo "compró", "vació", etc.
             productoNombre = producto,
             cantidad = cant,
             fecha = System.currentTimeMillis()

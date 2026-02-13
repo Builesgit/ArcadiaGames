@@ -26,30 +26,39 @@ class HistorialAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = lista[position]
 
-        // 1. TÍTULO DINÁMICO (Sincronizado con Manager y Adapter)
-        // Usamos ignoreCase = true para evitar el error de "Actividad"
+        // 1. TÍTULO DINÁMICO (Prioridad por palabra clave de acción)
         holder.txtTipoAccion.text = when {
-            item.accion.contains("realizado", ignoreCase = true) -> "Alquiler Realizado"
-            item.accion.contains("devuelto", ignoreCase = true) -> "Alquiler Devuelto"
-            item.accion.contains("Añadió nuevo", ignoreCase = true) -> "Nuevo Producto"
-            item.accion.contains("vació", ignoreCase = true) -> "Producto Agotado"
-            item.accion.contains("compró", ignoreCase = true) || item.accion.contains("compra", ignoreCase = true) -> "Compra Realizada"
-            item.accion.contains("Actualizó stock", ignoreCase = true) ||
-                    item.accion.contains("redujo stock", ignoreCase = true) ||
-                    item.accion.contains("stock", ignoreCase = true) -> "Stock Actualizado"
-            else -> "Actividad"
+            // Si la acción es específicamente el aviso de stock agotado
+            item.accion.contains("Agotado", ignoreCase = true) -> "STOCK AGOTADO"
+
+            // Si la acción contiene compra
+            item.accion.contains("compró", ignoreCase = true) ||
+                    item.accion.contains("compra", ignoreCase = true) -> "COMPRA REALIZADA"
+
+            // Resto de casos
+            item.accion.contains("realizado", ignoreCase = true) -> "ALQUILER REALIZADO"
+            item.accion.contains("devuelto", ignoreCase = true) -> "ALQUILER DEVUELTO"
+            item.accion.contains("Añadió", ignoreCase = true) ||
+                    item.accion.contains("nuevo", ignoreCase = true) -> "NUEVO PRODUCTO"
+            item.accion.contains("borró", ignoreCase = true) ||
+                    item.accion.contains("eliminó", ignoreCase = true) -> "PRODUCTO ELIMINADO"
+            item.accion.contains("stock", ignoreCase = true) -> "STOCK ACTUALIZADO"
+            else -> "ACTIVIDAD"
         }
 
         // 2. DETALLE DE LA ACCIÓN
-        // Mostramos quién hizo qué y sobre qué producto
-        holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
+        // Si es el registro de agotado, usamos el formato directo
+        if (item.accion.contains("Agotado", ignoreCase = true)) {
+            holder.txtDetalleAccion.text = "Agotado el stock de '${item.productoNombre}'"
+        } else {
+            // Para la compra, alquiler, etc., usamos el formato estándar
+            holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
+        }
 
-        // 3. LÓGICA DE TIEMPO RELATIVO
+        // 3. TIEMPO RELATIVO
         val ahora = System.currentTimeMillis()
         val diff = ahora - item.fecha
-
-        val segundos = diff / 1000
-        val minutos = segundos / 60
+        val minutos = (diff / 1000) / 60
         val horas = minutos / 60
         val dias = horas / 24
 
