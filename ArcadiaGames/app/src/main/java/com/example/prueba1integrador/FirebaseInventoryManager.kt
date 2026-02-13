@@ -18,7 +18,6 @@ class FirebaseInventoryManager {
     private val dbReference = Firebase.database.getReference("productos")
     private val storageReference = FirebaseStorage.getInstance().reference.child("imagenes_productos")
 
-    // --- INTERFACES ( callbacks clásicos ) ---
     interface ImageUploadCallback {
         fun onUrlLoaded(url: String)
         fun onError(mensaje: String)
@@ -36,30 +35,23 @@ class FirebaseInventoryManager {
         fun onDeleteComplete(exito: Boolean)
     }
 
-    // --- MÉTODOS DE IMAGEN ---
     fun subirImagen(imageUri: Uri, callback: ImageUploadCallback) {
         val fileName = "img_${System.currentTimeMillis()}.jpg"
         val fileRef = storageReference.child(fileName)
 
-        fileRef.putFile(imageUri).addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot> {
-            override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot?) {
-                fileRef.downloadUrl.addOnSuccessListener(object : OnSuccessListener<Uri> {
-                    override fun onSuccess(uri: Uri?) {
-                        callback.onUrlLoaded(uri.toString())
-                    }
-                })
+        fileRef.putFile(imageUri).addOnSuccessListener {
+            fileRef.downloadUrl.addOnSuccessListener { uri ->
+                callback.onUrlLoaded(uri.toString())
             }
-        }).addOnFailureListener(object : OnFailureListener {
-            override fun onFailure(e: Exception) {
-                callback.onError("Error subiendo imagen: ${e.message}")
-            }
-        })
+        }.addOnFailureListener { e ->
+            callback.onError("Error subiendo imagen: ${e.message}")
+        }
     }
 
-    // --- MÉTODOS DE PRODUCTO ---
+    // --- MÉTODO MODIFICADO PARA NOMBRE ÚNICO ---
     fun subirProducto(videojuego: Juego, callback: ProductSaveCallback) {
 
-        // Si tiene ID → es edición normal
+        // 1. Si ya tiene ID, es una edición (viene de la pantalla de detalles/edición)
         if (videojuego.id.isNotEmpty()) {
             dbReference.child(videojuego.id).setValue(videojuego)
                 .addOnSuccessListener { callback.onSaveComplete(true) }
@@ -67,60 +59,25 @@ class FirebaseInventoryManager {
             return
         }
 
-        // 🔥 BUSCAR SOLO POR NOMBRE (independiente de plataforma)
+        // 2. Si NO tiene ID, es un producto nuevo. Validamos que el nombre no exista.
         dbReference.get().addOnSuccessListener { snapshot ->
-
-            var juegoExistente: Juego? = null
-            var idExistente: String? = null
+            var nombreDuplicado = false
+            val nuevoNombreLimpio = videojuego.nombre.trim().lowercase()
 
             for (data in snapshot.children) {
-                val juego = data.getValue(Juego::class.java)
-                if (juego != null &&
-                    juego.nombre.equals(videojuego.nombre, ignoreCase = true)
-                ) {
-                    juegoExistente = juego
-                    idExistente = juego.id
+                val nombreDB = data.child("nombre").getValue(String::class.java)?.trim()?.lowercase()
+                if (nombreDB == nuevoNombreLimpio) {
+                    nombreDuplicado = true
                     break
                 }
             }
 
-            if (juegoExistente != null && idExistente != null) {
-
-                // 🔥 SUMAR STOCK
-                val nuevoStock = juegoExistente.stock + videojuego.stock
-
-                // 🔥 UNIR PLATAFORMAS SIN REPETIR
-                val plataformasActuales =
-                    juegoExistente.plataforma
-                        .split(",")
-                        .map { it.trim() }
-                        .filter { it.isNotEmpty() }
-                        .toMutableSet()
-
-                val nuevasPlataformas =
-                    videojuego.plataforma
-                        .split(",")
-                        .map { it.trim() }
-                        .filter { it.isNotEmpty() }
-
-                plataformasActuales.addAll(nuevasPlataformas)
-
-                val plataformasFinal =
-                    plataformasActuales.joinToString(", ")
-
-                val actualizacion = mapOf(
-                    "stock" to nuevoStock,
-                    "plataforma" to plataformasFinal
-                )
-
-                dbReference.child(idExistente)
-                    .updateChildren(actualizacion)
-                    .addOnSuccessListener { callback.onSaveComplete(true) }
-                    .addOnFailureListener { callback.onSaveComplete(false) }
-
+            if (nombreDuplicado) {
+                // REGLA: Si el nombre ya existe, NO permitimos añadir.
+                // El Admin debe editar el existente.
+                callback.onSaveComplete(false)
             } else {
-
-                // 🔥 NO EXISTE → CREAR NUEVO
+                // Si el nombre es nuevo, creamos el registro
                 val id = dbReference.push().key ?: return@addOnSuccessListener
                 val productoConId = videojuego.copy(id = id)
 
@@ -128,96 +85,30 @@ class FirebaseInventoryManager {
                     .addOnSuccessListener { callback.onSaveComplete(true) }
                     .addOnFailureListener { callback.onSaveComplete(false) }
             }
-
-        }.addOnFailureListener {
-            callback.onSaveComplete(false)
-        }
-
-        // SI ES NUEVO PRODUCTO → VALIDAMOS DUPLICADOS
-        dbReference.get().addOnSuccessListener { snapshot ->
-
-            var juegoExistenteId: String? = null
-            var stockActual = 0
-
-            for (data in snapshot.children) {
-                val juego = data.getValue(Juego::class.java)
-
-                if (juego != null &&
-                    juego.nombre.equals(videojuego.nombre, ignoreCase = true) &&
-                    juego.plataforma.equals(videojuego.plataforma, ignoreCase = true)
-                ) {
-                    juegoExistenteId = juego.id
-                    stockActual = juego.stock
-                    break
-                }
-            }
-
-            if (juegoExistenteId != null) {
-                // YA EXISTE → SUMAMOS STOCK
-                val nuevoStock = stockActual + videojuego.stock
-
-                dbReference.child(juegoExistenteId)
-                    .child("stock")
-                    .setValue(nuevoStock)
-                    .addOnSuccessListener {
-                        callback.onSaveComplete(true)
-                    }
-                    .addOnFailureListener {
-                        callback.onSaveComplete(false)
-                    }
-
-            } else {
-                // NO EXISTE → CREAR NUEVO
-                val id = dbReference.push().key ?: return@addOnSuccessListener
-                val productoConId = videojuego.copy(id = id)
-
-                dbReference.child(id).setValue(productoConId)
-                    .addOnSuccessListener {
-                        callback.onSaveComplete(true)
-                    }
-                    .addOnFailureListener {
-                        callback.onSaveComplete(false)
-                    }
-            }
-
         }.addOnFailureListener {
             callback.onSaveComplete(false)
         }
     }
 
     fun actualizarPreciosSegunPlataforma(callback: (Boolean) -> Unit) {
-
         dbReference.get().addOnSuccessListener { snapshot ->
-
             for (data in snapshot.children) {
-
                 val juego = data.getValue(Juego::class.java)
                 val id = data.key ?: continue
-
                 if (juego != null) {
-
                     val nuevoPrecio = when {
                         juego.plataforma.contains("PlayStation", true) ||
                                 juego.plataforma.contains("PC", true) -> "69.99 €"
-
                         juego.plataforma.contains("Xbox", true) -> "59.99 €"
-
                         juego.plataforma.contains("Nintendo", true) -> "49.99 €"
-
                         else -> juego.precio
                     }
-
                     dbReference.child(id).child("precio").setValue(nuevoPrecio)
                 }
             }
-
             callback(true)
-
-        }.addOnFailureListener {
-            callback(false)
-        }
+        }.addOnFailureListener { callback(false) }
     }
-
 
     fun consultarInventario(callback: InventoryCallback) {
         dbReference.addValueEventListener(object : ValueEventListener {
@@ -226,12 +117,8 @@ class FirebaseInventoryManager {
                 for (data in snapshot.children) {
                     try {
                         val juego = data.getValue(Juego::class.java)
-                        if (juego != null) {
-                            listaJuegos.add(juego)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                        if (juego != null) listaJuegos.add(juego)
+                    } catch (e: Exception) { e.printStackTrace() }
                 }
                 callback.onDataLoaded(listaJuegos)
             }
@@ -241,25 +128,13 @@ class FirebaseInventoryManager {
 
     fun eliminarProducto(idJuego: String, callback: DeleteCallback) {
         dbReference.child(idJuego).removeValue()
-            .addOnSuccessListener(object : OnSuccessListener<Void> {
-                override fun onSuccess(aVoid: Void?) {
-                    callback.onDeleteComplete(true)
-                }
-            })
-            .addOnFailureListener(object : OnFailureListener {
-                override fun onFailure(e: Exception) {
-                    callback.onDeleteComplete(false)
-                }
-            })
+            .addOnSuccessListener { callback.onDeleteComplete(true) }
+            .addOnFailureListener { callback.onDeleteComplete(false) }
     }
-
-    // --- MÉTODOS DE HISTORIAL Y ALQUILERES ---
 
     fun registrarEnHistorial(nombreUser: String, accion: String, producto: String, cant: Int = 1) {
         val ref = FirebaseDatabase.getInstance().getReference("historial")
         val idLog = ref.push().key ?: return
-
-        // Creamos el objeto siguiendo tu data class AccionHistorial
         val nuevoLog = AccionHistorial(
             id = idLog,
             usuarioNombre = nombreUser,
@@ -274,7 +149,6 @@ class FirebaseInventoryManager {
     fun revisarAlquileresVencidos() {
         val ahora = System.currentTimeMillis()
         val refAlquileres = FirebaseDatabase.getInstance().getReference("alquileres")
-
         refAlquileres.get().addOnSuccessListener { snapshot ->
             for (usuarioSnap in snapshot.children) {
                 for (alquilerSnap in usuarioSnap.children) {
@@ -287,11 +161,8 @@ class FirebaseInventoryManager {
                         val productoRef = dbReference.child(juegoId)
                         productoRef.child("stock").get().addOnSuccessListener { stockSnap ->
                             val stockActual = stockSnap.getValue(Int::class.java) ?: 0
-
                             productoRef.child("stock").setValue(stockActual + 1).addOnSuccessListener {
                                 alquilerSnap.ref.child("devuelto").setValue(true)
-
-                                // CAMBIO AQUÍ: Mensaje específico de devolución
                                 registrarEnHistorial("Sistema", "Alquiler devuelto", nombreJuego)
                             }
                         }
