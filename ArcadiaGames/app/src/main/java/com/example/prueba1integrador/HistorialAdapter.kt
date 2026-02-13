@@ -5,11 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 
 class HistorialAdapter(
     private val lista: List<AccionHistorial>,
-    private val esModoMenu: Boolean = false // Nuevo parámetro para alternar vistas
+    private val esModoMenu: Boolean = false
 ) : RecyclerView.Adapter<HistorialAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -19,7 +18,6 @@ class HistorialAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // Seleccionamos el layout según el contexto (Home vs Vista Completa)
         val layout = if (esModoMenu) R.layout.item_menu_historial else R.layout.item_historial
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return ViewHolder(view)
@@ -28,40 +26,25 @@ class HistorialAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = lista[position]
 
-        // 1. TÍTULO DINÁMICO
+        // 1. TÍTULO DINÁMICO (Sincronizado con Manager y Adapter)
+        // Usamos ignoreCase = true para evitar el error de "Actividad"
         holder.txtTipoAccion.text = when {
             item.accion.contains("realizado", ignoreCase = true) -> "Alquiler Realizado"
             item.accion.contains("devuelto", ignoreCase = true) -> "Alquiler Devuelto"
-            item.accion.contains("añadió", ignoreCase = true) -> "Nuevo Producto"
-            item.accion.contains("eliminó", ignoreCase = true) -> "Producto Eliminado"
-            item.accion.contains("redujo", ignoreCase = true) ||
+            item.accion.contains("Añadió nuevo", ignoreCase = true) -> "Nuevo Producto"
+            item.accion.contains("vació", ignoreCase = true) -> "Producto Agotado"
+            item.accion.contains("compró", ignoreCase = true) || item.accion.contains("compra", ignoreCase = true) -> "Compra Realizada"
+            item.accion.contains("Actualizó stock", ignoreCase = true) ||
+                    item.accion.contains("redujo stock", ignoreCase = true) ||
                     item.accion.contains("stock", ignoreCase = true) -> "Stock Actualizado"
-            item.accion.contains("actualizó", ignoreCase = true) -> "Producto Actualizado"
-            item.accion.contains("compró", ignoreCase = true) -> "Compra Realizada"
             else -> "Actividad"
         }
 
         // 2. DETALLE DE LA ACCIÓN
-        val accionAMostrar = when {
-            item.accion.contains("realizado", ignoreCase = true) -> "realizó un alquiler"
-            item.accion.contains("devuelto", ignoreCase = true) -> "devolvió un alquiler"
-            item.accion.contains("redujo", ignoreCase = true) -> "redujo stock"
-            item.accion.contains("añadió", ignoreCase = true) -> "añadió"
-            item.accion.contains("eliminó", ignoreCase = true) -> "eliminó"
-            item.accion.contains("actualizó", ignoreCase = true) -> "actualizó"
-            item.accion.contains("compró", ignoreCase = true) -> "compró"
-            else -> item.accion
-        }
+        // Mostramos quién hizo qué y sobre qué producto
+        holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
 
-        // Usamos txtDetalleAccion (corregido el nombre de la variable)
-        // Si la acción ya viene con formato de stock manual (con paréntesis), la mostramos directa
-        if (item.accion.contains("(")) {
-            holder.txtDetalleAccion.text = "${item.usuarioNombre} ${item.accion}: '${item.productoNombre}'"
-        } else {
-            holder.txtDetalleAccion.text = "${item.usuarioNombre} $accionAMostrar: '${item.productoNombre}'"
-        }
-
-        // 3. Lógica de tiempo relativo
+        // 3. LÓGICA DE TIEMPO RELATIVO
         val ahora = System.currentTimeMillis()
         val diff = ahora - item.fecha
 

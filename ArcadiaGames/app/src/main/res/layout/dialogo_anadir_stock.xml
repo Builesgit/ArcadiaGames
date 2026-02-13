@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/historial_background">
+
+    <TextView
+    android:id="@+id/tvTituloAnadir"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="AÑADIR STOCK"
+    android:textColor="#FFC107"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/tvStockActual"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stock actual: 0"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"/>
+
+    <EditText
+        android:id="@+id/etCantidadAnadir"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:hint="¿Cuántas unidades sumas?"
+        android:inputType="number"
+        android:background="@drawable/edittext_background"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#AAAAAA"
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/btnConfirmarSuma"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="SUMAR AL INVENTARIO"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:backgroundTint="#4CAF50"/> </LinearLayout>

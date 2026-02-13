@@ -43,13 +43,12 @@ class GestionarAdapter(
         holder.tvNombre.text = juego.nombre
         holder.tvPrecio.text = juego.precio
 
-        // Lógica visual: Verde si hay stock, Rojo si está agotado
         if (item.cantidad <= 0) {
             holder.tvCantidad.text = "AGOTADO (0)"
-            holder.tvCantidad.setTextColor(Color.parseColor("#EF5350")) // Rojo
+            holder.tvCantidad.setTextColor(Color.parseColor("#EF5350"))
         } else {
             holder.tvCantidad.text = "Stock: ${item.cantidad}"
-            holder.tvCantidad.setTextColor(Color.parseColor("#4CAF50")) // Verde
+            holder.tvCantidad.setTextColor(Color.parseColor("#4CAF50"))
         }
 
         Glide.with(holder.itemView.context)
@@ -57,30 +56,51 @@ class GestionarAdapter(
             .placeholder(R.drawable.ic_launcher_foreground)
             .into(holder.ivImagen)
 
-        holder.btnEditar.setOnClickListener { onEditClick(juego) }
-
-        holder.btnEliminar.setOnClickListener {
-            mostrarDialogoEliminarPro(item, holder.itemView.context)
-        }
+        holder.btnEditar.setOnClickListener { mostrarDialogoAnadirStock(item, holder.itemView.context) }
+        holder.btnEliminar.setOnClickListener { mostrarDialogoEliminarPro(item, holder.itemView.context) }
     }
 
     override fun getItemCount(): Int = listaInventario.size
 
-    fun actualizarLista(nuevaLista: List<ItemInventario>) {
-        this.listaInventario = nuevaLista
-        notifyDataSetChanged()
+    private fun mostrarDialogoAnadirStock(item: ItemInventario, context: Context) {
+        val juego = item.juego
+        val stockActual = item.cantidad
+        val builder = AlertDialog.Builder(context)
+        val view = LayoutInflater.from(context).inflate(R.layout.dialogo_anadir_stock, null)
+        builder.setView(view)
+
+        val tvTitulo = view.findViewById<TextView>(R.id.tvTituloAnadir)
+        val tvStockActual = view.findViewById<TextView>(R.id.tvStockActual)
+        val etCantidad = view.findViewById<EditText>(R.id.etCantidadAnadir)
+        val btnConfirmar = view.findViewById<Button>(R.id.btnConfirmarSuma)
+
+        tvTitulo.text = "REPOSICIÓN: ${juego.nombre.uppercase()}"
+        tvStockActual.text = "Stock actual: $stockActual"
+
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnConfirmar.setOnClickListener {
+            val cantStr = etCantidad.text.toString()
+            if (cantStr.isNotEmpty()) {
+                val cantASumar = cantStr.toInt()
+                if (cantASumar > 0) {
+                    ejecutarActualizacion(juego, stockActual + cantASumar, "Actualizó stock (+$cantASumar)")
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(context, "Ingresa una cantidad válida", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        dialog.show()
     }
 
     private fun mostrarDialogoEliminarPro(item: ItemInventario, context: Context) {
         val juego = item.juego
         val stockActual = item.cantidad
-
         val builder = AlertDialog.Builder(context)
         val view = LayoutInflater.from(context).inflate(R.layout.dialogo_eliminar_producto, null)
         builder.setView(view)
-
-        val tvTitulo = view.findViewById<TextView>(R.id.tvTituloEliminar)
-        tvTitulo.text = "GESTIONAR: ${juego.nombre.uppercase()}"
 
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -90,56 +110,43 @@ class GestionarAdapter(
         val btnRetirarUno = view.findViewById<Button>(R.id.btnRetirarUno)
         val btnEliminarTodo = view.findViewById<Button>(R.id.btnEliminarTodo)
 
-        // BAJA UNITARIA (-1)
         btnRetirarUno.setOnClickListener {
-            val nuevaCant = (stockActual - 1).coerceAtLeast(0)
-            ejecutarActualizacion(juego, nuevaCant, "redujo stock (-1)")
+            ejecutarActualizacion(juego, (stockActual - 1).coerceAtLeast(0), "redujo stock (-1)")
             dialog.dismiss()
         }
 
-        // BAJA POR LOTE
         btnRetirarLote.setOnClickListener {
-            val cantStr = etCantidad.text.toString()
-            if (cantStr.isNotEmpty()) {
-                val cantARetirar = cantStr.toInt()
-                if (cantARetirar > stockActual) {
-                    Toast.makeText(context, "No hay suficiente stock", Toast.LENGTH_SHORT).show()
-                } else {
-                    val nuevaCant = stockActual - cantARetirar
-                    ejecutarActualizacion(juego, nuevaCant, "redujo stock (-$cantARetirar)")
-                    dialog.dismiss()
-                }
+            val cant = etCantidad.text.toString().toIntOrNull() ?: 0
+            if (cant in 1..stockActual) {
+                ejecutarActualizacion(juego, stockActual - cant, "redujo stock (-$cant)")
+                dialog.dismiss()
+            } else {
+                Toast.makeText(context, "Cantidad no válida", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // ELIMINAR TODO EL GRUPO (Ahora solo pone stock a 0)
         btnEliminarTodo.setOnClickListener {
             val dbRef = FirebaseDatabase.getInstance().getReference("productos")
-            // No usamos removeValue(), actualizamos el campo stock a 0 para todos los IDs
             item.idsAgrupados.forEach { id ->
                 dbRef.child(id).child("stock").setValue(0)
             }
-            FirebaseInventoryManager().registrarEnHistorial(
-                nombreUser = "Admin",
-                accion = "vació stock (Borrado lógico)",
-                producto = juego.nombre,
-                cant = 0
-            )
-            Toast.makeText(context, "Producto marcado como agotado", Toast.LENGTH_SHORT).show()
+            FirebaseInventoryManager().registrarEnHistorial("Admin", "vació stock (Borrado lógico)", juego.nombre, 0)
             onDataChanged()
             dialog.dismiss()
         }
-
         dialog.show()
     }
 
     private fun ejecutarActualizacion(juego: Juego, nuevaCant: Int, msgLog: String) {
-        val ref = FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
+        FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
+            .child("stock").setValue(nuevaCant).addOnSuccessListener {
+                FirebaseInventoryManager().registrarEnHistorial("Admin", msgLog, juego.nombre, nuevaCant)
+                onDataChanged()
+            }
+    }
 
-        // Siempre usamos setValue para mantener el registro vivo en la DB
-        ref.child("stock").setValue(nuevaCant).addOnSuccessListener {
-            FirebaseInventoryManager().registrarEnHistorial("Admin", msgLog, juego.nombre, nuevaCant)
-            onDataChanged()
-        }
+    fun actualizarLista(nuevaLista: List<ItemInventario>) {
+        this.listaInventario = nuevaLista
+        notifyDataSetChanged()
     }
 }

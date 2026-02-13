@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
@@ -161,14 +160,27 @@ class AnadirProductoActivity : AppCompatActivity() {
             override fun onSaveComplete(exito: Boolean) {
                 setLoading(false)
                 if (exito) {
-                    inventoryManager.registrarEnHistorial("Admin", accionHistorial, nombre, stock)
-                    Toast.makeText(this@AnadirProductoActivity, if (esNuevo) "¡Producto añadido!" else "¡Producto actualizado!", Toast.LENGTH_LONG).show()
+
+                    Toast.makeText(
+                        this@AnadirProductoActivity,
+                        if (esNuevo) "¡Producto añadido con éxito!" else "¡Producto actualizado!",
+                        Toast.LENGTH_LONG
+                    ).show()
                     finish()
                 } else {
+                    // Si exito es false, es porque el Manager detectó un nombre duplicado
                     if (esNuevo) {
-                        Toast.makeText(this@AnadirProductoActivity, "ERROR: El nombre '$nombre' ya existe. Edítalo en el inventario.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@AnadirProductoActivity,
+                            "ERROR: El nombre '$nombre' ya existe. Edita el stock desde el Inventario.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
-                        Toast.makeText(this@AnadirProductoActivity, "Error al guardar el producto", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@AnadirProductoActivity,
+                            "Error al guardar el producto",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
