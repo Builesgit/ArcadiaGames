@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ACCESO ADMIN"
-        android:textColor="#FFB300"
+        android:textColor="#FFC107"
         android:textSize="20sp"
         android:textStyle="bold"
         android:letterSpacing="0.1"
@@ -27,7 +27,7 @@
         android:textColorHint="#555555"
         android:textColor="#FFFFFF"
         android:textAlignment="center"
-        android:backgroundTint="#FFB300"
+        android:backgroundTint="#FFC107"
         android:textSize="16sp"/>
 
     <Button
@@ -36,7 +36,7 @@
         android:layout_height="55dp"
         android:text="VALIDAR"
         android:layout_marginTop="25dp"
-        android:backgroundTint="#FFB300"
+        android:backgroundTint="#FFC107"
         android:textColor="#000000"
         android:textStyle="bold"
         app:cornerRadius="4dp"/>

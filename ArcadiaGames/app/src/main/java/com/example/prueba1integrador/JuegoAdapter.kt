@@ -37,7 +37,7 @@ class JuegoAdapter(
         return if (viewType == VIEW_TYPE_CAROUSEL) {
             CarouselViewHolder(inflater.inflate(R.layout.item_novedades_carrousel, parent, false))
         } else {
-            ListaViewHolder(inflater.inflate(R.layout.item_juego_catalogo_u, parent, false))
+            ListaViewHolder(inflater.inflate(R.layout.item_juego_catalogo, parent, false))
         }
     }
 

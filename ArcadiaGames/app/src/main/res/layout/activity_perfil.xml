@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="#FFB300"
+                android:backgroundTint="#FFC107"
                 android:text="Convertirse en Admin"
                 android:textColor="#000000"
                 android:textStyle="bold"

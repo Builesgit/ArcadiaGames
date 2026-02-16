@@ -18,4 +18,38 @@
     <string name="Añadir">Añadir incidencia</string>
     <string name="ultimas">ÚLTIMAS ACCIONES</string>
     <string name="Grafico">Gráfico de actividad semanal</string>
+
+    <string name="Mis_juegos">MIS JUEGOS</string>
+    "
+
+    <string name="Gestionar_admins">GESTIÓN DE ADMINISTRADORES</string>
+    <string name="Gestionar_usuarios">GESTIÓN DE USUARIOS</string>
+    <string name="Generar_codigo">GENERAR CÓDIGO (5 MIN)</string>
+    <string name="Ningun_cod">Ningún código activo</string>
+    <string name="Admins">ADMINS REGISTRADOS</string>
+    <string name="No_admins">No hay más administradores registrados</string>"
+
+    <!-- aquí pondremos lo de la guía de uso ></!-->
+    <string name="Guía_uso">GUÍA DE ARCADIA</string>
+    <string name="Bienvenido">Bienvenido a ArcadiaGames. Aquí puedes gestionar tu catálogo gamer de forma premium.</string>
+    <string name="Catalogogo">1. Catálogo</string>
+    <string name="Buscar_juegos">Pulsa en cualquier juego para ver detalles, stock y opciones de compra o alquiler.</string>
+    <string name="Filtros">2. Filtros</string>
+    <string name="Barra_busqueda">Usa la barra de búsqueda superior o los chips de plataforma para encontrar lo que buscas al instante.</string>
+
+
+    <string name="Comprar">Comprar</string>
+    <string name="Alquilar">Alquilar</string>
+
+
+    <string name="Crear_I">Crear Incidencia</string>
+    <string name="Tema_Incidencia">Tema Incidencia</string>
+    <string name="Nombre_Incidencia">Nombre Incidencia</string>
+    <string name="Descripcion_Incidencia">Descripción Incidencia</string>
+    <string name="Info_Incidencia">Información Adicional</string>
+    <string name="Bug">Bug</string>
+    <string name="Problema_usuario">Usuario</string>
+    <string name="Juego">Juego</string>
+    <string name="Otros">Otro</string>
+    <string name="Mostrar_Incidencia">Mostrar Incidencias</string>
 </resources>
