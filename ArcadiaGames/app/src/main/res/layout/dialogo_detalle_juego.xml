@@ -109,8 +109,29 @@
 
     </LinearLayout>
 
-    <TextView android:id="@+id/tv_label_plataforma" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" tools:ignore="MissingConstraints" />
-    <TextView android:id="@+id/tv_detalle_stock" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" tools:ignore="MissingConstraints" />
-    <TextView android:id="@+id/tv_detalle_plataformas" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/tv_label_plataforma"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_detalle_stock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/tv_detalle_precio"
+        app:layout_constraintTop_toBottomOf="@id/tv_detalle_precio" />
+
+    <TextView
+        android:id="@+id/tv_detalle_plataformas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
