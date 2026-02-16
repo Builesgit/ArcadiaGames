@@ -9,11 +9,11 @@
         android:icon="@android:drawable/ic_menu_search"
         android:title="Catálogo" />
     <item
-        android:id="@+id/item_perfil"
-        android:icon="@drawable/ic_menu_account"
-        android:title="Perfil" />
-    <item
         android:id="@+id/item_cesta"
         android:icon="@drawable/ic_menu_carrito"
         android:title="Cesta"/>
+    <item
+        android:id="@+id/item_perfil"
+        android:icon="@drawable/ic_menu_account"
+        android:title="Perfil" />
 </menu>
