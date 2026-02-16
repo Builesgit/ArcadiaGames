@@ -95,6 +95,17 @@ class FragmentPerfil : Fragment() {
             binding.btnGestionAdmins.setOnClickListener {
                 startActivity(Intent(requireContext(), GestionAdminsActivity::class.java))
             }
+
+            binding.btnGestionarIncidencias.setOnClickListener {
+                val fragmentoIncidencias = FragmentMostrarIncidencias()
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    // CAMBIA 'main_home_U_fragment' POR EL ID DEL CONTENEDOR DE TU ACTIVITY
+                    .replace(R.id.main_home_U_fragment, fragmentoIncidencias)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
         } else {
             // MOSTRAR USER - OCULTAR ADMIN
             binding.layoutAdmin.visibility = View.GONE
@@ -111,6 +122,9 @@ class FragmentPerfil : Fragment() {
                 startActivity(Intent(requireContext(), MisJuegos::class.java))
             }
 
+            binding.btnSoporteTecnico.setOnClickListener {
+                startActivity(Intent(requireContext(), CrearIncidencia::class.java))
+            }
 
 
         }
