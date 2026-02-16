@@ -59,7 +59,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Usuario"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="?attr/textInputFilledStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
@@ -82,7 +82,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Contraseña"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="?attr/textInputFilledStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Contraseña"
@@ -106,11 +106,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Acceder"
-            android:backgroundTint="#FFC107"
+            android:backgroundTint="@color/Amarillo"
             android:textColor="@android:color/black"
             app:layout_constraintStart_toStartOf="@+id/TextLayout_Contraseña"
             app:layout_constraintTop_toBottomOf="@id/TextLayout_Contraseña"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            app:shapeAppearance="@style/ShapeAppearance.RoundedSquare"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegistrarse"
@@ -121,7 +122,8 @@
             android:textColor="@color/Azul_claro"
             app:layout_constraintStart_toStartOf="@+id/btnLogin"
             app:layout_constraintTop_toBottomOf="@id/btnLogin"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            app:shapeAppearance="@style/ShapeAppearance.RoundedSquare"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
