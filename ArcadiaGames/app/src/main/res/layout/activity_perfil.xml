@@ -100,31 +100,21 @@
                 android:text="Soporte Técnico"
                 app:icon="@drawable/ico_incidencias" />
 
-            <LinearLayout
-                android:id="@+id/layoutCanjearCodigo"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btnAbrirDialogoAdmin"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/etCodigoAdmin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Código de invitación Admin"
-                    android:textColorHint="#888888"
-                    android:textColor="#FFFFFF"
-                    android:backgroundTint="#FFEB3B"/>
-
-                <Button
-                    android:id="@+id/btnCanjearCodigo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Convertirse en Admin"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="#FFEB3B"/>
-            </LinearLayout>
+                android:backgroundTint="#FFB300"
+                android:text="Convertirse en Admin"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                app:icon="@android:drawable/ic_lock_lock"
+                app:iconTint="#000000"
+                app:cornerRadius="20dp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <Button

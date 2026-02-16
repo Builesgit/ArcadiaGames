@@ -70,15 +70,13 @@ class FragmentPerfil : Fragment() {
     }
 
     private fun actualizarInterfaz(usuario: String, rol: String, uid: String, snapshot: DataSnapshot) {
-        // Asignamos el nombre de usuario (el campo 'nombre' de la DB)
         binding.txtNombreUsuario.text = usuario
         binding.txtTituloPerfil.text = if (rol == "admin") "ADMINISTRADOR" else "USUARIO"
 
         if (rol == "admin") {
-            // MOSTRAR ADMIN - OCULTAR USER
             binding.layoutAdmin.visibility = View.VISIBLE
             binding.layoutUsuario.visibility = View.GONE
-            binding.layoutCanjearCodigo.visibility = View.GONE
+            binding.btnAbrirDialogoAdmin.visibility = View.GONE // Oculto si ya es admin
 
             // Verificar si es Jefe para mostrar el botón de gestión
             val esJefe = snapshot.child("esJefe").getValue(Boolean::class.java) ?: false
@@ -100,20 +98,38 @@ class FragmentPerfil : Fragment() {
                 startActivity(Intent(requireContext(), HistorialActivity::class.java))
             }
         } else {
-            // MOSTRAR USER - OCULTAR ADMIN
             binding.layoutAdmin.visibility = View.GONE
             binding.layoutUsuario.visibility = View.VISIBLE
-            binding.layoutCanjearCodigo.visibility = View.VISIBLE
 
-            configurarCanje(uid)
+            // Mostramos el botón amarillo centrado para usuarios normales
+            binding.btnAbrirDialogoAdmin.visibility = View.VISIBLE
+            binding.btnAbrirDialogoAdmin.setOnClickListener {
+                mostrarPopUpAdmin(uid)
+            }
         }
     }
 
-    private fun configurarCanje(uid: String) {
-        binding.btnCanjearCodigo.setOnClickListener {
-            val input = binding.etCodigoAdmin.text.toString().trim()
-            val refCodigos = FirebaseDatabase.getInstance().getReference("codigos_admin")
+    // 2. Nueva función para mostrar el Pop-up
+    private fun mostrarPopUpAdmin(uid: String) {
+        val inflater = LayoutInflater.from(requireContext())
+        val view = inflater.inflate(R.layout.dialogo_canjear_admin, null)
 
+        val etCodigo = view.findViewById<android.widget.EditText>(R.id.etCodigoAdminPop)
+        val btnConfirmar = view.findViewById<android.widget.Button>(R.id.btnConfirmarCanje)
+
+        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        builder.setView(view)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnConfirmar.setOnClickListener {
+            val input = etCodigo.text.toString().trim()
+            if (input.isEmpty()) {
+                Toast.makeText(context, "Escribe un código", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val refCodigos = FirebaseDatabase.getInstance().getReference("codigos_admin")
             refCodigos.get().addOnSuccessListener { snapshot ->
                 val codigoReal = snapshot.child("valor").getValue(String::class.java)
                 val expira = snapshot.child("expira").getValue(Long::class.java) ?: 0L
@@ -122,13 +138,18 @@ class FragmentPerfil : Fragment() {
                     val userRef = FirebaseDatabase.getInstance().getReference("usuarios").child(uid)
                     userRef.child("rol").setValue("admin").addOnSuccessListener {
                         Toast.makeText(context, "¡Ahora eres administrador!", Toast.LENGTH_LONG).show()
-                        refCodigos.removeValue()
+                        refCodigos.removeValue() // El código se usa una sola vez
+                        dialog.dismiss()
                     }
                 } else {
                     Toast.makeText(context, "Código inválido o caducado", Toast.LENGTH_SHORT).show()
                 }
+            }.addOnFailureListener {
+                Toast.makeText(context, "Error al verificar código", Toast.LENGTH_SHORT).show()
             }
         }
+
+        dialog.show()
     }
 
     override fun onDestroyView() {
