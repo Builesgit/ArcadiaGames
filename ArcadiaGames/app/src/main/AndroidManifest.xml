@@ -39,15 +39,15 @@
             android:parentActivityName=".HomeActivity"/>
 
         <activity
+            android:name=".CrearIncidencia"
+            android:exported="false"/>
+
+        <activity
             android:name=".GestionAdminsActivity"
             android:exported="false"/>
 
         <activity
             android:name=".HomeActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".FragmentCesta"
             android:exported="false" />
 
         <activity

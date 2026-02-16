@@ -226,7 +226,6 @@
                             android:text="Cola de reportes activos"
                             android:textColor="#9E9E9E"
                             android:textSize="12sp"/>
-
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

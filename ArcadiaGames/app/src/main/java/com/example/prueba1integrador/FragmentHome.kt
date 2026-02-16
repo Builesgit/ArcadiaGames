@@ -99,26 +99,29 @@ class FragmentHome : Fragment() {
     }
 
     private fun configurarDashboardAdmin(view: View) {
-        // Botón Inventario
-        view.findViewById<View>(R.id.cardInventarioDashboard).setOnClickListener {
+        // 1. Inventario
+        view.findViewById<View>(R.id.cardInventarioDashboard)?.setOnClickListener {
             startActivity(Intent(requireContext(), GestionarInventarioActivity::class.java))
         }
 
-        // Botón Añadir Producto
-        view.findViewById<View>(R.id.cardNuevoProductoDashboard).setOnClickListener {
+        // 2. Añadir Producto
+        view.findViewById<View>(R.id.cardNuevoProductoDashboard)?.setOnClickListener {
             startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
         }
 
-        // Botón Incidencias
-        view.findViewById<View>(R.id.cardIncidenciasDashboard).setOnClickListener {
-            Toast.makeText(requireContext(), "Accediendo a Soporte Técnico", Toast.LENGTH_SHORT).show()
+        // 3. TU BOTÓN DE INCIDENCIAS (Ahora con la lógica de "Gestionar")
+        view.findViewById<View>(R.id.cardIncidenciasDashboard)?.setOnClickListener {
+            val fragmentoIncidencias = FragmentMostrarIncidencias()
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.main_home_U_fragment, fragmentoIncidencias)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
     private fun cargarHistorialReciente() {
         val refHistorial = FirebaseDatabase.getInstance().getReference("historial")
-
-        // Obtenemos los últimos 15 registros para el monitor de la Home
         refHistorial.limitToLast(15).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!isAdded) return
@@ -128,8 +131,6 @@ class FragmentHome : Fragment() {
                     if (log != null) listaLocalLogs.add(log)
                 }
                 listaLocalLogs.reverse()
-
-                // CORRECCIÓN: Usamos la referencia directa rvHistorialAdmin en lugar de binding
                 rvHistorialAdmin.layoutManager = LinearLayoutManager(requireContext())
                 rvHistorialAdmin.adapter = HistorialAdapter(listaLocalLogs, esModoMenu = true)
             }
@@ -151,7 +152,6 @@ class FragmentHome : Fragment() {
                 }
                 listaJuegosDynamic.reverse()
                 adapterJuegos.notifyDataSetChanged()
-
                 if (listaJuegosDynamic.isNotEmpty()) {
                     val middle = 5000 - (5000 % listaJuegosDynamic.size)
                     rvNovedades.scrollToPosition(middle)

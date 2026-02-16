@@ -76,33 +76,52 @@ class FragmentPerfil : Fragment() {
         if (rol == "admin") {
             binding.layoutAdmin.visibility = View.VISIBLE
             binding.layoutUsuario.visibility = View.GONE
-            binding.btnAbrirDialogoAdmin.visibility = View.GONE // Oculto si ya es admin
+            binding.btnAbrirDialogoAdmin.visibility = View.GONE
 
-            // Verificar si es Jefe para mostrar el botón de gestión
             val esJefe = snapshot.child("esJefe").getValue(Boolean::class.java) ?: false
             binding.btnGestionAdmins.visibility = if (esJefe) View.VISIBLE else View.GONE
 
+            // --- BOTONES ADMIN EXISTENTES ---
             binding.btnCrearProducto.setOnClickListener {
                 startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
             }
-
             binding.btnInventario.setOnClickListener {
                 startActivity(Intent(requireContext(), GestionarInventarioActivity::class.java))
             }
-
             binding.btnGestionAdmins.setOnClickListener {
                 startActivity(Intent(requireContext(), GestionAdminsActivity::class.java))
             }
-
             binding.btnHistorial.setOnClickListener {
                 startActivity(Intent(requireContext(), HistorialActivity::class.java))
             }
+
+            // --- NUEVO: GESTIONAR INCIDENCIAS (ADMIN) ---
+            binding.btnGestionarIncidencias.setOnClickListener {
+                val fragmentoIncidencias = FragmentMostrarIncidencias()
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    // Reemplazamos el perfil por el listado de incidencias
+                    .replace(R.id.main_home_U_fragment, fragmentoIncidencias)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
         } else {
             binding.layoutAdmin.visibility = View.GONE
             binding.layoutUsuario.visibility = View.VISIBLE
-
-            // Mostramos el botón amarillo centrado para usuarios normales
             binding.btnAbrirDialogoAdmin.visibility = View.VISIBLE
+
+            binding.btnMisCompras.setOnClickListener {
+                // Aquí iría tu lógica de compras
+            }
+
+            // --- NUEVO: SOPORTE TÉCNICO (USUARIO) ---
+            binding.btnSoporteTecnico.setOnClickListener {
+                // El usuario va a la Activity para CREAR la incidencia
+                val intent = Intent(requireContext(), CrearIncidencia::class.java)
+                startActivity(intent)
+            }
+
             binding.btnAbrirDialogoAdmin.setOnClickListener {
                 mostrarPopUpAdmin(uid)
             }
