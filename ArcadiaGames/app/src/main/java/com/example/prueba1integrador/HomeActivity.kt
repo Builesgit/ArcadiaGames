@@ -18,37 +18,61 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Recuperamos el rol para saber si ocultar la cesta
         val rol = intent.getStringExtra("ROL_USUARIO") ?: "cliente"
 
+        // Inicialización
         reemplazarFragmento(FragmentHome())
         setupNavigation(rol)
         setupRailViews()
 
-        // El mando púrpura abre y cierra el menú
+        // 1. Lógica del botón de la barra lateral para abrir/cerrar
         binding.btnAbrirRail.setOnClickListener {
-            binding.navigationRail.visibility = if (binding.navigationRail.visibility == View.VISIBLE) {
-                View.GONE
+            if (binding.navigationRail.visibility == View.VISIBLE) {
+                cerrarMenuLateral()
             } else {
-                View.VISIBLE
+                abrirMenuLateral()
             }
         }
 
-        // Cerrar al tocar en la zona de fragmentos
-        binding.mainHomeUFragment.setOnClickListener {
-            binding.navigationRail.visibility = View.GONE
+        // 2. LA CLAVE: Si el Scrim es visible y se pulsa, se cierra el menú.
+        // Esto cubre cualquier parte de la pantalla fuera del Rail.
+        binding.viewScrim.setOnClickListener {
+            cerrarMenuLateral()
         }
     }
 
+    // --- FUNCIONES DE CONTROL DE INTERFAZ ---
+
+    private fun abrirMenuLateral() {
+        binding.navigationRail.visibility = View.VISIBLE
+        binding.viewScrim.visibility = View.VISIBLE
+
+        // ORDEN CORRECTO DE CAPAS:
+        // Primero el scrim para que tape el fragmento
+        binding.viewScrim.bringToFront()
+
+        // Segundo el menú para que quede ENCIMA del scrim y sea clicable
+        binding.navigationRail.bringToFront()
+
+        // Por último el botón por si quieres volver a pulsarlo
+        binding.btnAbrirRail.bringToFront()
+    }
+
+    private fun cerrarMenuLateral() {
+        binding.navigationRail.visibility = View.GONE
+        binding.viewScrim.visibility = View.GONE
+    }
+
     private fun setupNavigation(rol: String) {
-        // --- LOGICA PARA OCULTAR LA CESTA A ADMINS ---
         if (rol == "admin") {
             val menu = binding.navigationRail.menu
-            val itemCesta = menu.findItem(R.id.item_cesta)
-            itemCesta?.isVisible = false
+            menu.findItem(R.id.item_cesta)?.isVisible = false
         }
 
         binding.navigationRail.setOnItemSelectedListener { item ->
+            // Cerramos el rail y el scrim al seleccionar una opción
+            cerrarMenuLateral()
+
             when (item.itemId) {
                 R.id.item_menu -> {
                     reemplazarFragmento(FragmentHome())
@@ -58,15 +82,14 @@ class HomeActivity : AppCompatActivity() {
                     reemplazarFragmento(FragmentCatalogo())
                     true
                 }
-                R.id.item_perfil -> {
-                    reemplazarFragmento(FragmentPerfil())
+                R.id.item_cesta -> {
+                    if (rol != "admin") {
+                        reemplazarFragmento(FragmentCesta())
+                    }
                     true
                 }
-                R.id.item_cesta -> {
-                    // Solo permitimos abrir la cesta si NO es admin
-                    if (rol != "admin") {
-                        startActivity(Intent(this, CestaActivity::class.java))
-                    }
+                R.id.item_perfil -> {
+                    reemplazarFragmento(FragmentPerfil())
                     true
                 }
                 else -> false
@@ -77,24 +100,22 @@ class HomeActivity : AppCompatActivity() {
     private fun setupRailViews() {
         val inflater = LayoutInflater.from(this)
 
-        // 1. Añadir el Header (Logo)
+        // Header
         val headerView = inflater.inflate(R.layout.rail_header, binding.navigationRail, false)
         binding.navigationRail.addHeaderView(headerView)
 
-        // 2. Añadir el Footer (Botón de Info)
+        // Footer manual
         val footerView = inflater.inflate(R.layout.rail_footer, binding.navigationRail, false)
         val params = android.widget.FrameLayout.LayoutParams(
             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
             android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = android.view.Gravity.BOTTOM
-        }
-
+        )
+        params.gravity = android.view.Gravity.BOTTOM
         binding.navigationRail.addView(footerView, params)
 
         footerView.findViewById<ImageButton>(R.id.btn_info_uso)?.setOnClickListener {
             reemplazarFragmento(FragmentGuiaUso())
-            binding.navigationRail.visibility = View.GONE // Cerramos el rail tras elegir
+            cerrarMenuLateral() // También cerramos aquí
         }
     }
 

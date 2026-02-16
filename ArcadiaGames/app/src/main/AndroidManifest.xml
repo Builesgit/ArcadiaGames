@@ -47,7 +47,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".CestaActivity"
+            android:name=".FragmentCesta"
             android:exported="false" />
 
         <activity

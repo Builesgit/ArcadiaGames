@@ -12,34 +12,39 @@
         android:scaleType="centerCrop"
         android:src="@drawable/fondo_sin_logo" />
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/main_home_U_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/view_scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:background="#60000000"
+        android:visibility="gone" />
 
-        <com.google.android.material.navigationrail.NavigationRailView
-            android:id="@+id/navigation_rail"
-            android:layout_width="72dp"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:backgroundTint="#80000000"
-            app:menu="@menu/menu_rail"
-            app:itemIconTint="@color/white"
-            app:itemTextColor="@color/white"
-            app:menuGravity="top"/>
+    <com.google.android.material.navigationrail.NavigationRailView
+        android:id="@+id/navigation_rail"
+        android:layout_width="72dp"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:elevation="8dp"
+        app:backgroundTint="#CC000000"
+        app:menu="@menu/menu_rail"
 
-        <FrameLayout
-            android:id="@+id/main_home_U_fragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+
+        app:itemActiveIndicatorStyle="@null"
+        app:menuGravity="top"/>
 
     <ImageButton
         android:id="@+id/btn_abrir_rail"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="12dp"
+        android:elevation="9dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:src="@drawable/logo_perfil" />

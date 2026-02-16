@@ -16,9 +16,10 @@ class PagoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_pago)
 
         val total = intent.getDoubleExtra("PRECIO_TOTAL", 0.0)
-        listaProductos = intent.getSerializableExtra("LISTA_PRODUCTOS") as? List<Juego> ?: emptyList()
+        val serializable = intent.getSerializableExtra("LISTA_PRODUCTOS")
+        listaProductos = if (serializable is List<*>) serializable as List<Juego> else emptyList()
 
-        findViewById<TextView>(R.id.tvTotal).text = "TOTAL: €%.2f".format(total)
+        findViewById<TextView>(R.id.tvTotal).text = "TOTAL: €" + String.format("%.2f", total)
 
         findViewById<Button>(R.id.btnCheckout).setOnClickListener {
             val name = findViewById<EditText>(R.id.etName).text.toString().trim()
@@ -35,39 +36,27 @@ class PagoActivity : AppCompatActivity() {
         val db = FirebaseDatabase.getInstance()
         val inventoryManager = FirebaseInventoryManager()
 
-        // Dentro de procesarFinalizacionPago en PagoActivity.kt
-        listaProductos.forEach { juego ->
-            val nuevoStock = (juego.stock - 1).coerceAtLeast(0)
+        // Bucle tradicional para actualizar stock
+        for (i in 0 until listaProductos.size) {
+            val juego = listaProductos[i]
+            var nuevoStock = juego.stock - 1
+            if (nuevoStock < 0) nuevoStock = 0
+
             db.getReference("productos").child(juego.id).child("stock").setValue(nuevoStock)
 
-            // 1er REGISTRO: La acción de compra
-            inventoryManager.registrarEnHistorial(
-                nombreUser = cliente,
-                accion = "compró",
-                producto = juego.nombre,
-                cant = nuevoStock
-            )
+            inventoryManager.registrarEnHistorial(cliente, "compró", juego.nombre, nuevoStock)
 
-            // 2do REGISTRO: El aviso de agotado (solo si el stock llegó a 0)
             if (nuevoStock == 0) {
-                inventoryManager.registrarEnHistorial(
-                    nombreUser = "Sistema", // O el nombre que prefieras
-                    accion = "Agotado el stock",
-                    producto = juego.nombre,
-                    cant = 0
-                )
+                inventoryManager.registrarEnHistorial("Sistema", "Agotado el stock", juego.nombre, 0)
             }
         }
 
-        // Una vez vaciada la cesta, redirigimos a HomeActivity
         db.getReference("cesta").child(uid).removeValue().addOnSuccessListener {
-            Toast.makeText(this, "¡Compra finalizada con éxito!", Toast.LENGTH_LONG).show()
-
+            Toast.makeText(this, "¡Compra finalizada!", Toast.LENGTH_LONG).show()
             val intent = Intent(this, HomeActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
-
-            finish() // Cerramos PagoActivity
+            finish()
         }
     }
 }
