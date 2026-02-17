@@ -30,10 +30,22 @@
     <!-- aquí pondremos lo de la guía de uso ></!-->
     <string name="Guía_uso">GUÍA DE ARCADIA</string>
     <string name="Bienvenido">Bienvenido a ArcadiaGames. Aquí puedes gestionar tu catálogo gamer de forma premium.</string>
-    <string name="Catalogogo">1. Catálogo</string>
+    <string name="Menu_p">1. Menú</string>
+    <string name="Menu_desc">En el menú principal de Arcadia Games puedes ver nuestras mejores novedades y ofertas de los juegos más recientes, toda una oportunidad.
+        Mueve el rail hacia la derecha o izquierda para ver los diferentes juegos en oferta</string>
+    <string name="Catalogogo">2. Catálogo</string>
     <string name="Buscar_juegos">Pulsa en cualquier juego para ver detalles, stock y opciones de compra o alquiler.</string>
-    <string name="Filtros">2. Filtros</string>
+    <string name="Filtros">3. Filtros</string>
     <string name="Barra_busqueda">Usa la barra de búsqueda superior o los chips de plataforma para encontrar lo que buscas al instante.</string>
+    <string name="Incidencias">4. Incidencias</string>
+    <string name="Crear_incidencia">En la pestaña de incidencias puedes notificar al equipo acerca de cualquier problema relacionado con la app</string>
+    <string name="Anadir_juego">5. Añadir juego</string>
+    <string name="Anadir_desc">Aquí podrás añadir cualquier juego al catálogo de ArcadiaGames para que cualquiera pueda comprarlo o alquilar el juego</string>
+    <string name="Anadir_desc_2">Para añadir un juego nuevo tienes que saber el nombre, precio, stock que tienes y tener una imagen para agregar el producto</string>
+    <string name="Mis_jueegos">6. Mis Juegos</string>
+    <string name="Mis_desc">En la pestaña de mis juegos puedes ver los juegos que tienes comprados o alquilados en la tienda</string>
+    <string name="Intercambios">7. Intercambio</string>
+    <string name="Intercambio_desc">En la pestaña de Intercambios puedes realizar intercambios de juegos con otros usuarios, de manera segura y efectiva</string>
 
 
     <string name="Comprar">Comprar</string>

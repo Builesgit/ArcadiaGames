@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,83 +31,175 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp">
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/precio_background"
-            android:padding="8dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Bienvenido"
-                android:textColor="#CCCCCC"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:layout_marginBottom="6dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/precio_background"
-            android:padding="8dp"
             android:layout_marginTop="10dp">
 
-            <TextView
-                android:id="@+id/tv_catalogo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/Catalogogo"
-                android:textColor="@color/Texto_Verde"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:gravity="center"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/Buscar_juegos"
-                android:textColor="#AAAAAA" />
+                android:orientation="vertical"
+                android:background="@drawable/background_juego"
+                android:padding="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Bienvenido"
+                    android:textColor="#CCCCCC"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="6dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/background_juego"
+                android:padding="8dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Menu_p"
+                    android:textColor="@color/Amarillo"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/Menu_desc"
+                    android:textColor="#AAAAAA" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Catalogogo"
+                    android:textColor="@color/Amarillo"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/Buscar_juegos"
+                    android:textColor="#AAAAAA" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Filtros"
+                    android:textColor="@color/Amarillo"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Barra_busqueda"
+                    android:textColor="#AAAAAA"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
+
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Incidencias"
+                    android:textColor="@color/Amarillo"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Crear_incidencia"
+                    android:textColor="#AAAAAA"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Anadir_juego"
+                    android:textColor="@color/Amarillo"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Anadir_desc"
+                    android:textColor="#AAAAAA"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Anadir_desc_2"
+                    android:textColor="#AAAAAA"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Mis_jueegos"
+                    android:textColor="@color/Amarillo"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Mis_desc"
+                    android:textColor="#AAAAAA"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Intercambios"
+                    android:textColor="@color/Amarillo"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Intercambio_desc"
+                    android:textColor="#AAAAAA"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
+
+
+
+
+            </LinearLayout>
+
+
+
+
+
+
+
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/precio_background"
-            android:padding="8dp"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/Filtros"
-                android:textColor="@color/Texto_Verde"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/Barra_busqueda"
-                android:textColor="#AAAAAA"
-                android:gravity="center"
-                android:layout_marginBottom="12dp"/>
-        </LinearLayout>
-
-
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
