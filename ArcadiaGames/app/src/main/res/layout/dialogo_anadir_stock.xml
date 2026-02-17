@@ -7,43 +7,75 @@
     android:background="@drawable/historial_background">
 
     <TextView
-    android:id="@+id/tvTituloAnadir"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="AÑADIR STOCK"
-    android:textColor="#FFC107"
-    android:textSize="18sp"
-    android:textStyle="bold"
-    android:gravity="center"
-    android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:id="@+id/tvStockActual"
+        android:id="@+id/tvTituloAnadir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Stock actual: 0"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:text="REPOSICIÓN POR PLATAFORMA"
+        android:textColor="#FFC107"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="16dp"/>
 
-    <EditText
-        android:id="@+id/etCantidadAnadir"
+    <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:hint="¿Cuántas unidades sumas?"
-        android:inputType="number"
-        android:background="@drawable/edittext_background"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#AAAAAA"
-        android:padding="12dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:alignmentMode="alignMargins">
+
+        <EditText
+            android:id="@+id/etStockPS"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="PlayStation"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:id="@+id/etStockXbox"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="Xbox"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:id="@+id/etStockNintendo"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="Nintendo"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:id="@+id/etStockPC"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="PC"
+            android:inputType="number"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+    </GridLayout>
 
     <Button
         android:id="@+id/btnConfirmarSuma"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:text="SUMAR AL INVENTARIO"
+        android:layout_marginTop="20dp"
+        android:text="ACTUALIZAR INVENTARIO"
         android:textStyle="bold"
         android:textColor="#000000"
-        android:backgroundTint="#4CAF50"/> </LinearLayout>
+        android:backgroundTint="#4CAF50"/>
+</LinearLayout>
