@@ -6,11 +6,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.prueba1integrador.databinding.ActivityAlquilarJuegoBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
 class AlquilarJuegoActivity : AppCompatActivity() {
 
@@ -29,12 +29,15 @@ class AlquilarJuegoActivity : AppCompatActivity() {
 
         if (juego?.imagenUrl?.isNotEmpty() == true) {
             Glide.with(this).load(juego.imagenUrl).into(binding.ivJuego)
+        } else if (juego?.imagenResId != 0) {
+            binding.ivJuego.setImageResource(juego!!.imagenResId)
         }
 
         setupListeners(juego)
     }
 
     private fun setupListeners(juego: Juego?) {
+
         binding.etFechaInicio.setOnClickListener {
             mostrarDatePicker(Calendar.getInstance()) { calendar ->
                 fechaInicio = calendar
@@ -52,89 +55,90 @@ class AlquilarJuegoActivity : AppCompatActivity() {
             } ?: Toast.makeText(this, "Selecciona fecha de inicio", Toast.LENGTH_SHORT).show()
         }
 
-        binding.btnConfirmarAlquiler.setOnClickListener { confirmarAlquiler(juego) }
+        binding.btnConfirmarAlquiler.setOnClickListener {
+            if (juego != null) confirmarAlquiler(juego)
+        }
     }
 
     private fun calcularPrecio() {
         if (fechaInicio == null || fechaFin == null) return
-        val dias = TimeUnit.MILLISECONDS.toDays(fechaFin!!.timeInMillis - fechaInicio!!.timeInMillis)
+
+        val dias = TimeUnit.MILLISECONDS.toDays(
+            fechaFin!!.timeInMillis - fechaInicio!!.timeInMillis
+        )
+
         val total = if (dias > 0) dias * precioPorDia else 0.0
         binding.tvPrecioTotal.text = "%.2f €".format(total)
     }
 
-    private fun confirmarAlquiler(juego: Juego?) {
+    private fun confirmarAlquiler(juego: Juego) {
+
         val user = FirebaseAuth.getInstance().currentUser
-        if (user == null || juego == null || fechaInicio == null || fechaFin == null) return
+        if (user == null || fechaInicio == null || fechaFin == null) {
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        val precioFinal = (TimeUnit.MILLISECONDS.toDays(fechaFin!!.timeInMillis - fechaInicio!!.timeInMillis)) * precioPorDia
-
-        val alquiler = Alquiler(
-            alquilerId = UUID.randomUUID().toString(),
-            juegoId = juego.id,
-            nombreJuego = juego.nombre,
-            idUsuario = user.uid,
-            nombreUsuario = binding.etNombreCliente.text.toString(),
-            fechaInicio = formatearFecha(fechaInicio!!),
-            fechaFin = formatearFecha(fechaFin!!),
-            precioTotal = precioFinal,
-            timestamp = System.currentTimeMillis()
+        val dias = TimeUnit.MILLISECONDS.toDays(
+            fechaFin!!.timeInMillis - fechaInicio!!.timeInMillis
         )
 
-        FirebaseDatabase.getInstance().getReference("alquileres").push().setValue(alquiler)
+        if (dias <= 0) {
+            Toast.makeText(this, "Selecciona un rango válido de fechas", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val precioFinal = dias * precioPorDia
+        val uid = user.uid
+
+        val db = FirebaseDatabase.getInstance().reference
+        val alquilerId = db.child("alquileres").child(uid).push().key ?: return
+
+        val alquilerMap = hashMapOf(
+            "id" to juego.id,
+            "nombre" to juego.nombre,
+            "plataforma" to juego.plataforma,
+            "precio" to "%.2f €".format(precioFinal),
+            "imagenUrl" to juego.imagenUrl,
+            "imagenResId" to juego.imagenResId,
+            "fechaInicio" to fechaInicio!!.timeInMillis,
+            "fechaFin" to fechaFin!!.timeInMillis,
+            "timestamp" to System.currentTimeMillis()
+        )
+
+
+
+        db.child("alquileres")
+            .child(uid)
+            .child(alquilerId)
+            .setValue(alquilerMap)
             .addOnSuccessListener {
-                registrarEnHistorial(juego.nombre, user.email ?: "Usuario")
-                Toast.makeText(this, "Alquiler exitoso", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(this, "Alquiler realizado correctamente ✅", Toast.LENGTH_SHORT).show()
                 finish()
             }
-    }
-
-    private fun registrarEnHistorial(juego: String, usuario: String) {
-        val log = AccionHistorial(
-            usuarioNombre = usuario,
-            accion = "alquiló",
-            productoNombre = juego,
-            fecha = System.currentTimeMillis()
-        )
-        FirebaseDatabase.getInstance().getReference("historial").push().setValue(log)
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al guardar alquiler", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun mostrarDatePicker(minDate: Calendar, onDate: (Calendar) -> Unit) {
         val c = Calendar.getInstance()
-        val dpd = DatePickerDialog(this, { _, y, m, d ->
-            val res = Calendar.getInstance().apply { set(y, m, d) }
-            onDate(res)
-        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH))
+        val dpd = DatePickerDialog(
+            this,
+            { _, y, m, d ->
+                val res = Calendar.getInstance().apply { set(y, m, d) }
+                onDate(res)
+            },
+            c.get(Calendar.YEAR),
+            c.get(Calendar.MONTH),
+            c.get(Calendar.DAY_OF_MONTH)
+        )
         dpd.datePicker.minDate = minDate.timeInMillis
         dpd.show()
     }
 
-    private fun confirmarAlquilerFinal(juego: Juego) {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val inventoryManager = FirebaseInventoryManager()
-
-        // 1. Guardar el registro de alquiler
-        val alquilerRef = FirebaseDatabase.getInstance().getReference("alquileres").child(uid).child(juego.id)
-        val fechaExpiracion = System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000) // 7 días
-
-        val datos = mapOf(
-            "juegoId" to juego.id,
-            "nombre" to juego.nombre,
-            "fechaExpiracion" to fechaExpiracion,
-            "devuelto" to false
-        )
-
-        alquilerRef.setValue(datos).addOnSuccessListener {
-            // 2. REGISTRO EN HISTORIAL: Mensaje específico de éxito
-            inventoryManager.registrarEnHistorial(
-                nombreUser = "Usuario",
-                accion = "Alquiler realizado",
-                producto = juego.nombre
-            )
-
-            Toast.makeText(this, "Alquiler realizado correctamente ✅", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+    private fun formatearFecha(c: Calendar): String {
+        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(c.time)
     }
-
-    private fun formatearFecha(c: Calendar) = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(c.time)
 }

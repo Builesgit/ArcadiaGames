@@ -12,6 +12,7 @@ import com.example.prueba1integrador.databinding.ActivityPerfilBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
@@ -19,6 +20,9 @@ class FragmentPerfil : Fragment() {
 
     private var _binding: ActivityPerfilBinding? = null
     private val binding get() = _binding!!
+
+    private var userListener: ValueEventListener? = null
+    private var userRef: DatabaseReference? = null
 
     companion object {
         fun newInstance(usuario: String, rol: String): FragmentPerfil {
@@ -95,7 +99,6 @@ class FragmentPerfil : Fragment() {
                 startActivity(Intent(requireContext(), HistorialActivity::class.java))
             }
 
-            // --- NUEVO: GESTIONAR INCIDENCIAS (ADMIN) ---
             binding.btnGestionarIncidencias.setOnClickListener {
                 val fragmentoIncidencias = FragmentMostrarIncidencias()
                 parentFragmentManager.beginTransaction()
@@ -112,7 +115,7 @@ class FragmentPerfil : Fragment() {
             binding.btnAbrirDialogoAdmin.visibility = View.VISIBLE
 
             binding.btnMisCompras.setOnClickListener {
-                // Aquí iría tu lógica de compras
+                startActivity(Intent(requireContext(), MisComprasActivity::class.java))
             }
 
             // --- NUEVO: SOPORTE TÉCNICO (USUARIO) ---
