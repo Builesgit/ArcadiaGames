@@ -29,8 +29,6 @@ class GestionarInventarioActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
 
-        // CORRECCIÓN: El onEditClick ya no necesita abrir una Activity.
-        // El adaptador ahora maneja el diálogo internamente.
         adapter = GestionarAdapter(
             listaInventario = listaVisualInventario,
             onEditClick = { /* No hace falta lógica aquí, el Adapter abre el diálogo */ },
@@ -58,13 +56,18 @@ class GestionarInventarioActivity : AppCompatActivity() {
         listaVisualInventario = agrupados.map { entry ->
             val listaDeEsteJuego = entry.value
             val juegoRepresentante = listaDeEsteJuego.first()
-            val stockTotal = listaDeEsteJuego.sumOf { it.stock }
-            val ids = listaDeEsteJuego.map { it.id }
-            ItemInventario(juegoRepresentante, stockTotal, ids)
-        }
 
-        if (::adapter.isInitialized) {
-            adapter.actualizarLista(listaVisualInventario)
+            ItemInventario(
+                juego = juegoRepresentante,
+                cantidad = listaDeEsteJuego.sumOf { it.stock },
+                idsAgrupados = listaDeEsteJuego.map { it.id },
+                // Las claves deben ser idénticas a las del Map anterior
+                ps = listaDeEsteJuego.sumOf { it.detalle_stock?.get("playstation") ?: 0 },
+                xb = listaDeEsteJuego.sumOf { it.detalle_stock?.get("xbox") ?: 0 },
+                ni = listaDeEsteJuego.sumOf { it.detalle_stock?.get("nintendo") ?: 0 },
+                pc = listaDeEsteJuego.sumOf { it.detalle_stock?.get("pc") ?: 0 }
+            )
         }
+        adapter.actualizarLista(listaVisualInventario)
     }
 }
