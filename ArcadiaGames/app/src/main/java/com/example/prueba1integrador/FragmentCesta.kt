@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,18 +39,17 @@ class FragmentCesta : Fragment() {
 
         btnPay.setOnClickListener {
             if (listaCesta.isNotEmpty()) {
+
                 val intent = Intent(requireContext(), PagoActivity::class.java)
                 intent.putExtra("PRECIO_TOTAL", calcularTotal())
+                intent.putExtra("LISTA_PRODUCTOS", ArrayList(listaCesta))
 
-                // Convertimos la lista a ArrayList para pasarla por el Intent
-                val arrayListJuegos = ArrayList<Juego>()
-                for (j in listaCesta) {
-                    arrayListJuegos.add(j)
-                }
-                intent.putExtra("LISTA_PRODUCTOS", arrayListJuegos)
                 startActivity(intent)
+            } else {
+                Toast.makeText(context, "La cesta está vacía", Toast.LENGTH_SHORT).show()
             }
         }
+
 
         return view
     }
