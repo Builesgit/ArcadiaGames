@@ -47,13 +47,21 @@ class AlquilarJuegoActivity : AppCompatActivity() {
 
         binding.etFechaFin.setOnClickListener {
             fechaInicio?.let {
-                mostrarDatePicker(it) { calendar ->
+
+                val minFin = Calendar.getInstance().apply {
+                    timeInMillis = fechaInicio!!.timeInMillis
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
+
+                mostrarDatePicker(minFin) { calendar ->
                     fechaFin = calendar
                     binding.etFechaFin.setText(formatearFecha(calendar))
                     calcularPrecio()
                 }
+
             } ?: Toast.makeText(this, "Selecciona fecha de inicio", Toast.LENGTH_SHORT).show()
         }
+
 
         binding.btnConfirmarAlquiler.setOnClickListener {
             if (juego != null) confirmarAlquiler(juego)
@@ -83,8 +91,21 @@ class AlquilarJuegoActivity : AppCompatActivity() {
             fechaFin!!.timeInMillis - fechaInicio!!.timeInMillis
         )
 
-        if (dias <= 0) {
-            Toast.makeText(this, "Selecciona un rango válido de fechas", Toast.LENGTH_SHORT).show()
+        if (fechaFin!!.timeInMillis == fechaInicio!!.timeInMillis) {
+            Toast.makeText(
+                this,
+                "La fecha de inicio y fin no pueden ser el mismo día",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        if (fechaFin!!.timeInMillis < fechaInicio!!.timeInMillis) {
+            Toast.makeText(
+                this,
+                "La fecha de fin no puede ser anterior a la fecha de inicio",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 

@@ -73,7 +73,8 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         app:chipSpacingHorizontal="8dp"
-                        app:singleSelection="false">
+                        app:singleSelection="true"
+                        app:selectionRequired="false">
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip_pc"

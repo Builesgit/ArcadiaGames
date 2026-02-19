@@ -30,7 +30,8 @@
             android:layout_columnWeight="1"
             android:hint="PlayStation"
             android:inputType="number"
-            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:gravity="center"
             android:background="@drawable/edittext_background"
             android:padding="12dp"
             android:layout_margin="4dp"/>
@@ -40,8 +41,9 @@
             android:layout_width="0dp"
             android:layout_columnWeight="1"
             android:hint="Xbox"
+            android:textColorHint="#FFFFFF"
+            android:gravity="center"
             android:inputType="number"
-            android:textColor="#FFFFFF"
             android:background="@drawable/edittext_background"
             android:padding="12dp"
             android:layout_margin="4dp"/>
@@ -51,8 +53,9 @@
             android:layout_width="0dp"
             android:layout_columnWeight="1"
             android:hint="Nintendo"
+            android:gravity="center"
+            android:textColorHint="#FFFFFF"
             android:inputType="number"
-            android:textColor="#FFFFFF"
             android:background="@drawable/edittext_background"
             android:padding="12dp"
             android:layout_margin="4dp"/>
@@ -62,8 +65,9 @@
             android:layout_width="0dp"
             android:layout_columnWeight="1"
             android:hint="PC"
+            android:textColorHint="#FFFFFF"
+            android:gravity="center"
             android:inputType="number"
-            android:textColor="#FFFFFF"
             android:background="@drawable/edittext_background"
             android:padding="12dp"
             android:layout_margin="4dp"/>

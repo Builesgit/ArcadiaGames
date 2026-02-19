@@ -8,10 +8,14 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PagoActivity : AppCompatActivity() {
 
     private lateinit var listaProductos: ArrayList<Juego>
+    private lateinit var compraId: String
+    private var fechaActualMillis: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,33 +30,105 @@ class PagoActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvTotal).text =
             "TOTAL: €" + String.format("%.2f", total)
 
-        // ✅ AUTOFORMATO FECHA: MM/YY (añade "/" al escribir 2 dígitos)
+        // ===============================
+        // GENERAR PEDIDO REAL ANTES DE PAGAR
+        // ===============================
+        val user = FirebaseAuth.getInstance().currentUser
+        val uid = user?.uid
+
+        if (uid != null) {
+            val db = FirebaseDatabase.getInstance().reference
+            compraId = db.child("compras").child(uid).push().key ?: UUID.randomUUID().toString()
+        } else {
+            compraId = UUID.randomUUID().toString()
+        }
+
+        fechaActualMillis = System.currentTimeMillis()
+        val fechaFormateada = SimpleDateFormat(
+            "dd/MM/yyyy HH:mm",
+            Locale.getDefault()
+        ).format(Date(fechaActualMillis))
+
+        findViewById<TextView>(R.id.tvImporteOperacion).text =
+            String.format("%.2f €", total)
+
+        findViewById<TextView>(R.id.tvPedidoOperacion).text =
+            "Pedido: $compraId"
+
+        findViewById<TextView>(R.id.tvFechaOperacion).text =
+            "Fecha: $fechaFormateada"
+
+        val etCardNumber = findViewById<EditText>(R.id.etCardNumber)
         val etExpiry = findViewById<EditText>(R.id.etExpiration)
-        etExpiry.addTextChangedListener(object : TextWatcher {
+
+        // ===============================
+        // AUTOFORMATO TARJETA
+        // ===============================
+        etCardNumber.addTextChangedListener(object : TextWatcher {
+            private var isFormatting = false
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                if (s == null) return
+                if (isFormatting || s == null) return
+                isFormatting = true
 
-                // Si llega a 2 caracteres y no tiene "/", lo añade
-                if (s.length == 2 && !s.contains("/")) {
-                    s.append("/")
+                val digitsOnly = s.toString().replace(" ", "")
+                val trimmed = if (digitsOnly.length > 16) {
+                    digitsOnly.substring(0, 16)
+                } else {
+                    digitsOnly
                 }
 
-                // Si el usuario borra y queda "MM/", que permita borrar "/" fácil
-                if (s.length == 3 && s[2] == '/' && s.substring(0, 2).any { !it.isDigit() }) {
-                    s.clear()
+                val formatted = StringBuilder()
+                for (i in trimmed.indices) {
+                    formatted.append(trimmed[i])
+                    if ((i + 1) % 4 == 0 && i != trimmed.lastIndex) {
+                        formatted.append(" ")
+                    }
                 }
+
+                etCardNumber.setText(formatted.toString())
+                etCardNumber.setSelection(formatted.length)
+
+                isFormatting = false
             }
         })
 
+        // ===============================
+        // AUTOFORMATO FECHA
+        // ===============================
+        etExpiry.addTextChangedListener(object : TextWatcher {
+            private var isFormatting = false
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isFormatting || s == null) return
+                isFormatting = true
+
+                val digits = s.toString().replace("/", "")
+                if (digits.length >= 2) {
+                    val mes = digits.substring(0, 2)
+                    val resto = digits.drop(2)
+                    s.replace(0, s.length, if (resto.isNotEmpty()) "$mes/$resto" else mes)
+                }
+
+                isFormatting = false
+            }
+        })
+
+        // ===============================
+        // BOTÓN PAGAR
+        // ===============================
         findViewById<Button>(R.id.btnCheckout).setOnClickListener {
 
             val name = findViewById<EditText>(R.id.etName).text.toString().trim()
-            val cardNumber = findViewById<EditText>(R.id.etCardNumber).text.toString().trim()
-            val expiry = findViewById<EditText>(R.id.etExpiration).text.toString().trim()
+            val cardNumberRaw = etCardNumber.text.toString().replace(" ", "")
+            val expiry = etExpiry.text.toString().trim()
             val cvv = findViewById<EditText>(R.id.etCvv).text.toString().trim()
 
             if (name.isEmpty()) {
@@ -60,7 +136,7 @@ class PagoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (cardNumber.length != 16 || !cardNumber.all { it.isDigit() }) {
+            if (cardNumberRaw.length != 16 || !cardNumberRaw.all { it.isDigit() }) {
                 Toast.makeText(this, "La tarjeta debe tener 16 números", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -80,21 +156,15 @@ class PagoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            procesarFinalizacionPago(name)
+            procesarFinalizacionPago(name, total)
         }
     }
 
     private fun validarFecha(fecha: String): Boolean {
-        if (!Regex("^(0[1-9]|1[0-2])/[0-9]{2}$").matches(fecha)) {
-            return false
-        }
-        val partes = fecha.split("/")
-        val mes = partes[0].toInt()
-        if (mes !in 1..12) return false
-        return true
+        return Regex("^(0[1-9]|1[0-2])/[0-9]{2}$").matches(fecha)
     }
 
-    private fun procesarFinalizacionPago(cliente: String) {
+    private fun procesarFinalizacionPago(cliente: String, totalCompra: Double) {
 
         val user = FirebaseAuth.getInstance().currentUser
         if (user == null) {
@@ -104,21 +174,13 @@ class PagoActivity : AppCompatActivity() {
 
         val uid = user.uid
         val db = FirebaseDatabase.getInstance().reference
-        val totalCompra = intent.getDoubleExtra("PRECIO_TOTAL", 0.0)
-
-        val compraId = db.child("compras").child(uid).push().key
-        if (compraId == null) {
-            Toast.makeText(this, "Error generando compra", Toast.LENGTH_LONG).show()
-            return
-        }
 
         val compraMap = hashMapOf(
             "cliente" to cliente,
-            "fecha" to System.currentTimeMillis(),
+            "fecha" to fechaActualMillis,
             "total" to totalCompra
         )
 
-        // 1️⃣ Guardar la compra
         db.child("compras")
             .child(uid)
             .child(compraId)
@@ -130,7 +192,6 @@ class PagoActivity : AppCompatActivity() {
                     return@addOnCompleteListener
                 }
 
-                // 2️⃣ Guardar juegos dentro de la compra
                 for (juego in listaProductos) {
 
                     val juegoMap = hashMapOf(
@@ -146,8 +207,6 @@ class PagoActivity : AppCompatActivity() {
                         "tags" to juego.tags
                     )
 
-
-
                     db.child("compras")
                         .child(uid)
                         .child(compraId)
@@ -155,7 +214,6 @@ class PagoActivity : AppCompatActivity() {
                         .child(juego.id)
                         .setValue(juegoMap)
 
-                    // 3️⃣ Actualizar stock
                     val nuevoStock = (juego.stock - 1).coerceAtLeast(0)
                     db.child("productos")
                         .child(juego.id)
@@ -163,31 +221,11 @@ class PagoActivity : AppCompatActivity() {
                         .setValue(nuevoStock)
                 }
 
-                // 4️⃣ Vaciar cesta
                 db.child("cesta")
                     .child(uid)
                     .removeValue()
 
-                // 5️⃣ Confirmación
                 Toast.makeText(this, "¡Compra realizada correctamente!", Toast.LENGTH_LONG).show()
-
-                val intent = Intent(this, HomeActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                startActivity(intent)
-                finish()
-            }
-    }
-
-
-    private fun finalizarCompra(uid: String) {
-
-        FirebaseDatabase.getInstance()
-            .getReference("cesta")
-            .child(uid)
-            .removeValue()
-            .addOnSuccessListener {
-
-                Toast.makeText(this, "¡Compra finalizada!", Toast.LENGTH_LONG).show()
 
                 val intent = Intent(this, HomeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
