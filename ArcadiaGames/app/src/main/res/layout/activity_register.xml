@@ -14,6 +14,20 @@
         android:scaleType="fitXY"
         android:src="@drawable/fondo_sin_logo" />
 
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="112dp"
+        android:layout_height="104dp"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Logo Arcadia Games"
+        android:src="@drawable/marco_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.471"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divisor_vertical"
         android:layout_width="3dp"

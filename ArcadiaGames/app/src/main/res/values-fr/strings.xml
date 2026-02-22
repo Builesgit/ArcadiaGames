@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">Arcadia Games</string>
+    <string name="inicio">CONNEXION</string>
+    <string name="correo">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="acceder">Se connecter</string>
+    <string name="registrate">Pas de compte ? Inscrivez-vous</string>
+
+    <string name="completar_campos">Veuillez remplir tous les champs</string>
+    <string name="error_login">Nom d utilisateur ou mot de passe incorrect</string>
+
+    <string name="Buscar">Rechercher des jeux</string>
+    <string name="Catalogo">Catalogue de Jeux</string>
+    <string name="Novedades">Nouveautés</string>
+    <string name="Ofertas">Offres</string>
+    <string name="Favoritos">Favoris</string>
+
+    <string name="Crear">Créer un compte</string>
+    <string name="Usuario">Utilisateur</string>
+    <string name="Correo">Email</string>
+    <string name="Numero">Numéro de téléphone</string>
+    <string name="Contraseña">Mot de passe</string>
+    <string name="Confirmar">Confirmer le mot de passe</string>
+
+    <string name="Gestion">GESTION DE L´INVENTAIRE</string>
+    <string name="Gestionar">Gérer les incidents</string>
+    <string name="Añadir">Ajouter un incident</string>
+    <string name="ultimas">DERNIÈRES ACTIONS</string>
+    <string name="Grafico">Graphique d´activité hebdomadaire</string>
+
+    <string name="Mis_juegos">MES JEUX</string>
+
+    <string name="Gestionar_admins">GESTION DES ADMINISTRATEURS</string>
+    <string name="Gestionar_usuarios">GESTION DES UTILISATEURS</string>
+    <string name="Generar_codigo">GÉNÉRER CODE (5 MIN)</string>
+    <string name="Ningun_cod">Aucun code actif</string>
+    <string name="Admins">ADMINS ENREGISTRÉS</string>
+    <string name="No_admins">Aucun autre administrateur enregistré</string>
+
+    <string name="Guía_uso">GUIDE ARCADIA</string>
+    <string name="Bienvenido">Bienvenue sur ArcadiaGames. Gérez votre catalogue gaming premium ici.</string>
+    <string name="Menu_p">1. Menu</string>
+    <string name="Menu_desc">Dans le menu principal d´Arcadia Games, vous pouvez voir nos meilleures nouveautés et offres.
+    Faites glisser le rail à gauche ou à droite pour explorer les jeux en promotion.</string>
+    <string name="Catalogogo">2. Catalogue</string>
+    <string name="Buscar_juegos">Appuyez sur un jeu pour voir les détails, le stock et les options d´achat ou de location.</string>
+    <string name="Filtros">3. Filtres</string>
+    <string name="Barra_busqueda">Utilisez la barre de recherche ou les filtres de plateforme pour trouver rapidement ce que vous cherchez.</string>
+    <string name="Incidencias">4. Incidents</string>
+    <string name="Crear_incidencia">Dans l´onglet incidents, vous pouvez signaler tout problème lié à l´application.</string>
+    <string name="Anadir_juego">5. Ajouter un jeu</string>
+    <string name="Anadir_desc">Ici vous pouvez ajouter un jeu au catalogue ArcadiaGames pour qu´il puisse être acheté ou loué.</string>
+    <string name="Anadir_desc_2">Pour ajouter un jeu, vous devez connaître le nom, le prix, le stock disponible et ajouter une image.</string>
+    <string name="Mis_jueegos">6. Mes Jeux</string>
+    <string name="Mis_desc">Dans Mes Jeux vous pouvez voir les jeux achetés ou loués.</string>
+    <string name="Intercambios">7. Échange</string>
+    <string name="Intercambio_desc">Dans la section Échange, vous pouvez échanger des jeux avec d´autres utilisateurs en toute sécurité.</string>
+
+    <string name="Comprar">Acheter</string>
+    <string name="Alquilar">Louer</string>
+
+    <string name="Crear_I">Créer un incident</string>
+    <string name="Tema_Incidencia">Sujet de l´incident</string>
+    <string name="Nombre_Incidencia">Titre de l´incident</string>
+    <string name="Descripcion_Incidencia">Description de l´incident</string>
+    <string name="Info_Incidencia">Informations supplémentaires</string>
+    <string name="Bug">Bug</string>
+    <string name="Problema_usuario">Utilisateur</string>
+    <string name="Juego">Jeu</string>
+    <string name="Otros">Autre</string>
+    <string name="Mostrar_Incidencia">Afficher les incidents</string>
+</resources>

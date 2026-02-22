@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">Arcadia Games</string>
+    <string name="inicio">LOGIN</string>
+    <string name="correo">Email</string>
+    <string name="password">Password</string>
+    <string name="acceder">Login</string>
+    <string name="registrate">Don´t have an account? Sign up</string>
+
+    <string name="completar_campos">Complete all fields</string>
+    <string name="error_login">Incorrect username or password</string>
+
+    <string name="Buscar">Search games</string>
+    <string name="Catalogo">Game Catalog</string>
+    <string name="Novedades">New Releases</string>
+    <string name="Ofertas">Offers</string>
+    <string name="Favoritos">Favorites</string>
+
+    <string name="Crear">Create Account</string>
+    <string name="Usuario">Username</string>
+    <string name="Correo">Email</string>
+    <string name="Numero">Phone Number</string>
+    <string name="Contraseña">Password</string>
+    <string name="Confirmar">Confirm Password</string>
+
+    <string name="Gestion">INVENTORY MANAGEMENT</string>
+    <string name="Gestionar">Manage issues</string>
+    <string name="Añadir">Add issue</string>
+    <string name="ultimas">LATEST ACTIONS</string>
+    <string name="Grafico">Weekly activity chart</string>
+
+    <string name="Mis_juegos">MY GAMES</string>
+
+    <string name="Gestionar_admins">ADMIN MANAGEMENT</string>
+    <string name="Gestionar_usuarios">USER MANAGEMENT</string>
+    <string name="Generar_codigo">GENERATE CODE (5 MIN)</string>
+    <string name="Ningun_cod">No active code</string>
+    <string name="Admins">REGISTERED ADMINS</string>
+    <string name="No_admins">No more registered administrators</string>
+
+    <string name="Guía_uso">ARCADIA GUIDE</string>
+    <string name="Bienvenido">Welcome to ArcadiaGames. Here you can manage your premium gaming catalog.</string>
+    <string name="Menu_p">1. Menu</string>
+    <string name="Menu_desc">In the main menu of Arcadia Games you can see our best new releases and offers of the latest games.
+    Swipe the rail left or right to explore different games on sale.</string>
+    <string name="Catalogogo">2. Catalog</string>
+    <string name="Buscar_juegos">Tap on any game to view details, stock and purchase or rental options.</string>
+    <string name="Filtros">3. Filters</string>
+    <string name="Barra_busqueda">Use the top search bar or platform chips to instantly find what you´re looking for.</string>
+    <string name="Incidencias">4. Issues</string>
+    <string name="Crear_incidencia">In the issues tab you can notify the team about any app-related problem.</string>
+    <string name="Anadir_juego">5. Add Game</string>
+    <string name="Anadir_desc">Here you can add any game to the ArcadiaGames catalog so others can buy or rent it.</string>
+    <string name="Anadir_desc_2">To add a new game you need the name, price, available stock and an image.</string>
+    <string name="Mis_jueegos">6. My Games</string>
+    <string name="Mis_desc">In My Games you can see the games you have purchased or rented.</string>
+    <string name="Intercambios">7. Trade</string>
+    <string name="Intercambio_desc">In the Trade section you can exchange games with other users safely and efficiently.</string>
+
+    <string name="Comprar">Buy</string>
+    <string name="Alquilar">Rent</string>
+
+    <string name="Crear_I">Create Issue</string>
+    <string name="Tema_Incidencia">Issue Topic</string>
+    <string name="Nombre_Incidencia">Issue Title</string>
+    <string name="Descripcion_Incidencia">Issue Description</string>
+    <string name="Info_Incidencia">Additional Information</string>
+    <string name="Bug">Bug</string>
+    <string name="Problema_usuario">User</string>
+    <string name="Juego">Game</string>
+    <string name="Otros">Other</string>
+    <string name="Mostrar_Incidencia">Show Issues</string>
+</resources>

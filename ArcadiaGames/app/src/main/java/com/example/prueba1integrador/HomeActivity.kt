@@ -1,6 +1,5 @@
 package com.example.prueba1integrador
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,12 +19,10 @@ class HomeActivity : AppCompatActivity() {
 
         val rol = intent.getStringExtra("ROL_USUARIO") ?: "cliente"
 
-        // Inicialización
         reemplazarFragmento(FragmentHome())
         setupNavigation(rol)
         setupRailViews()
 
-        // 1. Lógica del botón de la barra lateral para abrir/cerrar
         binding.btnAbrirRail.setOnClickListener {
             if (binding.navigationRail.visibility == View.VISIBLE) {
                 cerrarMenuLateral()
@@ -34,27 +31,17 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        // 2. LA CLAVE: Si el Scrim es visible y se pulsa, se cierra el menú.
-        // Esto cubre cualquier parte de la pantalla fuera del Rail.
         binding.viewScrim.setOnClickListener {
             cerrarMenuLateral()
         }
     }
 
-    // --- FUNCIONES DE CONTROL DE INTERFAZ ---
-
     private fun abrirMenuLateral() {
         binding.navigationRail.visibility = View.VISIBLE
         binding.viewScrim.visibility = View.VISIBLE
 
-        // ORDEN CORRECTO DE CAPAS:
-        // Primero el scrim para que tape el fragmento
         binding.viewScrim.bringToFront()
-
-        // Segundo el menú para que quede ENCIMA del scrim y sea clicable
         binding.navigationRail.bringToFront()
-
-        // Por último el botón por si quieres volver a pulsarlo
         binding.btnAbrirRail.bringToFront()
     }
 
@@ -65,12 +52,10 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupNavigation(rol: String) {
         if (rol == "admin") {
-            val menu = binding.navigationRail.menu
-            menu.findItem(R.id.item_cesta)?.isVisible = false
+            binding.navigationRail.menu.findItem(R.id.item_cesta)?.isVisible = false
         }
 
         binding.navigationRail.setOnItemSelectedListener { item ->
-            // Cerramos el rail y el scrim al seleccionar una opción
             cerrarMenuLateral()
 
             when (item.itemId) {
@@ -100,11 +85,9 @@ class HomeActivity : AppCompatActivity() {
     private fun setupRailViews() {
         val inflater = LayoutInflater.from(this)
 
-        // Header
         val headerView = inflater.inflate(R.layout.rail_header, binding.navigationRail, false)
         binding.navigationRail.addHeaderView(headerView)
 
-        // Footer manual
         val footerView = inflater.inflate(R.layout.rail_footer, binding.navigationRail, false)
         val params = android.widget.FrameLayout.LayoutParams(
             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
@@ -115,7 +98,7 @@ class HomeActivity : AppCompatActivity() {
 
         footerView.findViewById<ImageButton>(R.id.btn_info_uso)?.setOnClickListener {
             reemplazarFragmento(FragmentGuiaUso())
-            cerrarMenuLateral() // También cerramos aquí
+            cerrarMenuLateral()
         }
     }
 
