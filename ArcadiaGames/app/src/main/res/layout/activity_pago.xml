@@ -3,14 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Imagen de fondo -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/fondo_sin_logo"
         android:scaleType="centerCrop" />
 
-    <!-- Contenido -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,9 +19,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Título -->
             <TextView
-                android:text="Pagar con tarjeta"
+                android:text="@string/pago_titulo"
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"
                 android:textStyle="bold"
@@ -31,9 +28,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <!-- ============================= -->
-            <!-- DATOS DE LA OPERACIÓN -->
-            <!-- ============================= -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,9 +36,8 @@
                 android:padding="16dp"
                 android:layout_marginBottom="20dp">
 
-                <!-- TÍTULO DETALLES -->
                 <TextView
-                    android:text="Detalles del pedido"
+                    android:text="@string/pago_detalles_pedido"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:textColor="#FFFFFF"
@@ -53,14 +46,13 @@
                     android:gravity="center"
                     android:layout_marginBottom="16dp"/>
 
-                <!-- IMPORTE -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:text="IMPORTE"
+                        android:text="@string/pago_importe"
                         android:textStyle="bold"
                         android:textColor="@color/Amarillo"
                         android:layout_width="0dp"
@@ -69,14 +61,13 @@
 
                     <TextView
                         android:id="@+id/tvImporteOperacion"
-                        android:text="0.00 €"
+                        android:text="@string/pago_precio_importe"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <!-- COMERCIO -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +75,7 @@
                     android:layout_marginTop="10dp">
 
                     <TextView
-                        android:text="Comercio"
+                        android:text="@string/pago_comercio"
                         android:textStyle="bold"
                         android:textColor="@color/white"
                         android:layout_width="0dp"
@@ -93,13 +84,12 @@
 
                     <TextView
                         android:id="@+id/tvComercioOperacion"
-                        android:text="ARCADIA GAMES"
+                        android:text="@string/pago_nombre_comercio"
                         android:textColor="#FFFFFF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <!-- PEDIDO -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,7 +97,7 @@
                     android:layout_marginTop="6dp">
 
                     <TextView
-                        android:text="Pedido"
+                        android:text="@string/pago_pedido"
                         android:textStyle="bold"
                         android:textColor="@color/white"
                         android:layout_width="0dp"
@@ -116,13 +106,12 @@
 
                     <TextView
                         android:id="@+id/tvPedidoOperacion"
-                        android:text="----"
+                        android:text="@string/pago_operacion_pedido"
                         android:textColor="#FFFFFF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <!-- FECHA -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -130,7 +119,7 @@
                     android:layout_marginTop="6dp">
 
                     <TextView
-                        android:text="Fecha"
+                        android:text="@string/pago_fecha"
                         android:textStyle="bold"
                         android:textColor="@color/white"
                         android:layout_width="0dp"
@@ -139,30 +128,23 @@
 
                     <TextView
                         android:id="@+id/tvFechaOperacion"
-                        android:text="--/--/----"
+                        android:text="@string/pago_operacion_fecha"
                         android:textColor="#FFFFFF"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
-
             </LinearLayout>
 
-
-            <!-- ============================= -->
-            <!-- LOGOS -->
-            <!-- ============================= -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="16dp">
-
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="40dp"
                     android:src="@drawable/visa_logo"
                     android:contentDescription="Visa"/>
-
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="40dp"
@@ -171,9 +153,6 @@
                     android:contentDescription="Mastercard"/>
             </LinearLayout>
 
-            <!-- ============================= -->
-            <!-- TARJETA -->
-            <!-- ============================= -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,7 +165,7 @@
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:hint="Nombre del titular"
+                    android:hint="@string/pago_nombre_comprador"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#AAAAAA"
                     android:background="@drawable/edittext_background"
@@ -197,7 +176,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="12dp"
-                    android:hint="Número de tarjeta"
+                    android:hint="@string/pago_numero_tarjeta"
                     android:inputType="number"
                     android:maxLength="19"
                     android:textColor="#FFFFFF"
@@ -216,7 +195,7 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:hint="MM/YY"
+                        android:hint="@string/pago_fecha_expiracion"
                         android:maxLength="5"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#AAAAAA"
@@ -229,7 +208,7 @@
                         android:layout_height="48dp"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:hint="CVV"
+                        android:hint="@string/pago_cvv"
                         android:inputType="numberPassword"
                         android:maxLength="3"
                         android:textColor="#FFFFFF"
@@ -238,11 +217,10 @@
                         android:padding="12dp"/>
                 </LinearLayout>
 
-                <!-- Total -->
                 <TextView
                     android:id="@+id/tvTotal"
                     android:layout_marginTop="20dp"
-                    android:text="TOTAL: €0.00"
+                    android:text="@string/pago_precio_total"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -250,20 +228,16 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 
-            <!-- ============================= -->
-            <!-- BOTÓN -->
-            <!-- ============================= -->
             <Button
                 android:id="@+id/btnCheckout"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="24dp"
-                android:text="Pagar"
+                android:text="@string/pago_btn_pagar"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:backgroundTint="@color/Amarillo"/>
-
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

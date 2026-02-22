@@ -23,7 +23,7 @@
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:letterSpacing="0.1"
-                android:text="@string/Catalogo"
+                android:text="@string/catalogo_titulo"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -37,7 +37,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Buscar juegos en Arcadia..."
+                android:hint="@string/catalogo_buscar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/titulo_catalago_u" />
@@ -46,7 +46,7 @@
                 android:id="@+id/search_view_catalogo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/Buscar"
+                android:hint="@string/catalogo_buscar"
                 app:layout_anchor="@id/search_bar_catalogo" />
 
             <HorizontalScrollView
@@ -81,28 +81,28 @@
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="PC" />
+                            android:text="@string/catalogo_pc" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip_playstation"
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="PlayStation" />
+                            android:text="@string/catalogo_playstation" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip_xbox"
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xbox" />
+                            android:text="@string/catalogo_xbox" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chip_nintendo"
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nintendo" />
+                            android:text="@string/catalogo_nintendo" />
 
                     </com.google.android.material.chip.ChipGroup>
                 </LinearLayout>

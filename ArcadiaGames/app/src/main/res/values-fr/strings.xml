@@ -1,72 +1,178 @@
 <resources>
     <string name="app_name">Arcadia Games</string>
-    <string name="inicio">CONNEXION</string>
-    <string name="correo">Email</string>
-    <string name="password">Mot de passe</string>
-    <string name="acceder">Se connecter</string>
-    <string name="registrate">Pas de compte ? Inscrivez-vous</string>
+
+    <string name="login_inicio">SE CONNECTER</string>
+    <string name="login_correo">Courriel</string>
+    <string name="login_password">Mot de passe</string>
+    <string name="login_acceder">Accéder</string>
+    <string name="login_registrate">Pas de compte ? Inscrivez-vous</string>
+
+    <string name="register_titulo">Créer un compte</string>
+    <string name="register_usuario">Utilisateur</string>
+    <string name="register_correo">Courriel</string>
+    <string name="register_contraseña">Mot de passe</string>
+    <string name="register_contraseña_2">Confirmer le mot de passe</string>
+    <string name="register_btn_crear_cuenta">Créer un compte</string>
+    <string name="register_volver">J\'ai déjà un compte, accéder</string>
+
+    <string name="incidencia_titulo">NOUVEAU RAPPORT</string>
+    <string name="incidencia_subtitulo">Décrivez le problème pour l\'équipe technique</string>
+    <string name="incidencia_asunto">OBJET / THÈME</string>
+    <string name="incidencia_hint_asunto">Ex: Erreur lors du chargement du profil</string>
+    <string name="incidencia_desc">DESCRIPTION DÉTAILLÉE</string>
+    <string name="incidencia_hint_desc">Veuillez expliquer ce qui s\'est passé (min. 50 caractères)</string>
+    <string name="incidencia_tipo">TYPE D\'INCIDENT</string>
+    <string name="incidencia_tipo_bug">Bug</string>
+    <string name="incidencia_tipo_usuario">Utilisateur</string>
+    <string name="incidencia_tipo_juego">Jeu</string>
+    <string name="incidencia_tipo_otros">Autre</string>
+    <string name="incidencia_info">INFO SUPPLÉMENTAIRE (OPTIONNEL)</string>
+    <string name="incidencia_hint_info">Ex: Version de l\'app ou modèle</string>
+    <string name="incidencia_btn_enviar">ENVOYER LE RAPPORT TECHNIQUE</string>
+
+    <string name="perfil_titulo">MON PROFIL</string>
+    <string name="perfil_nombre">Nom</string>
+    <string name="perfil_btn_gestion_admins">Gestion des Admins</string>
+    <string name="perfil_btn_historial">Historique</string>
+    <string name="perfil_btn_inventario">Gérer l\'inventaire</string>
+    <string name="perfil_btn_crear_product">Créer / Ajouter un produit</string>
+    <string name="perfil_btn_gestion_incidencias">Gérer les incidents</string>
+    <string name="perfil_btn_mis_compras">Mes achats</string>
+    <string name="perfil_btn_soporte">Support technique</string>
+    <string name="perfil_btn_convertir_admin">Devenir Admin</string>
+    <string name="perfil_btn_cerrar_sesion">Déconnexion</string>
+
+    <string name="pago_titulo">Payer par carte</string>
+    <string name="pago_detalles_pedido">Détails de la commande</string>
+    <string name="pago_importe">MONTANT</string>
+    <string name="pago_precio_importe">0,00 €</string>
+    <string name="pago_comercio">Commerce</string>
+    <string name="pago_nombre_comercio">ARCADIA GAMES</string>
+    <string name="pago_pedido">Commande</string>
+    <string name="pago_operacion_pedido">----</string>
+    <string name="pago_fecha">Date</string>
+    <string name="pago_operacion_fecha">--/--/----</string>
+    <string name="pago_nombre_comprador">Nom du titulaire</string>
+    <string name="pago_numero_tarjeta">Numéro de carte</string>
+    <string name="pago_fecha_expiracion">MM/AA</string>
+    <string name="pago_cvv">CVV</string>
+    <string name="pago_precio_total">TOTAL : 0,00 €</string>
+    <string name="pago_btn_pagar">Payer</string>
+
+    <string name="add_product_titulo">AJOUTER UN PRODUIT</string>
+    <string name="add_product_nombre">Nom du jeu</string>
+    <string name="add_product_plataforma">Sélectionner la plateforme</string>
+    <string name="add_product_desc">Description du produit...</string>
+    <string name="add_product_precio">Prix (€)</string>
+    <string name="add_product_btn_imagen">TÉLÉCHARGER IMAGE</string>
+    <string name="add_product_btn_confirmar">CONFIRMER LE PRODUIT</string>
+
+    <string name="carrito_titulo">MON PANIER</string>
+    <string name="carrito_vacio">Votre panier est vide</string>
+    <string name="carrito_precio_total_texto">TOTAL</string>
+    <string name="carrito_precio_total">0,00 €</string>
+    <string name="carrito_btn_proceder_pago">Passer à la caisse</string>
+
+    <string name="alquiler_titulo">LOUER UN JEU</string>
+    <string name="alquiler_selec">Jeu sélectionné</string>
+    <string name="alquiler_nombre_client">Nom et prénom</string>
+    <string name="alquiler_fecha_inicio">Date de début</string>
+    <string name="alquiler_fecha_fin">Date de fin</string>
+    <string name="alquiler_info_precio">Chaque jour de location coûte 5 €</string>
+    <string name="alquiler_precio_total">Prix total (€)</string>
+    <string name="alquiler_btn_confirmar">CONFIRMER LA LOCATION</string>
+
+    <string name="inventario_titulo">CENTRE D\'INVENTAIRE</string>
+    <string name="inventario_subtitulo">Suivi et contrôle des stocks</string>
+
+    <string name="inventario_añadir_titulo">RÉAPPROVISIONNEMENT PAR PLATEFORME</string>
+    <string name="inventario_añadir_playstation">PlayStation</string>
+    <string name="inventario_añadir_xbox">Xbox</string>
+    <string name="inventario_añadir_nintendo">Nintendo</string>
+    <string name="inventario_añadir_pc">PC</string>
+    <string name="inventario_añadir_btn_confirmar">METTRE À JOUR L\'INVENTAIRE</string>
+
+    <string name="inventario_eliminar_titulo">GESTION DES STOCKS</string>
+    <string name="inventario_eliminar_subtitulo">Sélectionnez la méthode de sortie d\'inventaire pour ce produit.</string>
+    <string name="inventario_eliminar_cantidad">Quantité à retirer</string>
+    <string name="inventario_eliminar_cantidad_especifica">RETIRER LOT SPÉCIFIQUE</string>
+    <string name="inventario_eliminar_una_cantidad">SORTIE UNITAIRE (-1)</string>
+    <string name="inventario_eliminar_cantidad_total">SUPPRIMER REGISTRE TOTAL</string>
+
+    <string name="historial_titulo">HISTORIQUE</string>
+    <string name="historial_admins">ADMINISTRATEURS</string>
+    <string name="historial_usuarios">UTILISATEURS</string>
+
+    <string name="mis_compras_titulo">MES COMMANDES</string>
+
+    <string name="gestion_admins_titulo">GESTION DES ADMINS</string>
+    <string name="gestion_admins_codigo_generar">GÉNÉRER CODE (5 MIN)</string>
+    <string name="gestion_admins_codigo_activo">Aucun code actif</string>
+    <string name="gestion_admins_registrados">ADMINS ENREGISTRÉS</string>
+    <string name="gestion_admins_no_hay">Pas d\'autres administrateurs enregistrés</string>
+
+    <string name="acceso_admin_titulo">ACCÈS ADMIN</string>
+    <string name="acceso_admin_codigo">Code</string>
+    <string name="acceso_admin_btn_validar">VALIDER</string>
+
+    <string name="guia_uso_titulo">GUIDE D\'ARCADIA</string>
+    <string name="guia_uso_bienvenido">Bienvenue sur ArcadiaGames. Ici, vous pouvez gérer votre catalogue gamer de manière premium.</string>
+    <string name="guia_uso_menu_principal">1. Menu</string>
+    <string name="guia_uso_menu_principal_desc">Dans le menu principal d\'Arcadia Games, vous pouvez voir nos meilleures nouveautés et offres sur les jeux les plus récents.
+        Faites glisser vers la droite ou la gauche pour voir les différents jeux proposés.</string>
+    <string name="guia_uso_catalogo">2. Catalogue</string>
+    <string name="guia_uso_catalogo_desc">Appuyez sur n\'importe quel jeu pour voir les détails, le stock et les options d\'achat ou de location.</string>
+    <string name="guia_uso_filtros">3. Filtres</string>
+    <string name="guia_uso_filtros_desc">Utilisez la barre de recherche supérieure ou les puces de plateforme pour trouver ce que vous cherchez instantanément.</string>
+    <string name="guia_uso_incidencias">4. Incidents</string>
+    <string name="guia_uso_incidencias_desc">Dans l\'onglet incidents, vous pouvez signaler à l\'équipe tout problème lié à l\'application.</string>
+    <string name="guia_uso_anadir_juego">5. Ajouter un jeu</string>
+    <string name="guia_uso_anadir_juego_desc">Ici, vous pouvez ajouter n\'importe quel jeu au catalogue d\'ArcadiaGames pour que tout le monde puisse l\'acheter ou le louer.</string>
+    <string name="guia_uso_anadir_juego_desc_2">Pour ajouter un nouveau jeu, vous devez connaître le nom, le prix, le stock et avoir une image pour ajouter le produit.</string>
+    <string name="guia_uso_mis_juegos">6. Mes Jeux</string>
+    <string name="guia_uso_mis_juegos_desc">Dans l\'onglet Mes jeux, vous pouvez voir les jeux que vous avez achetés ou loués dans la boutique.</string>
+    <string name="guia_uso_intercambios">7. Échange</string>
+    <string name="guia_uso_intercambios_desc">Dans l\'onglet Échanges, vous pouvez échanger des jeux avec d\'autres utilisateurs de manière sûre et efficace.</string>
+
+    <string name="catalogo_titulo">Catalogue de Jeux</string>
+    <string name="catalogo_buscar">Chercher des jeux dans Arcadia...</string>
+    <string name="catalogo_pc">PC</string>
+    <string name="catalogo_playstation">PlayStation</string>
+    <string name="catalogo_xbox">Xbox</string>
+    <string name="catalogo_nintendo">Nintendo</string>
+
+    <string name="detalle_juego_comprar">Acheter</string>
+    <string name="detalle_juego_alquilar">Louer</string>
+
+    <string name="home_titulo">ARCADIA GAMES</string>
+
+    <string name="home_admin_panel_control">PANNEAU DE CONTRÔLE</string>
+    <string name="home_admin_btn_inventario">INVENTAIRE</string>
+    <string name="home_admin_btn_añadir_producto">AJOUTER PRODUIT</string>
+    <string name="home_admin_titulo_soporte">SUPPORT ET TICKETS</string>
+    <string name="home_admin_btn_gestion_incidencias">Gestion des Incidents</string>
+    <string name="home_admin_gestion_incidencias_desc">File d\'attente des rapports actifs</string>
+    <string name="home_admin_titulo_historial">HISTORIQUE</string>
+
+    <string name="home_usuario_novedades">NOUVEAUTÉS</string>
+    <string name="home_usuario_ofertas">OFFRES</string>
+
+    <string name="mostrar_incidencia_titulo">MONITEUR DE SUPPORT</string>
+    <string name="mostrar_incidencia_desc">Contrôle et résolution des rapports techniques</string>
+    <string name="mostrar_incidencia_buscar">Chercher par sujet ou description...</string>
+    <string name="mostrar_incidencia_todos">Tous</string>
+    <string name="mostrar_incidencia_bug">Bug</string>
+    <string name="mostrar_incidencia_usuario">Utilisateur</string>
+    <string name="mostrar_incidencia_juego">Jeu</string>
+    <string name="mostrar_incidencia_otro">Autre</string>
+
+    <string name="detalle_incidencia_titulo">OBJET DE L\'INCIDENT</string>
+    <string name="detalle_incidencia_remitente">De : usuario@arcadia.com</string>
+    <string name="detalle_incidencia_titulo_desc">DESCRIPTION DU RAPPORT</string>
+    <string name="detalle_incidencia_contenido_desc">Contenu de la description...</string>
+    <string name="detalle_incidencia_info_adicional">Informations techniques supplémentaires</string>
+    <string name="detalle_incidencia_btn_resolver">MARQUER COMME RÉSOLU</string>
 
     <string name="completar_campos">Veuillez remplir tous les champs</string>
-    <string name="error_login">Nom d utilisateur ou mot de passe incorrect</string>
-
-    <string name="Buscar">Rechercher des jeux</string>
-    <string name="Catalogo">Catalogue de Jeux</string>
-    <string name="Novedades">Nouveautés</string>
-    <string name="Ofertas">Offres</string>
-    <string name="Favoritos">Favoris</string>
-
-    <string name="Crear">Créer un compte</string>
-    <string name="Usuario">Utilisateur</string>
-    <string name="Correo">Email</string>
-    <string name="Numero">Numéro de téléphone</string>
-    <string name="Contraseña">Mot de passe</string>
-    <string name="Confirmar">Confirmer le mot de passe</string>
-
-    <string name="Gestion">GESTION DE L´INVENTAIRE</string>
-    <string name="Gestionar">Gérer les incidents</string>
-    <string name="Añadir">Ajouter un incident</string>
-    <string name="ultimas">DERNIÈRES ACTIONS</string>
-    <string name="Grafico">Graphique d´activité hebdomadaire</string>
-
-    <string name="Mis_juegos">MES JEUX</string>
-
-    <string name="Gestionar_admins">GESTION DES ADMINISTRATEURS</string>
-    <string name="Gestionar_usuarios">GESTION DES UTILISATEURS</string>
-    <string name="Generar_codigo">GÉNÉRER CODE (5 MIN)</string>
-    <string name="Ningun_cod">Aucun code actif</string>
-    <string name="Admins">ADMINS ENREGISTRÉS</string>
-    <string name="No_admins">Aucun autre administrateur enregistré</string>
-
-    <string name="Guía_uso">GUIDE ARCADIA</string>
-    <string name="Bienvenido">Bienvenue sur ArcadiaGames. Gérez votre catalogue gaming premium ici.</string>
-    <string name="Menu_p">1. Menu</string>
-    <string name="Menu_desc">Dans le menu principal d´Arcadia Games, vous pouvez voir nos meilleures nouveautés et offres.
-    Faites glisser le rail à gauche ou à droite pour explorer les jeux en promotion.</string>
-    <string name="Catalogogo">2. Catalogue</string>
-    <string name="Buscar_juegos">Appuyez sur un jeu pour voir les détails, le stock et les options d´achat ou de location.</string>
-    <string name="Filtros">3. Filtres</string>
-    <string name="Barra_busqueda">Utilisez la barre de recherche ou les filtres de plateforme pour trouver rapidement ce que vous cherchez.</string>
-    <string name="Incidencias">4. Incidents</string>
-    <string name="Crear_incidencia">Dans l´onglet incidents, vous pouvez signaler tout problème lié à l´application.</string>
-    <string name="Anadir_juego">5. Ajouter un jeu</string>
-    <string name="Anadir_desc">Ici vous pouvez ajouter un jeu au catalogue ArcadiaGames pour qu´il puisse être acheté ou loué.</string>
-    <string name="Anadir_desc_2">Pour ajouter un jeu, vous devez connaître le nom, le prix, le stock disponible et ajouter une image.</string>
-    <string name="Mis_jueegos">6. Mes Jeux</string>
-    <string name="Mis_desc">Dans Mes Jeux vous pouvez voir les jeux achetés ou loués.</string>
-    <string name="Intercambios">7. Échange</string>
-    <string name="Intercambio_desc">Dans la section Échange, vous pouvez échanger des jeux avec d´autres utilisateurs en toute sécurité.</string>
-
-    <string name="Comprar">Acheter</string>
-    <string name="Alquilar">Louer</string>
-
-    <string name="Crear_I">Créer un incident</string>
-    <string name="Tema_Incidencia">Sujet de l´incident</string>
-    <string name="Nombre_Incidencia">Titre de l´incident</string>
-    <string name="Descripcion_Incidencia">Description de l´incident</string>
-    <string name="Info_Incidencia">Informations supplémentaires</string>
-    <string name="Bug">Bug</string>
-    <string name="Problema_usuario">Utilisateur</string>
-    <string name="Juego">Jeu</string>
-    <string name="Otros">Autre</string>
-    <string name="Mostrar_Incidencia">Afficher les incidents</string>
+    <string name="error_login">Utilisateur ou mot de passe incorrect</string>
 </resources>

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.ActivityGestionarInventarioBinding
 
-class GestionarInventarioActivity : AppCompatActivity() {
+class GestionarInventarioActivity : BaseActivity() {
 
     private lateinit var binding: ActivityGestionarInventarioBinding
     private val inventoryManager = FirebaseInventoryManager()

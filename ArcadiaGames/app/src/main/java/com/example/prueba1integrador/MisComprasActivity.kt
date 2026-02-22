@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlin.jvm.java
 
-class MisComprasActivity : AppCompatActivity() {
+class MisComprasActivity : BaseActivity() {
 
     private lateinit var rvCompras: RecyclerView
     private lateinit var adapter: ComprasAdapter

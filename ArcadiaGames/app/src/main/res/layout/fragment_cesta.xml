@@ -5,19 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Fondo -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/fondo_sin_logo"
         android:scaleType="centerCrop"/>
 
-    <!-- Título -->
     <TextView
         android:id="@+id/tvTituloCesta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MI CESTA"
+        android:text="@string/carrito_titulo"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -26,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- BLOQUE LISTA PRODUCTOS -->
     <LinearLayout
         android:id="@+id/layoutLista"
         android:layout_width="0dp"
@@ -54,7 +51,7 @@
                 android:id="@+id/tvCestaVacia"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Tu cesta está vacía"
+                android:text="@string/carrito_vacio"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -65,7 +62,6 @@
 
     </LinearLayout>
     
-    <!-- BLOQUE RESUMEN TOTAL -->
     <LinearLayout
         android:id="@+id/layoutResumen"
         android:layout_width="0dp"
@@ -80,7 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:text="TOTAL"
+            android:text="@string/carrito_precio_total_texto"
             android:textColor="@color/Amarillo"
             android:textStyle="bold"
             android:textSize="22sp"
@@ -90,7 +86,7 @@
 
         <TextView
             android:id="@+id/tvTotal"
-            android:text="€0.00"
+            android:text="@string/carrito_precio_total"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
@@ -98,12 +94,11 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <!-- BOTÓN -->
     <Button
         android:id="@+id/btnPay"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:text="Proceder al pago"
+        android:text="@string/carrito_btn_proceder_pago"
         android:textColor="#000000"
         android:textStyle="bold"
         android:textSize="20sp"

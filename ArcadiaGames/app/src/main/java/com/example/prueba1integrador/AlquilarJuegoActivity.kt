@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class AlquilarJuegoActivity : AppCompatActivity() {
+class AlquilarJuegoActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAlquilarJuegoBinding
     private val precioPorDia = 5.0

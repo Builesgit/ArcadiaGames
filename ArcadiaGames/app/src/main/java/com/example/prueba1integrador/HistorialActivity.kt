@@ -10,7 +10,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class HistorialActivity : AppCompatActivity() {
+class HistorialActivity : BaseActivity() {
     private lateinit var binding: ActivityHistorialBinding
     private var listaCompleta = mutableListOf<AccionHistorial>()
 

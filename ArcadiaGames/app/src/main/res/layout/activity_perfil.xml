@@ -27,7 +27,7 @@
             android:id="@+id/txtTituloPerfil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MI PERFIL"
+            android:text="@string/perfil_titulo"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold|italic"
@@ -37,7 +37,7 @@
             android:id="@+id/txtNombreUsuario"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre"
+            android:text="@string/perfil_nombre"
             android:textColor="#BBBBBB"
             android:textSize="18sp"
             android:layout_marginBottom="30dp"/>
@@ -52,32 +52,32 @@
             <Button
                 android:id="@+id/btnGestionAdmins"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Gestión Admins"
+                android:text="@string/perfil_btn_gestion_admins"
                 android:visibility="gone"
                 app:icon="@drawable/ico_inventario" />
 
             <Button
                 android:id="@+id/btnHistorial"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Historial"
+                android:text="@string/perfil_btn_historial"
                 app:icon="@drawable/ico_incidencias" />
 
             <Button
                 android:id="@+id/btnInventario"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Gestionar Inventario"
+                android:text="@string/perfil_btn_inventario"
                 app:icon="@drawable/ico_inventario" />
 
             <Button
                 android:id="@+id/btnCrearProducto"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Crear / Añadir Producto"
+                android:text="@string/perfil_btn_crear_product"
                 app:icon="@drawable/ico_juego" />
 
             <Button
                 android:id="@+id/btnGestionarIncidencias"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Gestionar Incidencias"
+                android:text="@string/perfil_btn_gestion_incidencias"
                 app:icon="@drawable/ico_incidencias" />
         </LinearLayout>
 
@@ -91,13 +91,13 @@
             <Button
                 android:id="@+id/btnMisCompras"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Mis Compras"
+                android:text="@string/perfil_btn_mis_compras"
                 app:icon="@drawable/ico_juego" />
 
             <Button
                 android:id="@+id/btnSoporteTecnico"
                 style="@style/BotonMenuPersonalizado"
-                android:text="Soporte Técnico"
+                android:text="@string/perfil_btn_soporte"
                 app:icon="@drawable/ico_incidencias" />
 
             <Button
@@ -108,7 +108,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="#FFC107"
-                android:text="Convertirse en Admin"
+                android:text="@string/perfil_btn_convertir_admin"
                 android:textColor="#000000"
                 android:textStyle="bold"
                 app:icon="@android:drawable/ic_lock_lock"
@@ -121,7 +121,7 @@
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cerrar Sesión"
+            android:text="@string/perfil_btn_cerrar_sesion"
             android:backgroundTint="#FF4444"
             android:textColor="#FFFFFF"
             android:textStyle="bold"

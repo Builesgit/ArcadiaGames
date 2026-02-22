@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import com.example.prueba1integrador.databinding.ActivityAnadirProductoBinding
 import com.bumptech.glide.Glide
 
-class AnadirProductoActivity : AppCompatActivity() {
+class AnadirProductoActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAnadirProductoBinding
     private val inventoryManager = FirebaseInventoryManager()

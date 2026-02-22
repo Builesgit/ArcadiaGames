@@ -11,7 +11,7 @@ import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PagoActivity : AppCompatActivity() {
+class PagoActivity : BaseActivity() {
 
     private lateinit var listaProductos: ArrayList<Juego>
     private lateinit var compraId: String
