@@ -8,7 +8,6 @@
     android:background="@drawable/fondo_sin_logo"
     android:padding="20dp">
 
-    <!-- LOGO -->
     <ImageView
         android:id="@+id/imgLogo"
         android:layout_width="100dp"
@@ -18,19 +17,17 @@
         android:scaleType="fitCenter"
         android:contentDescription="Logo"/>
 
-    <!-- TITULO -->
     <TextView
         android:id="@+id/tvTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MIS PEDIDOS"
+        android:text="@string/mis_compras_titulo"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"/>
 
-    <!-- TABLAYOUT -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
@@ -46,8 +43,6 @@
         app:tabMode="fixed"
         app:tabRippleColor="@null"/>
 
-
-    <!-- RECYCLER VIEW -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCompras"
         android:layout_width="match_parent"

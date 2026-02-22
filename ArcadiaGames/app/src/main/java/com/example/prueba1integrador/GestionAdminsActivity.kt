@@ -10,7 +10,7 @@ import com.example.prueba1integrador.databinding.ActivityGestionAdminsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
-class GestionAdminsActivity : AppCompatActivity() {
+class GestionAdminsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityGestionAdminsBinding
     private val dbRef = FirebaseDatabase.getInstance().getReference()

@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:text="NUEVO REPORTE"
+        android:text="@string/incidencia_titulo"
         android:textColor="#FFC107"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -31,7 +31,7 @@
         android:id="@+id/subtitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Describe el problema para el equipo técnico"
+        android:text="@string/incidencia_subtitulo"
         android:textColor="#FFC107"
         android:alpha="0.8"
         android:textSize="12sp"
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ASUNTO / TEMA"
+                android:text="@string/incidencia_asunto"
                 android:textColor="#FFC107"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -76,7 +76,7 @@
                     android:id="@+id/text_tema_incidencia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ej: Error al cargar perfil"
+                    android:hint="@string/incidencia_hint_asunto"
                     android:textColor="@color/white"
                     android:textColorHint="#9E9E9E" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -84,7 +84,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="DESCRIPCIÓN DETALLADA"
+                android:text="@string/incidencia_desc"
                 android:textColor="#FFC107"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -104,7 +104,7 @@
                     android:id="@+id/et_descripcion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Por favor, explica lo ocurrido (mín. 50 caracteres)"
+                    android:hint="@string/incidencia_hint_desc"
                     android:gravity="top"
                     android:minLines="5"
                     android:textColor="@color/white"
@@ -114,7 +114,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TIPO DE INCIDENCIA"
+                android:text="@string/incidencia_tipo"
                 android:textColor="#FFC107"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -133,7 +133,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bug"
+                    android:text="@string/incidencia_tipo_bug"
                     android:textColor="@color/white"
                     app:chipSurfaceColor="#334155" />
 
@@ -142,7 +142,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Usuario"
+                    android:text="@string/incidencia_tipo_usuario"
                     android:textColor="@color/white"
                     app:chipSurfaceColor="#334155" />
 
@@ -151,7 +151,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Juego"
+                    android:text="@string/incidencia_tipo_juego"
                     android:textColor="@color/white"
                     app:chipSurfaceColor="#334155" />
 
@@ -160,7 +160,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Otro"
+                    android:text="@string/incidencia_tipo_otros"
                     android:textColor="@color/white"
                     app:chipSurfaceColor="#334155" />
 
@@ -169,7 +169,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="INFORMACIÓN ADICIONAL (OPCIONAL)"
+                android:text="@string/incidencia_info"
                 android:textColor="#FFC107"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -188,7 +188,7 @@
                     android:id="@+id/et_informacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ej: Versión de la app o modelo"
+                    android:hint="@string/incidencia_hint_info"
                     android:textColor="@color/white"
                     android:textColorHint="#9E9E9E" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -199,7 +199,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="40dp"
-                android:text="ENVIAR REPORTE TÉCNICO"
+                android:text="@string/incidencia_btn_enviar"
                 android:textColor="#000000"
                 android:textStyle="bold"
                 android:backgroundTint="#FFC107"

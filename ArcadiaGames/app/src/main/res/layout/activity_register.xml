@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginBottom="5dp"
-        android:text="@string/Crear"
+        android:text="@string/register_titulo"
         android:textColor="@color/Azul_claro"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -67,7 +67,7 @@
         style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="Nombre de Usuario"
+        android:hint="@string/register_usuario"
         app:boxBackgroundColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
         app:layout_constraintTop_toBottomOf="@id/divisor_horizontal"
@@ -87,7 +87,7 @@
         style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="Correo Electrónico"
+        android:hint="@string/register_correo"
         app:boxBackgroundColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/ly_nombre_usuario"
         app:layout_constraintTop_toBottomOf="@id/ly_nombre_usuario"
@@ -106,7 +106,7 @@
         style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="@string/Contraseña"
+        android:hint="@string/register_contraseña"
         app:boxBackgroundColor="@color/white"
         app:endIconMode="password_toggle"
         app:layout_constraintStart_toStartOf="@+id/ly_usuario"
@@ -126,7 +126,7 @@
         style="?attr/textInputFilledStyle"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="@string/Confirmar"
+        android:hint="@string/register_contraseña_2"
         app:boxBackgroundColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/ly_pass"
         app:layout_constraintTop_toBottomOf="@id/ly_pass"
@@ -144,7 +144,7 @@
         android:id="@+id/btn_registrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Crear"
+        android:text="@string/register_btn_crear_cuenta"
         android:textColor="@color/Texto"
         app:layout_constraintTop_toBottomOf="@id/ly_confirm_pass"
         app:layout_constraintStart_toStartOf="@id/ly_confirm_pass"
@@ -157,11 +157,45 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ya tengo cuenta, acceder"
+        android:text="@string/register_volver"
         android:textColor="@color/Azul_claro"
         app:layout_constraintStart_toStartOf="@+id/btn_registrar"
         app:layout_constraintTop_toBottomOf="@id/btn_registrar"
         android:layout_marginTop="8dp"
         app:shapeAppearance="@style/ShapeAppearance.RoundedSquare"/>
+
+    <LinearLayout
+        android:id="@+id/languageSelector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/flagSpanish"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/espana"/>
+
+        <ImageView
+            android:id="@+id/flagEnglish"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ingles"/>
+
+        <ImageView
+            android:id="@+id/flagFrench"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/francia"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

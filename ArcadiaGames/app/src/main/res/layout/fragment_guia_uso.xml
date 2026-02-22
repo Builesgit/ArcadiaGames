@@ -11,7 +11,7 @@
         android:id="@+id/tv_guia_titulo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Guía_uso"
+        android:text="@string/guia_uso_titulo"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold|italic"
@@ -47,7 +47,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/Bienvenido"
+                    android:text="@string/guia_uso_bienvenido"
                     android:textColor="#CCCCCC"
                     android:textSize="20sp"
                     android:gravity="center"
@@ -65,7 +65,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Menu_p"
+                    android:text="@string/guia_uso_menu_principal"
                     android:textColor="@color/Amarillo"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -75,13 +75,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/Menu_desc"
+                    android:text="@string/guia_uso_menu_principal_desc"
                     android:textColor="#AAAAAA" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Catalogogo"
+                    android:text="@string/guia_uso_catalogo"
                     android:textColor="@color/Amarillo"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -91,13 +91,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/Buscar_juegos"
+                    android:text="@string/guia_uso_catalogo_desc"
                     android:textColor="#AAAAAA" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Filtros"
+                    android:text="@string/guia_uso_filtros"
                     android:textColor="@color/Amarillo"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -106,7 +106,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Barra_busqueda"
+                    android:text="@string/guia_uso_filtros_desc"
                     android:textColor="#AAAAAA"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
@@ -116,7 +116,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Incidencias"
+                    android:text="@string/guia_uso_incidencias"
                     android:textColor="@color/Amarillo"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -125,7 +125,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Crear_incidencia"
+                    android:text="@string/guia_uso_incidencias_desc"
                     android:textColor="#AAAAAA"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
@@ -133,7 +133,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Anadir_juego"
+                    android:text="@string/guia_uso_anadir_juego"
                     android:textColor="@color/Amarillo"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -142,14 +142,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Anadir_desc"
+                    android:text="@string/guia_uso_anadir_juego_desc"
                     android:textColor="#AAAAAA"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Anadir_desc_2"
+                    android:text="@string/guia_uso_anadir_juego_desc_2"
                     android:textColor="#AAAAAA"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
@@ -157,7 +157,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Mis_jueegos"
+                    android:text="@string/guia_uso_mis_juegos"
                     android:textColor="@color/Amarillo"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -166,7 +166,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Mis_desc"
+                    android:text="@string/guia_uso_mis_juegos_desc"
                     android:textColor="#AAAAAA"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
@@ -174,7 +174,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Intercambios"
+                    android:text="@string/guia_uso_intercambios"
                     android:textColor="@color/Amarillo"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -183,13 +183,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Intercambio_desc"
+                    android:text="@string/guia_uso_intercambios_desc"
                     android:textColor="#AAAAAA"
                     android:gravity="center"
                     android:layout_marginBottom="12dp"/>
-
-
-
 
             </LinearLayout>
 

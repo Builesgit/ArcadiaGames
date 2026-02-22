@@ -1,8 +1,8 @@
 package com.example.prueba1integrador
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prueba1integrador.databinding.ActivityMainBinding
@@ -11,12 +11,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.util.Locale
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
+
+    // ESTO ES LO MÁS IMPORTANTE: Obliga a la actividad a usar el idioma guardado
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LanguageUtils.updateBaseContextLocale(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,15 +31,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 🔹 Cargar idioma guardado
-        loadSavedLanguage()
+        // Banderas
+        binding.flagSpanish.setOnClickListener { changeLang("es") }
+        binding.flagEnglish.setOnClickListener { changeLang("en") }
+        binding.flagFrench.setOnClickListener { changeLang("fr") }
 
-        // 🔹 Banderas
-        binding.flagSpanish.setOnClickListener { setLocale("es") }
-        binding.flagEnglish.setOnClickListener { setLocale("en") }
-        binding.flagFrench.setOnClickListener { setLocale("fr") }
-
-        // 🔹 Login
         binding.btnLogin.setOnClickListener {
             val email = binding.edtUsuario.text.toString().trim()
             val pass = binding.edtPassword.text.toString().trim()
@@ -52,11 +52,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Al volver del registro, si el idioma cambió, recreamos la actividad
+    override fun onResume() {
+        super.onResume()
+        val prefs = getSharedPreferences("Settings", MODE_PRIVATE)
+        val savedLang = prefs.getString("My_Lang", "es") ?: "es"
+        val currentLang = resources.configuration.locales.get(0).language
+
+        if (currentLang != savedLang) {
+            recreate()
+        }
+    }
+
+    private fun changeLang(code: String) {
+        LanguageUtils.saveLocale(this, code)
+        recreate()
+    }
+
     private fun loginConFirebase(email: String, pass: String) {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
                     val user = auth.currentUser
                     val dbRef = Firebase.database.getReference("usuarios").child(user?.uid ?: "")
 
@@ -73,37 +89,9 @@ class MainActivity : AppCompatActivity() {
                     }.addOnFailureListener {
                         Toast.makeText(this, "Error de seguridad", Toast.LENGTH_LONG).show()
                     }
-
                 } else {
                     Toast.makeText(this, getString(R.string.error_login), Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    // 🔹 Guardar idioma
-    private fun saveLanguage(language: String) {
-        val prefs = getSharedPreferences("Settings", MODE_PRIVATE)
-        prefs.edit().putString("My_Lang", language).apply()
-    }
-
-    // 🔹 Cargar idioma guardado
-    private fun loadSavedLanguage() {
-        val prefs = getSharedPreferences("Settings", MODE_PRIVATE)
-        val language = prefs.getString("My_Lang", "es")
-        setLocale(language ?: "es", false)
-    }
-
-    // 🔹 Cambiar idioma
-    private fun setLocale(languageCode: String, recreateActivity: Boolean = true) {
-        saveLanguage(languageCode)
-
-        val locale = Locale(languageCode)
-        Locale.setDefault(locale)
-
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-
-        if (recreateActivity) recreate()
     }
 }

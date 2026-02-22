@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HISTORIAL"
+        android:text="@string/historial_titulo"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:layout_marginTop="20dp"
@@ -32,12 +32,12 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ADMINSTRADORES" />
+            android:text="@string/historial_admins" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="USUARIOS" />
+            android:text="@string/historial_usuarios" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView

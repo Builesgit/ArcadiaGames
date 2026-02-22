@@ -12,12 +12,11 @@
         android:layout_height="wrap_content"
         android:padding="24dp">
 
-        <!-- TÍTULO -->
         <TextView
             android:id="@+id/titulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ALQUILAR JUEGO"
+            android:text="@string/alquiler_titulo"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
@@ -26,7 +25,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"/>
 
-        <!-- JUEGO (IMAGEN + NOMBRE) -->
         <LinearLayout
             android:id="@+id/layout_juego"
             android:layout_width="0dp"
@@ -53,18 +51,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
-                android:text="Juego seleccionado"
+                android:text="@string/alquiler_selec"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
         </LinearLayout>
 
-        <!-- NOMBRE CLIENTE -->
         <EditText
             android:id="@+id/et_nombre_cliente"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:hint="Nombre y apellidos"
+            android:hint="@string/alquiler_nombre_client"
             android:background="@drawable/edittext_background"
             android:textColor="#FFFFFF"
             android:textColorHint="#AAAAAA"
@@ -74,7 +71,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"/>
 
-        <!-- FECHAS (INICIO / FIN) -->
         <LinearLayout
             android:id="@+id/layout_fechas"
             android:layout_width="0dp"
@@ -90,7 +86,7 @@
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_weight="1"
-                android:hint="Fecha inicio"
+                android:hint="@string/alquiler_fecha_inicio"
                 android:focusable="false"
                 android:clickable="true"
                 android:cursorVisible="false"
@@ -108,7 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_weight="1"
-                android:hint="Fecha fin"
+                android:hint="@string/alquiler_fecha_fin"
                 android:focusable="false"
                 android:clickable="true"
                 android:cursorVisible="false"
@@ -118,12 +114,11 @@
                 android:padding="12dp"/>
         </LinearLayout>
 
-        <!-- INFO PRECIO -->
         <TextView
             android:id="@+id/tv_info_precio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cada día de alquiler cuesta 5 €"
+            android:text="@string/alquiler_info_precio"
             android:textColor="#000000"
             android:textSize="14sp"
             android:background="@drawable/bg_info_precio"
@@ -131,12 +126,11 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="10dp"/>
 
-        <!-- PRECIO TOTAL -->
         <TextView
             android:id="@+id/tv_precio_total"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:text="Precio total (€)"
+            android:text="@string/alquiler_precio_total"
             android:background="@drawable/edittext_background"
             android:textColor="#FFFFFF"
             android:gravity="center_vertical"
@@ -146,12 +140,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"/>
 
-        <!-- CONFIRMAR -->
         <Button
             android:id="@+id/btn_confirmar_alquiler"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:text="CONFIRMAR ALQUILER"
+            android:text="@string/alquiler_btn_confirmar"
             android:textStyle="bold"
             android:textColor="#000000"
             android:backgroundTint="@color/Amarillo"

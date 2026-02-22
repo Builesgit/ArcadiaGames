@@ -15,7 +15,7 @@
             android:id="@+id/tvLogoHome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ARCADIA GAMES"
+            android:text="@string/home_titulo"
             android:textColor="@color/white"
             android:textSize="28sp"
             android:textStyle="bold|italic"
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="NOVEDADES"
+                android:text="@string/home_usuario_novedades"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold|italic" />
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="OFERTAS"
+                android:text="@string/home_usuario_ofertas"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold|italic" />
@@ -87,7 +87,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PANEL DE CONTROL"
+                android:text="@string/home_admin_panel_control"
                 android:textColor="#FBC02D"
                 android:textSize="17sp"
                 android:textStyle="bold"
@@ -127,7 +127,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="INVENTARIO"
+                            android:text="@string/home_admin_btn_inventario"
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:textSize="11sp"
@@ -162,7 +162,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="AÑADIR PRODUCTO"
+                            android:text="@string/home_admin_btn_añadir_producto"
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:textSize="11sp"
@@ -175,7 +175,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SOPORTE Y TICKETS"
+                android:text="@string/home_admin_titulo_soporte"
                 android:textColor="#FBC02D"
                 android:textSize="17sp"
                 android:textStyle="bold"
@@ -215,7 +215,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Gestión de Incidencias"
+                            android:text="@string/home_admin_btn_gestion_incidencias"
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:textSize="15sp"/>
@@ -223,7 +223,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cola de reportes activos"
+                            android:text="@string/home_admin_gestion_incidencias_desc"
                             android:textColor="#9E9E9E"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -233,7 +233,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="HISTORIAL"
+                android:text="@string/home_admin_titulo_historial"
                 android:textColor="#FBC02D"
                 android:textSize="17sp"
                 android:textStyle="bold"

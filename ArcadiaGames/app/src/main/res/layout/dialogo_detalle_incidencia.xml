@@ -11,7 +11,7 @@
         android:id="@+id/tv_detalle_tema"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TEMA DE INCIDENCIA"
+        android:text="@string/detalle_incidencia_titulo"
         android:textColor="#FFC107"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="De: usuario@arcadia.com"
+        android:text="@string/detalle_incidencia_remitente"
         android:textColor="#9E9E9E"
         android:textSize="14sp" />
 
@@ -36,7 +36,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="DESCRIPCIÓN DEL REPORTE"
+        android:text="@string/detalle_incidencia_titulo_desc"
         android:textColor="#FFC107"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Contenido de la descripción..."
+        android:text="@string/detalle_incidencia_contenido_desc"
         android:textColor="#FFFFFF"
         android:textSize="15sp" />
 
@@ -57,7 +57,7 @@
         android:layout_marginTop="16dp"
         android:background="#1AFFFFFF"
         android:padding="12dp"
-        android:text="Información técnica adicional"
+        android:text="@string/detalle_incidencia_info_adicional"
         android:textColor="#4ADE80"
         android:textSize="13sp"
         android:textStyle="italic" />
@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:backgroundTint="#EF5350"
-        android:text="MARCAR COMO RESUELTA"
+        android:text="@string/detalle_incidencia_btn_resolver"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:cornerRadius="8dp" />
