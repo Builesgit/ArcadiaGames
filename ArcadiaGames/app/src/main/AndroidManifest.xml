@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- PERMISOS -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +18,12 @@
         android:theme="@style/Theme.Prueba1Integrador"
         android:usesCleartextTraffic="true">
 
+        <!-- 🔑 GOOGLE MAPS API KEY -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <!-- ACTIVIDAD PRINCIPAL -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -69,6 +78,12 @@
         <activity
             android:name=".MisComprasActivity"
             android:exported="false" />
+
+        <!-- 🗺 MAPS ACTIVITY -->
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
