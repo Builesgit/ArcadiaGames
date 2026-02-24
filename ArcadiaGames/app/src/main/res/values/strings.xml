@@ -200,4 +200,11 @@
     <string name="completar_campos">Completa todos los campos</string>
     <string name="error_login">Usuario o contraseña incorrectos</string>
 
+    <!-- MENU BARRA LATERAL -->
+    <string name="menu_inicio">Inicio</string>
+    <string name="menu_catalogo">Catálogo</string>
+    <string name="menu_estadisticas">Estadísticas</string>
+    <string name="menu_cesta">Cesta</string>
+    <string name="menu_perfil">Perfil</string>
+
 </resources>

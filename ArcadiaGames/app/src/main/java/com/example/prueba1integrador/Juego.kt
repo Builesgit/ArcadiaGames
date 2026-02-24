@@ -13,7 +13,13 @@ data class Juego(
     val categoria: String = "",
     val plataforma: String = "",
     val stock: Int = 0,
-    val detalle_stock: Map<String, Int>? = null
+    val detalle_stock: Map<String, Int>? = null,
+
+    // --- Campos de Estadísticas ---
+    val rendimiento_vistas: Int = 0,   // Tracción de mercado
+    val rendimiento_ventas: Int = 0,   // Conversión real
+    val precio_original: Double = 0.0, // Para gestionar descuentos automáticos
+    val ultima_actualizacion: Long = System.currentTimeMillis()
 ) : Serializable
 
 data class ItemInventario(
@@ -23,5 +29,9 @@ data class ItemInventario(
     val ps: Int = 0,
     val xb: Int = 0,
     val ni: Int = 0,
-    val pc: Int = 0
+    val pc: Int = 0,
+
+    // Métricas acumuladas para el Dashboard
+    val totalVistas: Int = 0,
+    val totalVentas: Int = 0
 ) : Serializable

@@ -54,25 +54,33 @@ class GestionarInventarioActivity : BaseActivity() {
             val listaDeEsteJuego = entry.value
             val juegoRepresentante = listaDeEsteJuego.first()
 
-            // 1. Calculamos el stock por plataforma primero
+            // 1. Calculamos el stock por plataforma
             val stockPS = listaDeEsteJuego.sumOf { it.detalle_stock?.get("playstation") ?: 0 }
             val stockXB = listaDeEsteJuego.sumOf { it.detalle_stock?.get("xbox") ?: 0 }
             val stockNI = listaDeEsteJuego.sumOf { it.detalle_stock?.get("nintendo") ?: 0 }
             val stockPC = listaDeEsteJuego.sumOf { it.detalle_stock?.get("pc") ?: 0 }
 
-            // 2. La cantidad total DEBE ser la suma de los stocks individuales para ser coherente
+            // 2. Stock total como suma real del detalle
             val sumaTotalReal = stockPS + stockXB + stockNI + stockPC
 
             ItemInventario(
                 juego = juegoRepresentante,
-                cantidad = sumaTotalReal, // Aquí usamos la suma real del detalle
+                cantidad = sumaTotalReal,
                 idsAgrupados = listaDeEsteJuego.map { it.id },
                 ps = stockPS,
                 xb = stockXB,
                 ni = stockNI,
-                pc = stockPC
+                pc = stockPC,
+
+                // --- INTEGRACIÓN DE ESTADÍSTICAS SUMADAS ---
+                totalVistas = listaDeEsteJuego.sumOf { it.rendimiento_vistas },
+                totalVentas = listaDeEsteJuego.sumOf { it.rendimiento_ventas }
             )
         }
+
+        // Identificamos al líder de la semana por ventas para uso futuro en el dashboard
+        val liderSemanal = listaVisualInventario.maxByOrNull { it.totalVentas }
+
         adapter.actualizarLista(listaVisualInventario)
     }
 }

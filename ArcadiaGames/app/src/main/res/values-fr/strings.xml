@@ -175,4 +175,10 @@
 
     <string name="completar_campos">Veuillez remplir tous les champs</string>
     <string name="error_login">Utilisateur ou mot de passe incorrect</string>
+
+    <string name="menu_inicio">Accueil</string>
+    <string name="menu_catalogo">Catalogue</string>
+    <string name="menu_estadisticas">Statitiques</string>
+    <string name="menu_cesta">Panier</string>
+    <string name="menu_perfil">Profil</string>
 </resources>

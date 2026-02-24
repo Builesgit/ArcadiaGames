@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.prueba1integrador.databinding.ActivityHomeBinding
 
@@ -25,7 +24,6 @@ class HomeActivity : BaseActivity() {
 
         val rol = intent.getStringExtra("ROL_USUARIO") ?: "cliente"
 
-        // Configuración inicial
         if (savedInstanceState == null) {
             reemplazarFragmento(FragmentHome())
         }
@@ -33,7 +31,6 @@ class HomeActivity : BaseActivity() {
         setupNavigation(rol)
         setupRailViews()
 
-        // Botón para abrir el Navigation Rail
         binding.btnAbrirRail.setOnClickListener {
             if (binding.navigationRail.visibility == View.VISIBLE) {
                 cerrarMenuLateral()
@@ -42,7 +39,6 @@ class HomeActivity : BaseActivity() {
             }
         }
 
-        // Fondo oscuro para cerrar el menú
         binding.viewScrim.setOnClickListener {
             cerrarMenuLateral()
         }
@@ -52,12 +48,9 @@ class HomeActivity : BaseActivity() {
         super.onResume()
         val prefs = getSharedPreferences("Settings", MODE_PRIVATE)
         val savedLang = prefs.getString("My_Lang", "es") ?: "es"
-
-        // Obtenemos el idioma que tiene la actividad en este momento
         val currentLang = resources.configuration.locales.get(0).language
 
         if (currentLang != savedLang) {
-            // Si no coinciden, forzamos el reinicio de la actividad para aplicar el idioma
             recreate()
         }
     }
@@ -65,7 +58,6 @@ class HomeActivity : BaseActivity() {
     private fun abrirMenuLateral() {
         binding.navigationRail.visibility = View.VISIBLE
         binding.viewScrim.visibility = View.VISIBLE
-
         binding.viewScrim.bringToFront()
         binding.navigationRail.bringToFront()
         binding.btnAbrirRail.bringToFront()
@@ -77,8 +69,14 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun setupNavigation(rol: String) {
+        // --- LÓGICA DE SEGURIDAD PARA EL MENÚ ---
         if (rol == "admin") {
+            // El admin no necesita ver la cesta, pero SÍ las estadísticas
             binding.navigationRail.menu.findItem(R.id.item_cesta)?.isVisible = false
+            binding.navigationRail.menu.findItem(R.id.item_estadisticas)?.isVisible = true
+        } else {
+            // El cliente ve la cesta, pero NO las estadísticas
+            binding.navigationRail.menu.findItem(R.id.item_estadisticas)?.isVisible = false
         }
 
         binding.navigationRail.setOnItemSelectedListener { item ->
@@ -91,6 +89,12 @@ class HomeActivity : BaseActivity() {
                 }
                 R.id.item_catalogo -> {
                     reemplazarFragmento(FragmentCatalogo())
+                    true
+                }
+                R.id.item_estadisticas -> {
+                    if (rol == "admin") {
+                        reemplazarFragmento(FragmentEstadisticas())
+                    }
                     true
                 }
                 R.id.item_cesta -> {
@@ -110,12 +114,9 @@ class HomeActivity : BaseActivity() {
 
     private fun setupRailViews() {
         val inflater = LayoutInflater.from(this)
-
-        // Cabecera (Logo/Usuario)
         val headerView = inflater.inflate(R.layout.rail_header, binding.navigationRail, false)
         binding.navigationRail.addHeaderView(headerView)
 
-        // Pie de página (Botón de Ayuda/Guía)
         val footerView = inflater.inflate(R.layout.rail_footer, binding.navigationRail, false)
         val params = android.widget.FrameLayout.LayoutParams(
             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
