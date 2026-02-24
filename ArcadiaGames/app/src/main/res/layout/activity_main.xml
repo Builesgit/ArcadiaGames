@@ -2,21 +2,33 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login_screen_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:layout_height="match_parent">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/fondo_sin_logo"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="185dp"
+            android:layout_height="167dp"
+            android:layout_marginTop="50dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/logo_sin_fondo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -24,72 +36,67 @@
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_vertical"
             android:layout_width="3dp"
-            android:layout_height="400dp"
-            app:dividerColor="@color/Azul_claro"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.1"
+            android:layout_height="350dp"
+            app:dividerColor="@color/Amarillo"
+            app:layout_constraintTop_toBottomOf="@id/imgLogo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.4" />
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="30dp"/>
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_horizontal"
-            android:layout_width="250dp"
+            android:layout_width="220dp"
             android:layout_height="3dp"
-            app:dividerColor="@color/Azul_claro"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/divisor_vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3" />
+            app:dividerColor="@color/Amarillo"
+            app:layout_constraintTop_toTopOf="@id/divisor_vertical"
+            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
+            android:layout_marginTop="40dp"/>
 
         <TextView
             android:id="@+id/level_description_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="INICIO"
-            android:textColor="@color/Azul_claro"
-            android:textSize="24sp"
+            android:text="@string/login_inicio"
+            android:textColor="@color/Amarillo"
+            android:textSize="26sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/divisor_horizontal"
-            app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
-            app:layout_constraintTop_toTopOf="@+id/divisor_vertical"
-            app:layout_constraintVertical_bias="0.87" />
+            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
+            app:layout_constraintBottom_toTopOf="@id/divisor_horizontal"
+            android:layout_marginStart="12dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Usuario"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="?attr/textInputFilledStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:hint="Usuario"
+            android:hint="@string/login_correo"
             app:boxBackgroundColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divisor_horizontal"
+            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
-            app:layout_constraintTop_toTopOf="@id/divisor_horizontal"
-            app:layout_constraintVertical_bias="0.05"
-            android:layout_marginStart="16dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
                 android:textColor="@android:color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Contraseña"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="?attr/textInputFilledStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            app:boxBackgroundColor="@color/white"
+            android:hint="@string/login_password"
             app:endIconMode="password_toggle"
-            app:layout_constraintEnd_toEndOf="@+id/TextLayout_Usuario"
-            app:layout_constraintStart_toStartOf="@+id/TextLayout_Usuario"
+            app:boxBackgroundColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/TextLayout_Usuario"
+            app:layout_constraintStart_toStartOf="@id/TextLayout_Usuario"
+            app:layout_constraintEnd_toEndOf="@id/TextLayout_Usuario"
             android:layout_marginTop="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -104,41 +111,58 @@
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Acceder"
-            android:backgroundTint="#FFC107"
+            android:text="@string/login_acceder"
+            android:backgroundTint="@color/Amarillo"
             android:textColor="@android:color/black"
-            app:layout_constraintStart_toStartOf="@+id/TextLayout_Contraseña"
             app:layout_constraintTop_toBottomOf="@id/TextLayout_Contraseña"
-            android:layout_marginTop="20dp" />
+            app:layout_constraintStart_toStartOf="@id/TextLayout_Contraseña"
+            android:layout_marginTop="20dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegistrarse"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¿No tienes cuenta? Regístrate"
-            android:textColor="@color/Azul_claro"
-            app:layout_constraintStart_toStartOf="@+id/btnLogin"
+            android:text="@string/login_registrate"
+            android:textColor="@color/Amarillo"
             app:layout_constraintTop_toBottomOf="@id/btnLogin"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintStart_toStartOf="@id/btnLogin"
+            android:layout_marginTop="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/languageSelector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/flagSpanish"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:src="@drawable/espana"/>
+
+            <ImageView
+                android:id="@+id/flagEnglish"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:src="@drawable/ingles"/>
+
+            <ImageView
+                android:id="@+id/flagFrench"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:src="@drawable/francia"/>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/initial_screen_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="#D1C4E9">
-
-        <ImageView
-            android:id="@+id/logoImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:contentDescription="Logo animado" />
-
-    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

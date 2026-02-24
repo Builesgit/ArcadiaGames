@@ -1,65 +1,54 @@
-# Arcadia Games
+# ArcadiaGames 
 
-Este proyecto es una aplicación de Android desarrollada en **Kotlin** que combina una experiencia visual dinámica con un sistema de autenticación funcional conectado a una base de datos **MySQL** mediante **servicios web (PHP)**.
-
-## Organización del Repositorio
-
-Para mejorar la limpieza del código fuente de Android, se ha reestructurado el repositorio de la siguiente manera:
-* **Carpeta Raíz**: Ahora contiene el archivo `README.md`, la carpeta de la base de datos para un acceso rápido y claramente el proyecto de Arcadia Games
-* **Carpeta de Base de Datos**: Contiene los archivos **PHP** (`config.php`, `validar_usuario.php`, `registrar_usuario.php`) y el script **SQL** para la base de datos fuera del proyecto de Android
-
-## Características del Proyecto
-
-### 1. Animación de Transición (Splash Screen)
-* **Efecto Flip 3D**: Al iniciar, la aplicación presenta una animación de rotación en el eje Y que simula el giro de una pantalla para revelar el login.
-* **Estado Actual (Imagen Estática)**: La carga del GIF mediante **Glide** se ha desactivado temporalmente para optimizar las pruebas. Actualmente se utiliza una imagen de fondo fija (`fondo_con_logo`).
-* **Documentación**: Toda la lógica del GIF permanece comentada y explicada en el código de `MainActivity.kt` para su posterior activación.
-* **Transiciones Suaves**: Uso de `AccelerateDecelerateInterpolator` para un movimiento natural.
-
-### 2. Sistema de Autenticación Funcional
-* **Validación de Datos**: Control de campos vacíos antes del envío.
-* **Comunicación Asíncrona**: Uso de la librería **Volley** para realizar peticiones `POST` al servidor.
-* **Código Comentado**: Se han añadido comentarios detallados en cada bloque de código (View Binding, Animaciones y Red) para facilitar la comprensión del equipo.
-
-### 3. Sistema de Roles Dinámico (Admin vs User)
-* **Diferenciación de Perfiles**: La aplicación detecta el rol del usuario (`admin` o `user`) y adapta la interfaz automáticamente.
-* **Vistas Condicionales**: Los administradores tienen acceso a herramientas de gestión (Inventario, Reportes, Incidencias), mientras que los usuarios ven opciones de compra/venta (Mis Juegos, Intercambios, Chat).
-* **Asignación Automática**: El sistema está preparado para que el primer usuario registrado sea el Administrador principal.
+**ArcadiaGames** es una aplicación Android nativa diseñada para la gestión premium de una tienda de videojuegos. Utiliza una arquitectura orientada a servicios de Firebase para ofrecer control total sobre el inventario, usuarios y auditoría en tiempo real.
 
 ---
 
-## CONFIGURACIÓN OBLIGATORIA DEL SERVIDOR (XAMPP)
+## Funcionalidades del Dashboard Administrativo 
 
-Para que el sistema de login funcione, cada colaborador debe configurar su entorno local:
+El panel de control ha sido optimizado para ofrecer una experiencia técnica y formal, garantizando la integridad de los datos y la automatización de procesos críticos mediante una lógica puramente imperativa.
 
-### 1. Ubicación de los archivos PHP
-1. Localiza la carpeta de la base de datos en la raíz del repositorio.
-2. Copia su contenido.
-3. Ve a tu directorio de XAMPP: `C:\xampp\htdocs\`.
-4. Crea una carpeta llamada **`arcadia_games_db`**.
-5. Pega dentro los archivos `config.php` y `validar_usuario.php`.
+### 1. Nueva Arquitectura de Navegación (Overlay System)
+* **Interfaz de Superposición:** Menú lateral basado en `NavigationRailView` que se despliega sobre el contenido mediante un sistema de capas (Z-index), evitando la deformación de la interfaz principal.
+* **Cierre por Proximidad (Scrim):** Implementación de una capa de detección táctil (`view_scrim`) que permite cerrar el menú lateral al pulsar en cualquier área fuera de este.
+* **Control de Acceso Dinámico:** Ocultación selectiva de módulos (como la "Cesta") en tiempo real según el rol del usuario (Admin/Cliente).
 
-> **Nota**: La aplicación apunta a `http://10.0.2.2/arcadia_games_db/`. Esta IP es necesaria para que el emulador reconozca el localhost de tu PC.
+### 2. Gestión de Inventario y Cesta Transaccional
+* **Migración a Fragmentos:** Integración de la "Cesta" como `FragmentCesta`, permitiendo una navegación fluida sin destruir el estado de la actividad principal.
+* **Control de Stock Multinivel:** * **Baja Unitaria:** Descuento rápido mediante actualización de atributos en Firebase.
+    * **Baja Específica:** Diálogo con entrada numérica para retirar lotes concretos.
+* **Integridad Transaccional:** El stock se descuenta estrictamente al confirmar el pago en `PagoActivity`, garantizando que los productos en la cesta no bloqueen el inventario de otros usuarios.
 
-### 2. Preparación de la Base de Datos
-1. Inicia **Apache** y **MySQL** en XAMPP.
-2. Accede a `phpMyAdmin` y crea una base de datos llamada `arcadia_games_db`.
-3. Importa el archivo `.sql` incluido para generar la tabla de usuarios.
+### 3. Monitor de Auditoría y Trazabilidad
+* **Detección de Acciones Críticas:** Identificación y etiquetado automático de actividades:
+    * **`Nuevo Producto`**: Altas iniciales en el sistema.
+    * **`Stock Actualizado`**: Trazabilidad de variaciones manuales.
+    * **`Compra Realizada`**: Registro de ventas finales procesadas.
+* **Motor de Tiempos Relativos:** Visualización técnica del tiempo transcurrido (ej: "ahora", "hace 15 min") mediante lógica de cálculo manual.
+
+### 4. Optimización de Código y Rendimiento
+* **Paradigma Imperativo:** Refactorización completa para eliminar programación funcional avanzada (`map`, `filter`, `sumOf`, `joinToString`). Se utilizan bucles `for` tradicionales y acumuladores manuales para asegurar la máxima compatibilidad y facilidad de depuración.
+* **Gestión de Recursos asíncronos:** Uso de `FirebaseInventoryManager` para la subida de imágenes y sincronización de nodos en segundo plano.
 
 ---
 
-## Configuración Técnica (Android Studio)
+## Arquitectura de Interfaz y Recursos
 
-### Dependencias (build.gradle)
-Asegúrate de tener estas librerías configuradas:
+| Recurso | Descripción |
+| :--- | :--- |
+| **`HomeActivity`** | Host principal con soporte para navegación por superposición y gestión de Scrim. |
+| **`FragmentCatalogo`** | Motor de búsqueda dinámico con filtrado multinivel por categorías y plataformas. |
+| **`FragmentCesta`** | Módulo de gestión de compras integrado en el flujo de fragmentos principal. |
+| **`AnadirProductoActivity`** | Interfaz de administración con validación de campos y gestión de medios vía Firebase Storage. |
+| **`view_scrim`** | Componente de interfaz dedicado a la detección de toques fuera del área activa del menú. |
 
-```kotlin
-dependencies {
+---
 
-    // Librería para peticiones HTTP (Volley)
-    implementation("com.android.volley:volley:1.2.1")
-    
-    // Librería para imágenes y GIFs (Glide)
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
-}
+## Notas de la Versión 
+* **Refactorización UI/UX:** El menú lateral ya no empuja el contenido; ahora flota elegantemente con un fondo traslúcido (`#CC000000`).
+* **Corrección de Contraste:** Iconografía de navegación actualizada a blanco puro para mejorar la visibilidad sobre fondos oscuros.
+* **Estabilidad:** Eliminación de lambdas complejas en procesos de cálculo de precios para evitar errores de precisión decimal.
+* **Layouts Modernos:** Uso extendido de `ConstraintLayout` para garantizar que los títulos y botones no sean solapados por los elementos de navegación.
+
+---
+© 2026 ArcadiaGames - Consola de Administración Profesional.

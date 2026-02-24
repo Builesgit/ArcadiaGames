@@ -1,63 +1,139 @@
 package com.example.prueba1integrador
 
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.prueba1integrador.databinding.ActivityHomeBinding
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
 
     private lateinit var binding: ActivityHomeBinding
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LanguageUtils.updateBaseContextLocale(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val usuario = intent.getStringExtra("USUARIO_LOGUEADO") ?: "Invitado"
-        val rol = intent.getStringExtra("ROL") ?: "user"
+        val rol = intent.getStringExtra("ROL_USUARIO") ?: "cliente"
 
-        setupNavigationGlobal(usuario, rol)
-    }
-
-    private fun setupNavigationGlobal(usuario: String, rol: String) {
-        val density = resources.displayMetrics.density
-
-        // 1. Pantalla por defecto al entrar
-        cargarFragmento(FragmentHome())
-
-        // 2. Control de clics en la barra lateral
-        binding.navigationRail.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.item_menu -> cargarFragmento(FragmentHome())
-                R.id.item_catalogo -> cargarFragmento(FragmentCatalogo())
-                R.id.item_perfil -> {
-                    // Para el perfil, puedes cargarlo como Fragment o como Activity.
-                    // Si quieres que la barra siga ahí, conviértelo en Fragment.
-                    cargarFragmento(FragmentPerfil.newInstance(usuario, rol))
-                }
-            }
-            // Reset visual de la barra tras elegir
-            binding.navigationRail.layoutParams.width = 0
-            binding.navigationRail.requestLayout()
-            binding.btnAbrirRail.translationX = 0f
-            true
+        // Configuración inicial
+        if (savedInstanceState == null) {
+            reemplazarFragmento(FragmentHome())
         }
 
-        // 3. Botón para abrir la barra (Hamburguesa)
+        setupNavigation(rol)
+        setupRailViews()
+
+        // Botón para abrir el Navigation Rail
         binding.btnAbrirRail.setOnClickListener {
-            binding.navigationRail.visibility = View.VISIBLE
-            binding.navigationRail.layoutParams.width = (72 * density).toInt()
-            binding.navigationRail.requestLayout()
-            binding.btnAbrirRail.translationX = -100 * density
+            if (binding.navigationRail.visibility == View.VISIBLE) {
+                cerrarMenuLateral()
+            } else {
+                abrirMenuLateral()
+            }
+        }
+
+        // Fondo oscuro para cerrar el menú
+        binding.viewScrim.setOnClickListener {
+            cerrarMenuLateral()
         }
     }
 
-    // Función para cambiar de vista sin cerrar la barra lateral
-    private fun cargarFragmento(fragment: Fragment) {
+    override fun onResume() {
+        super.onResume()
+        val prefs = getSharedPreferences("Settings", MODE_PRIVATE)
+        val savedLang = prefs.getString("My_Lang", "es") ?: "es"
+
+        // Obtenemos el idioma que tiene la actividad en este momento
+        val currentLang = resources.configuration.locales.get(0).language
+
+        if (currentLang != savedLang) {
+            // Si no coinciden, forzamos el reinicio de la actividad para aplicar el idioma
+            recreate()
+        }
+    }
+
+    private fun abrirMenuLateral() {
+        binding.navigationRail.visibility = View.VISIBLE
+        binding.viewScrim.visibility = View.VISIBLE
+
+        binding.viewScrim.bringToFront()
+        binding.navigationRail.bringToFront()
+        binding.btnAbrirRail.bringToFront()
+    }
+
+    private fun cerrarMenuLateral() {
+        binding.navigationRail.visibility = View.GONE
+        binding.viewScrim.visibility = View.GONE
+    }
+
+    private fun setupNavigation(rol: String) {
+        if (rol == "admin") {
+            binding.navigationRail.menu.findItem(R.id.item_cesta)?.isVisible = false
+        }
+
+        binding.navigationRail.setOnItemSelectedListener { item ->
+            cerrarMenuLateral()
+
+            when (item.itemId) {
+                R.id.item_menu -> {
+                    reemplazarFragmento(FragmentHome())
+                    true
+                }
+                R.id.item_catalogo -> {
+                    reemplazarFragmento(FragmentCatalogo())
+                    true
+                }
+                R.id.item_cesta -> {
+                    if (rol != "admin") {
+                        reemplazarFragmento(FragmentCesta())
+                    }
+                    true
+                }
+                R.id.item_perfil -> {
+                    reemplazarFragmento(FragmentPerfil())
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun setupRailViews() {
+        val inflater = LayoutInflater.from(this)
+
+        // Cabecera (Logo/Usuario)
+        val headerView = inflater.inflate(R.layout.rail_header, binding.navigationRail, false)
+        binding.navigationRail.addHeaderView(headerView)
+
+        // Pie de página (Botón de Ayuda/Guía)
+        val footerView = inflater.inflate(R.layout.rail_footer, binding.navigationRail, false)
+        val params = android.widget.FrameLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        params.gravity = android.view.Gravity.BOTTOM
+        binding.navigationRail.addView(footerView, params)
+
+        footerView.findViewById<ImageButton>(R.id.btn_info_uso)?.setOnClickListener {
+            reemplazarFragmento(FragmentGuiaUso())
+            cerrarMenuLateral()
+        }
+    }
+
+    private fun reemplazarFragmento(fragmento: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_home_U_fragment, fragment)
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            .replace(R.id.main_home_U_fragment, fragmento)
             .commit()
     }
 }

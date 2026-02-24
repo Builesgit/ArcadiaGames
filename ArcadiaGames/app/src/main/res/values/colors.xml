@@ -10,4 +10,25 @@
     <color name="Azul_Oscuro">#0A1324</color>
     <color name="Amarillo">#FFD240</color>
     <color name="Texto">#4A4459</color>
+    <color name="Texto_Verde">#4ADE80</color>
+    <color name="Fondo_verde">#172E31</color>
+    <color name="Borde_verde">#194c3a</color>
+
+    <color name="Morado_alerta">#DE4AA8</color>
+
+    <color name="Rojo_bug">#F0424C</color>
+    <color name="Rojo_Oscuro_bug">#84103C</color>
+    <color name="Rojo_claro_bug">#F05C65</color>
+    "
+    <color name="Morado_usuario">#A855F7</color>
+    <color name="Morado_Oscuro_usuario">#1F1C37</color>
+    <color name="Morado_Borde_usuario">#3A275D</color>
+
+    <color name="Azul_juego">#60A5FA</color>
+    <color name="Azul_Oscuro_juego">#1A2740</color>
+    <color name="Azul_Borde_juego">#203863</color>
+
+    <color name="Amarillo_otros">#FACC15</color>
+    <color name="Amarillo_Oscuro_otros">#433F28</color>
+    <color name="Amarillo_Borde_otros">#7E6B1F</color>
 </resources>

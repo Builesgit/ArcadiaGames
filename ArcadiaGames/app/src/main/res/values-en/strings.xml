@@ -1,0 +1,178 @@
+<resources>
+    <string name="app_name">Arcadia Games</string>
+
+    <string name="login_inicio">LOGIN</string>
+    <string name="login_correo">Email Address</string>
+    <string name="login_password">Password</string>
+    <string name="login_acceder">Login</string>
+    <string name="login_registrate">Don\'t have an account? Sign up</string>
+
+    <string name="register_titulo">Create Account</string>
+    <string name="register_usuario">Username</string>
+    <string name="register_correo">Email Address</string>
+    <string name="register_contraseña">Password</string>
+    <string name="register_contraseña_2">Confirm Password</string>
+    <string name="register_btn_crear_cuenta">Create Account</string>
+    <string name="register_volver">Already have an account? Login</string>
+
+    <string name="incidencia_titulo">NEW REPORT</string>
+    <string name="incidencia_subtitulo">Describe the issue for the technical team</string>
+    <string name="incidencia_asunto">SUBJECT / TOPIC</string>
+    <string name="incidencia_hint_asunto">E.g.: Error loading profile</string>
+    <string name="incidencia_desc">DETAILED DESCRIPTION</string>
+    <string name="incidencia_hint_desc">Please explain what happened (min. 50 characters)</string>
+    <string name="incidencia_tipo">INCIDENT TYPE</string>
+    <string name="incidencia_tipo_bug">Bug</string>
+    <string name="incidencia_tipo_usuario">User</string>
+    <string name="incidencia_tipo_juego">Game</string>
+    <string name="incidencia_tipo_otros">Other</string>
+    <string name="incidencia_info">ADDITIONAL INFO (OPTIONAL)</string>
+    <string name="incidencia_hint_info">E.g.: App version or model</string>
+    <string name="incidencia_btn_enviar">SEND TECHNICAL REPORT</string>
+
+    <string name="perfil_titulo">MY PROFILE</string>
+    <string name="perfil_nombre">Name</string>
+    <string name="perfil_btn_gestion_admins">Admin Management</string>
+    <string name="perfil_btn_historial">History</string>
+    <string name="perfil_btn_inventario">Manage Inventory</string>
+    <string name="perfil_btn_crear_product">Create / Add Product</string>
+    <string name="perfil_btn_gestion_incidencias">Manage Incidents</string>
+    <string name="perfil_btn_mis_compras">My Purchases</string>
+    <string name="perfil_btn_soporte">Technical Support</string>
+    <string name="perfil_btn_convertir_admin">Become an Admin</string>
+    <string name="perfil_btn_cerrar_sesion">Log Out</string>
+
+    <string name="pago_titulo">Pay with card</string>
+    <string name="pago_detalles_pedido">Order details</string>
+    <string name="pago_importe">AMOUNT</string>
+    <string name="pago_precio_importe">€0.00</string>
+    <string name="pago_comercio">Merchant</string>
+    <string name="pago_nombre_comercio">ARCADIA GAMES</string>
+    <string name="pago_pedido">Order</string>
+    <string name="pago_operacion_pedido">----</string>
+    <string name="pago_fecha">Date</string>
+    <string name="pago_operacion_fecha">--/--/----</string>
+    <string name="pago_nombre_comprador">Cardholder name</string>
+    <string name="pago_numero_tarjeta">Card number</string>
+    <string name="pago_fecha_expiracion">MM/YY</string>
+    <string name="pago_cvv">CVV</string>
+    <string name="pago_precio_total">TOTAL: €0.00</string>
+    <string name="pago_btn_pagar">Pay</string>
+
+    <string name="add_product_titulo">ADD PRODUCT</string>
+    <string name="add_product_nombre">Game Name</string>
+    <string name="add_product_plataforma">Select platform</string>
+    <string name="add_product_desc">Product description...</string>
+    <string name="add_product_precio">Price (€)</string>
+    <string name="add_product_btn_imagen">UPLOAD IMAGE</string>
+    <string name="add_product_btn_confirmar">CONFIRM PRODUCT</string>
+
+    <string name="carrito_titulo">MY CART</string>
+    <string name="carrito_vacio">Your cart is empty</string>
+    <string name="carrito_precio_total_texto">TOTAL</string>
+    <string name="carrito_precio_total">€0.00</string>
+    <string name="carrito_btn_proceder_pago">Proceed to checkout</string>
+
+    <string name="alquiler_titulo">RENT GAME</string>
+    <string name="alquiler_selec">Selected game</string>
+    <string name="alquiler_nombre_client">Full name</string>
+    <string name="alquiler_fecha_inicio">Start date</string>
+    <string name="alquiler_fecha_fin">End date</string>
+    <string name="alquiler_info_precio">Each rental day costs €5</string>
+    <string name="alquiler_precio_total">Total price (€)</string>
+    <string name="alquiler_btn_confirmar">CONFIRM RENTAL</string>
+
+    <string name="inventario_titulo">INVENTORY CENTER</string>
+    <string name="inventario_subtitulo">Stock monitoring and control</string>
+
+    <string name="inventario_añadir_titulo">RESTOCK BY PLATFORM</string>
+    <string name="inventario_añadir_playstation">PlayStation</string>
+    <string name="inventario_añadir_xbox">Xbox</string>
+    <string name="inventario_añadir_nintendo">Nintendo</string>
+    <string name="inventario_añadir_pc">PC</string>
+    <string name="inventario_añadir_btn_confirmar">UPDATE INVENTORY</string>
+
+    <string name="inventario_eliminar_titulo">STOCK MANAGEMENT</string>
+    <string name="inventario_eliminar_subtitulo">Select the inventory exit method for this product.</string>
+    <string name="inventario_eliminar_cantidad">Quantity to remove</string>
+    <string name="inventario_eliminar_cantidad_especifica">REMOVE SPECIFIC BATCH</string>
+    <string name="inventario_eliminar_una_cantidad">SINGLE UNIT REMOVAL (-1)</string>
+    <string name="inventario_eliminar_cantidad_total">DELETE TOTAL RECORD</string>
+
+    <string name="historial_titulo">HISTORY</string>
+    <string name="historial_admins">ADMINISTRATORS</string>
+    <string name="historial_usuarios">USERS</string>
+
+    <string name="mis_compras_titulo">MY ORDERS</string>
+
+    <string name="gestion_admins_titulo">ADMIN MANAGEMENT</string>
+    <string name="gestion_admins_codigo_generar">GENERATE CODE (5 MIN)</string>
+    <string name="gestion_admins_codigo_activo">No active code</string>
+    <string name="gestion_admins_registrados">REGISTERED ADMINS</string>
+    <string name="gestion_admins_no_hay">No more registered admins</string>
+
+    <string name="acceso_admin_titulo">ADMIN ACCESS</string>
+    <string name="acceso_admin_codigo">Code</string>
+    <string name="acceso_admin_btn_validar">VALIDATE</string>
+
+    <string name="guia_uso_titulo">ARCADIA GUIDE</string>
+    <string name="guia_uso_bienvenido">Welcome to ArcadiaGames. Here you can manage your gamer catalog in a premium way.</string>
+    <string name="guia_uso_menu_principal">1. Menu</string>
+    <string name="guia_uso_menu_principal_desc">In the main menu of Arcadia Games you can see our best news and offers on the most recent games.
+        Swipe right or left to see the different games on offer.</string>
+    <string name="guia_uso_catalogo">2. Catalog</string>
+    <string name="guia_uso_catalogo_desc">Tap on any game to see details, stock, and purchase or rental options.</string>
+    <string name="guia_uso_filtros">3. Filters</string>
+    <string name="guia_uso_filtros_desc">Use the top search bar or platform chips to find what you are looking for instantly.</string>
+    <string name="guia_uso_incidencias">4. Incidents</string>
+    <string name="guia_uso_incidencias_desc">In the incidents tab you can notify the team about any problem related to the app.</string>
+    <string name="guia_uso_anadir_juego">5. Add Game</string>
+    <string name="guia_uso_anadir_juego_desc">Here you can add any game to the ArcadiaGames catalog so that anyone can buy or rent it.</string>
+    <string name="guia_uso_anadir_juego_desc_2">To add a new game you need the name, price, stock, and an image to add the product.</string>
+    <string name="guia_uso_mis_juegos">6. My Games</string>
+    <string name="guia_uso_mis_juegos_desc">In the my games tab you can see the games you have purchased or rented in the store.</string>
+    <string name="guia_uso_intercambios">7. Exchange</string>
+    <string name="guia_uso_intercambios_desc">In the Exchange tab you can trade games with other users safely and effectively.</string>
+
+    <string name="catalogo_titulo">Game Catalog</string>
+    <string name="catalogo_buscar">Search games in Arcadia...</string>
+    <string name="catalogo_pc">PC</string>
+    <string name="catalogo_playstation">PlayStation</string>
+    <string name="catalogo_xbox">Xbox</string>
+    <string name="catalogo_nintendo">Nintendo</string>
+
+    <string name="detalle_juego_comprar">Buy</string>
+    <string name="detalle_juego_alquilar">Rent</string>
+
+    <string name="home_titulo">ARCADIA GAMES</string>
+
+    <string name="home_admin_panel_control">CONTROL PANEL</string>
+    <string name="home_admin_btn_inventario">INVENTORY</string>
+    <string name="home_admin_btn_añadir_producto">ADD PRODUCT</string>
+    <string name="home_admin_titulo_soporte">SUPPORT AND TICKETS</string>
+    <string name="home_admin_btn_gestion_incidencias">Incident Management</string>
+    <string name="home_admin_gestion_incidencias_desc">Active report queue</string>
+    <string name="home_admin_titulo_historial">HISTORY</string>
+
+    <string name="home_usuario_novedades">WHAT\'S NEW</string>
+    <string name="home_usuario_ofertas">OFFERS</string>
+
+    <string name="mostrar_incidencia_titulo">SUPPORT MONITOR</string>
+    <string name="mostrar_incidencia_desc">Control and resolution of technical reports</string>
+    <string name="mostrar_incidencia_buscar">Search by subject or description...</string>
+    <string name="mostrar_incidencia_todos">All</string>
+    <string name="mostrar_incidencia_bug">Bug</string>
+    <string name="mostrar_incidencia_usuario">User</string>
+    <string name="mostrar_incidencia_juego">Game</string>
+    <string name="mostrar_incidencia_otro">Other</string>
+
+    <string name="detalle_incidencia_titulo">INCIDENT SUBJECT</string>
+    <string name="detalle_incidencia_remitente">From: user@arcadia.com</string>
+    <string name="detalle_incidencia_titulo_desc">REPORT DESCRIPTION</string>
+    <string name="detalle_incidencia_contenido_desc">Description content...</string>
+    <string name="detalle_incidencia_info_adicional">Additional technical info</string>
+    <string name="detalle_incidencia_btn_resolver">MARK AS RESOLVED</string>
+
+    <string name="completar_campos">Fill in all fields</string>
+    <string name="error_login">Incorrect username or password</string>
+</resources>

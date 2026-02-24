@@ -13,3 +13,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# --- SEGURIDAD FIREBASE ---
+# Bloquea el archivo en cualquier carpeta (la más efectiva)
+**/google-services.json
+# Rutas específicas por si acaso
+ArcadiaGames/app/google-services.json
+app/google-services.json

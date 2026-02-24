@@ -10,22 +10,22 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.FragmentCatalogoBinding
 import com.google.android.material.chip.Chip
+import android.content.Intent
 
 class FragmentCatalogo : Fragment() {
 
-    // Gestión del Binding para evitar fugas de memoria en Fragments
     private var _binding: FragmentCatalogoBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var adapter: JuegoAdapter
-    private lateinit var listaCompleta: List<Juego>
+    private var listaCompleta: List<Juego> = emptyList()
+    private val inventoryManager = FirebaseInventoryManager()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflamos el layout usando ViewBinding
         _binding = FragmentCatalogoBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -33,29 +33,54 @@ class FragmentCatalogo : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupData()
         setupRecyclerView()
+        setupData()
         setupFilters()
+        setupFab()
+    }
+
+    private fun setupData() {
+        inventoryManager.consultarInventario(object :
+            FirebaseInventoryManager.InventoryCallback {
+            override fun onDataLoaded(lista: List<Juego>) {
+                listaCompleta = lista
+                adapter.setFilteredList(listaCompleta)
+            }
+        })
+    }
+
+    private fun setupFab() {
+        val rolUsuario = activity?.intent?.getStringExtra("ROL_USUARIO") ?: "cliente"
+
+        if (rolUsuario == "admin") {
+            binding.fabAgregarJuego.visibility = View.VISIBLE
+            binding.fabAgregarJuego.setOnClickListener {
+                startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
+            }
+        } else {
+            binding.fabAgregarJuego.visibility = View.GONE
+        }
     }
 
     private fun setupRecyclerView() {
-        // Usamos binding para acceder al RecyclerView sin findViewById
         binding.rvCatalogoCompleto.layoutManager = LinearLayoutManager(context)
-        adapter = JuegoAdapter(listaCompleta)
+
+        val rolUsuario = activity?.intent?.getStringExtra("ROL_USUARIO") ?: "cliente"
+        val esAdmin = (rolUsuario == "admin")
+
+        adapter = JuegoAdapter(emptyList(), esCarousel = false, esAdmin = esAdmin)
         binding.rvCatalogoCompleto.adapter = adapter
     }
 
     private fun setupFilters() {
-        // Configuramos la conexión entre SearchBar y SearchView
+
         binding.searchViewCatalogo.setupWithSearchBar(binding.searchBarCatalogo)
 
-        // Escuchador de texto para búsqueda en tiempo real
         binding.searchViewCatalogo.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val texto = s.toString()
-                // Corrección del error .text: usamos setText()
                 binding.searchBarCatalogo.setText(texto)
                 filtrar(texto)
             }
@@ -63,46 +88,42 @@ class FragmentCatalogo : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Escuchador para cambios en los Chips de categorías
-        binding.chipGroupCategorias.setOnCheckedStateChangeListener { _, _ ->
-            val textoBusqueda = binding.searchViewCatalogo.text.toString()
-            filtrar(textoBusqueda)
+        // Ahora solo hay un chip seleccionado
+        binding.chipGroupCategorias.setOnCheckedStateChangeListener { group, checkedIds ->
+            filtrar(binding.searchViewCatalogo.text.toString())
         }
     }
 
     private fun filtrar(texto: String) {
-        // Obtenemos los nombres de los chips seleccionados
-        val etiquetasSeleccionadas = binding.chipGroupCategorias.checkedChipIds.map { id ->
-            binding.chipGroupCategorias.findViewById<Chip>(id).text.toString()
+
+        val query = texto.lowercase()
+
+        // 🔥 Como ahora es singleSelection, solo puede haber 1
+        val selectedId = binding.chipGroupCategorias.checkedChipId
+
+        val plataformaSeleccionada = if (selectedId != View.NO_ID) {
+            val chip = binding.chipGroupCategorias.findViewById<Chip>(selectedId)
+            chip.text.toString().lowercase()
+        } else {
+            null
         }
 
-        // Aplicamos el filtro a la lista completa
         val listaFiltrada = listaCompleta.filter { juego ->
-            val coincideNombre = juego.nombre.contains(texto, ignoreCase = true)
-            val coincideChip = etiquetasSeleccionadas.isEmpty() ||
-                    juego.tags.any { tag -> etiquetasSeleccionadas.contains(tag) }
+
+            val coincideNombre = juego.nombre.lowercase().contains(query)
+
+            val coincideChip = plataformaSeleccionada == null ||
+                    juego.categoria.lowercase().contains(plataformaSeleccionada) ||
+                    juego.plataforma.lowercase().contains(plataformaSeleccionada)
 
             coincideNombre && coincideChip
         }
 
-        // Actualizamos el adaptador con la nueva lista
         adapter.setFilteredList(listaFiltrada)
-    }
-
-    private fun setupData() {
-        // Lista de datos de ejemplo (Mockup)
-        listaCompleta = listOf(
-            Juego("Super Morio World", "C morió.", R.drawable.morio, "4000.99€", listOf("MeloInvento")),
-            Juego("Poly Racing", "Carreras poligonales.", R.drawable.polyracing, "0.09€", listOf("PolyStation")),
-            Juego("Xbob El con-Xtructor", "Construye como nadie", R.drawable.wicher3, "49.99€", listOf("Xbob")),
-            Juego("PC Master Race", "Solo para Chads.", R.drawable.pcmasterrace, "50.00€", listOf("PC")),
-            Juego("Multi Plataforma", "Funciona en todo.", R.drawable.wicher3, "3.99€", listOf("PolyStation", "PC", "Xbob", "MeloInvento"))
-        )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Limpiamos el binding para evitar fugas de memoria
         _binding = null
     }
 }

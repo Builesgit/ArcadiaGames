@@ -2,41 +2,87 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- PERMISOS -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_perfil"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo_perfil"
         android:supportsRtl="true"
         android:theme="@style/Theme.Prueba1Integrador"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        android:usesCleartextTraffic="true">
 
+        <!-- 🔑 GOOGLE MAPS API KEY -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <!-- ACTIVIDAD PRINCIPAL -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan">
-
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <activity
-            android:name=".CrearCuenta"
+            android:name=".RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".GestionarInventarioActivity"
             android:exported="false"
-            />
+            android:parentActivityName=".HomeActivity"/>
+
+        <activity
+            android:name=".AnadirProductoActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity"/>
+
+        <activity
+            android:name=".CrearIncidencia"
+            android:exported="false"/>
+
+        <activity
+            android:name=".GestionAdminsActivity"
+            android:exported="false"/>
 
         <activity
             android:name=".HomeActivity"
-            android:exported="false"
-            />
+            android:exported="false" />
+
+        <activity
+            android:name=".DetalleCestaActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".PagoActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".AlquilarJuegoActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".HistorialActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MisComprasActivity"
+            android:exported="false" />
+
+        <!-- 🗺 MAPS ACTIVITY -->
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false" />
 
     </application>
 

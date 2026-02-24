@@ -1,0 +1,73 @@
+package com.example.prueba1integrador
+
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.prueba1integrador.databinding.ActivityGestionarInventarioBinding
+
+class GestionarInventarioActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityGestionarInventarioBinding
+    private val inventoryManager = FirebaseInventoryManager()
+    private lateinit var adapter: GestionarAdapter
+    private var listaVisualInventario: List<ItemInventario> = emptyList()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityGestionarInventarioBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupRecyclerView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cargarDatos()
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
+
+        adapter = GestionarAdapter(
+            listaInventario = listaVisualInventario,
+            onEditClick = { /* No hace falta lógica aquí, el Adapter abre el diálogo */ },
+            onDataChanged = {
+                // Refrescar datos cuando el adapter realice una operación (suma/resta/borrado)
+                cargarDatos()
+            }
+        )
+        binding.rvInventarioGestion.adapter = adapter
+    }
+
+    private fun cargarDatos() {
+        binding.progressBarGestion.visibility = View.VISIBLE
+        inventoryManager.consultarInventario(object : FirebaseInventoryManager.InventoryCallback {
+            override fun onDataLoaded(lista: List<Juego>) {
+                binding.progressBarGestion.visibility = View.GONE
+                procesarYMostrarLista(lista)
+            }
+        })
+    }
+
+    private fun procesarYMostrarLista(lista: List<Juego>) {
+        val agrupados = lista.groupBy { it.nombre.trim().lowercase() }
+
+        listaVisualInventario = agrupados.map { entry ->
+            val listaDeEsteJuego = entry.value
+            val juegoRepresentante = listaDeEsteJuego.first()
+
+            ItemInventario(
+                juego = juegoRepresentante,
+                cantidad = listaDeEsteJuego.sumOf { it.stock },
+                idsAgrupados = listaDeEsteJuego.map { it.id },
+                // Las claves deben ser idénticas a las del Map anterior
+                ps = listaDeEsteJuego.sumOf { it.detalle_stock?.get("playstation") ?: 0 },
+                xb = listaDeEsteJuego.sumOf { it.detalle_stock?.get("xbox") ?: 0 },
+                ni = listaDeEsteJuego.sumOf { it.detalle_stock?.get("nintendo") ?: 0 },
+                pc = listaDeEsteJuego.sumOf { it.detalle_stock?.get("pc") ?: 0 }
+            )
+        }
+        adapter.actualizarLista(listaVisualInventario)
+    }
+}

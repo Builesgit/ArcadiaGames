@@ -1,0 +1,203 @@
+<resources>
+    <string name="app_name">Arcadia Games</string>
+
+    <!-- CLASE LOGIN -->
+    <string name="login_inicio">INICIO</string>
+    <string name="login_correo">Correo Electrónico</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_acceder">Acceder</string>
+    <string name="login_registrate">¿No tienes cuenta? Regístrate</string>
+
+    <!-- CLASE REGISTRO -->
+    <string name="register_titulo">Crear Cuenta</string>
+    <string name="register_usuario">Usuario</string>
+    <string name="register_correo">Correo Electrónico</string>
+    <string name="register_contraseña">Contraseña</string>
+    <string name="register_contraseña_2">Confirmar Contraseña</string>
+    <string name="register_btn_crear_cuenta">Crear Cuenta</string>
+    <string name="register_volver">Ya tengo cuenta, acceder</string>
+
+    <!-- CLASE AÑADIR INCIDENCIA -->
+    <string name="incidencia_titulo">NUEVO REPORTE</string>
+    <string name="incidencia_subtitulo">Describe el problema para el equipo técnico</string>
+    <string name="incidencia_asunto">ASUNTO / TEMA</string>
+    <string name="incidencia_hint_asunto">Ej: Error al cargar perfil</string>
+    <string name="incidencia_desc">DESCRIPCIÓN DETALLADA</string>
+    <string name="incidencia_hint_desc">Por favor, explica lo ocurrido (mín. 50 caracteres)</string>
+    <string name="incidencia_tipo">TIPO DE INCIDENCIA</string>
+    <string name="incidencia_tipo_bug">Bug</string>
+    <string name="incidencia_tipo_usuario">Usuario</string>
+    <string name="incidencia_tipo_juego">Juego</string>
+    <string name="incidencia_tipo_otros">Otro</string>
+    <string name="incidencia_info">INFORMACIÓN ADICIONAL (OPCIONAL)</string>
+    <string name="incidencia_hint_info">Ej: Versión de la app o modelo</string>
+    <string name="incidencia_btn_enviar">ENVIAR REPORTE TÉCNICO</string>
+
+    <!-- CLASE PERFIL USUARIO/ADMIN -->
+    <string name="perfil_titulo">MI PERFIL</string>
+    <string name="perfil_nombre">Nombre</string>
+    <string name="perfil_btn_gestion_admins">Gestión Admins</string>
+    <string name="perfil_btn_historial">Historial</string>
+    <string name="perfil_btn_inventario">Gestionar Inventario</string>
+    <string name="perfil_btn_crear_product">Crear / Añadir Producto</string>
+    <string name="perfil_btn_gestion_incidencias">Gestionar Incidencias</string>
+    <string name="perfil_btn_mis_compras">Mis Compras</string>
+    <string name="perfil_btn_soporte">Soporte Técnico</string>
+    <string name="perfil_btn_convertir_admin">Convertirse en Admin</string>
+    <string name="perfil_btn_cerrar_sesion">Cerrar Sesión</string>
+
+    <!-- CLASE PAGO PRODUCTO -->
+    <string name="pago_titulo">Pagar con tarjeta</string>
+    <string name="pago_detalles_pedido">Detalles del pedido</string>
+    <string name="pago_importe">IMPORTE</string>
+    <string name="pago_precio_importe">0.00 €</string>
+    <string name="pago_comercio">Comercio</string>
+    <string name="pago_nombre_comercio">ARCADIA GAMES</string>
+    <string name="pago_pedido">Pedido</string>
+    <string name="pago_operacion_pedido">----</string>
+    <string name="pago_fecha">Fecha</string>
+    <string name="pago_operacion_fecha">--/--/----</string>
+    <string name="pago_nombre_comprador">Nombre del titular</string>
+    <string name="pago_numero_tarjeta">Número de tarjeta</string>
+    <string name="pago_fecha_expiracion">MM/YY</string>
+    <string name="pago_cvv">CVV</string>
+    <string name="pago_precio_total">TOTAL: €0.00</string>
+    <string name="pago_btn_pagar">Pagar</string>
+
+    <!-- CLASE AÑADIR PRODUCTO -->
+    <string name="add_product_titulo">AÑADIR PRODUCTO</string>
+    <string name="add_product_nombre">Nombre del Juego</string>
+    <string name="add_product_plataforma">Selecciona plataforma</string>
+    <string name="add_product_desc">Descripción del producto...</string>
+    <string name="add_product_precio">Precio (€)</string>
+    <string name="add_product_btn_imagen">SUBIR IMAGEN</string>
+    <string name="add_product_btn_confirmar">CONFIRMAR PRODUCTO</string>
+
+    <!-- CLASE CESTA COMPRA -->
+    <string name="carrito_titulo">MI CESTA</string>
+    <string name="carrito_vacio">Tu cesta está vacía</string>
+    <string name="carrito_precio_total_texto">TOTAL</string>
+    <string name="carrito_precio_total">€0.00</string>
+    <string name="carrito_btn_proceder_pago">Proceder al pago</string>
+
+    <!-- CLASE ALQUILAR PRODUCTO -->
+    <string name="alquiler_titulo">ALQUILAR JUEGO</string>
+    <string name="alquiler_selec">Juego seleccionado</string>
+    <string name="alquiler_nombre_client">Nombre y apellidos</string>
+    <string name="alquiler_fecha_inicio">Fecha inicio</string>
+    <string name="alquiler_fecha_fin">Fecha fin</string>
+    <string name="alquiler_info_precio">Cada día de alquiler cuesta 5 €</string>
+    <string name="alquiler_precio_total">Precio total (€)</string>
+    <string name="alquiler_btn_confirmar">CONFIRMAR ALQUILER</string>
+
+    <!-- CLASE INVENTARIO -->
+    <string name="inventario_titulo">CENTRAL DE INVENTARIO</string>
+    <string name="inventario_subtitulo">Monitorización y control de existencias</string>
+
+    <!-- POP-UP AÑADIR INVENTARIO -->
+    <string name="inventario_añadir_titulo">REPOSICIÓN POR PLATAFORMA</string>
+    <string name="inventario_añadir_playstation">PlayStation</string>
+    <string name="inventario_añadir_xbox">Xbox</string>
+    <string name="inventario_añadir_nintendo">Nintendo</string>
+    <string name="inventario_añadir_pc">PC</string>
+    <string name="inventario_añadir_btn_confirmar">ACTUALIZAR INVENTARIO</string>
+
+    <!-- POP-UP ELIMINAR INVENTARIO -->
+    <string name="inventario_eliminar_titulo">GESTIÓN DE EXISTENCIAS</string>
+    <string name="inventario_eliminar_subtitulo">Seleccione el método de salida de inventario para este producto.</string>
+    <string name="inventario_eliminar_cantidad">Cantidad a retirar</string>
+    <string name="inventario_eliminar_cantidad_especifica">RETIRAR LOTE ESPECÍFICO</string>
+    <string name="inventario_eliminar_una_cantidad">BAJA UNITARIA (-1)</string>
+    <string name="inventario_eliminar_cantidad_total">ELIMINAR REGISTRO TOTAL</string>
+
+    <!-- CLASE HISTORIAL -->
+    <string name="historial_titulo">HISTORIAL</string>
+    <string name="historial_admins">ADMINSTRADORES</string>
+    <string name="historial_usuarios">USUARIOS</string>
+
+    <!-- CLASE MIS COMPRAS -->
+    <string name="mis_compras_titulo">MIS PEDIDOS</string>
+
+    <!-- CLASE GESTION ADMINS -->
+    <string name="gestion_admins_titulo">GESTIÓN DE ADMINISTRADORES</string>
+    <string name="gestion_admins_codigo_generar">GENERAR CÓDIGO (5 MIN)</string>
+    <string name="gestion_admins_codigo_activo">Ningún código activo</string>
+    <string name="gestion_admins_registrados">ADMINS REGISTRADOS</string>
+    <string name="gestion_admins_no_hay">No hay más administradores registrados</string>
+
+    <!-- CLASE VALIDACIÓN ADMINS -->
+    <string name="acceso_admin_titulo">ACCESO ADMIN</string>
+    <string name="acceso_admin_codigo">Código</string>
+    <string name="acceso_admin_btn_validar">VALIDAR</string>
+
+    <!-- CLASE GUIA USO -->
+    <string name="guia_uso_titulo">GUÍA DE ARCADIA</string>
+    <string name="guia_uso_bienvenido">Bienvenido a ArcadiaGames. Aquí puedes gestionar tu catálogo gamer de forma premium.</string>
+    <string name="guia_uso_menu_principal">1. Menú</string>
+    <string name="guia_uso_menu_principal_desc">En el menú principal de Arcadia Games puedes ver nuestras mejores novedades y ofertas de los juegos más recientes, toda una oportunidad.
+        Mueve el rail hacia la derecha o izquierda para ver los diferentes juegos en oferta</string>
+    <string name="guia_uso_catalogo">2. Catálogo</string>
+    <string name="guia_uso_catalogo_desc">Pulsa en cualquier juego para ver detalles, stock y opciones de compra o alquiler.</string>
+    <string name="guia_uso_filtros">3. Filtros</string>
+    <string name="guia_uso_filtros_desc">Usa la barra de búsqueda superior o los chips de plataforma para encontrar lo que buscas al instante.</string>
+    <string name="guia_uso_incidencias">4. Incidencias</string>
+    <string name="guia_uso_incidencias_desc">En la pestaña de incidencias puedes notificar al equipo acerca de cualquier problema relacionado con la app</string>
+    <string name="guia_uso_anadir_juego">5. Añadir juego</string>
+    <string name="guia_uso_anadir_juego_desc">Aquí podrás añadir cualquier juego al catálogo de ArcadiaGames para que cualquiera pueda comprarlo o alquilar el juego</string>
+    <string name="guia_uso_anadir_juego_desc_2">Para añadir un juego nuevo tienes que saber el nombre, precio, stock que tienes y tener una imagen para agregar el producto</string>
+    <string name="guia_uso_mis_juegos">6. Mis Juegos</string>
+    <string name="guia_uso_mis_juegos_desc">En la pestaña de mis juegos puedes ver los juegos que tienes comprados o alquilados en la tienda</string>
+    <string name="guia_uso_intercambios">7. Intercambio</string>
+    <string name="guia_uso_intercambios_desc">En la pestaña de Intercambios puedes realizar intercambios de juegos con otros usuarios, de manera segura y efectiva</string>
+
+    <!-- CLASE CATALOGO -->
+    <string name="catalogo_titulo">Catálogo de Juegos</string>
+    <string name="catalogo_buscar">Buscar juegos en Arcadia...</string>
+    <string name="catalogo_pc">PC</string>
+    <string name="catalogo_playstation">PlayStation</string>
+    <string name="catalogo_xbox">Xbox</string>
+    <string name="catalogo_nintendo">Nintendo</string>
+
+    <!-- POP-UP DETALLE JUEGO -->
+    <string name="detalle_juego_comprar">Comprar</string>
+    <string name="detalle_juego_alquilar">Alquilar</string>
+
+    <!-- CLASE HOME -->
+    <string name="home_titulo">ARCADIA GAMES</string>
+
+    <!-- HOME ADMIN -->
+    <string name="home_admin_panel_control">PANEL DE CONTROL</string>
+    <string name="home_admin_btn_inventario">INVENTARIO</string>
+    <string name="home_admin_btn_añadir_producto">AÑADIR PRODUCTO</string>
+    <string name="home_admin_titulo_soporte">SOPORTE Y TICKETS</string>
+    <string name="home_admin_btn_gestion_incidencias">Gestión de Incidencias</string>
+    <string name="home_admin_gestion_incidencias_desc">Cola de reportes activos</string>
+    <string name="home_admin_titulo_historial">HISTORIAL</string>
+
+    <!-- HOME USUARIO -->
+    <string name="home_usuario_novedades">NOVEDADES</string>
+    <string name="home_usuario_ofertas">OFERTAS</string>
+
+    <!-- CLASE MOSTRAR INCIDENCIA -->
+    <string name="mostrar_incidencia_titulo">MONITOR DE SOPORTE</string>
+    <string name="mostrar_incidencia_desc">Control y resolución de reportes técnicos</string>
+    <string name="mostrar_incidencia_buscar">Buscar por tema o descripción...</string>
+    <string name="mostrar_incidencia_todos">Todos</string>
+    <string name="mostrar_incidencia_bug">Bug</string>
+    <string name="mostrar_incidencia_usuario">Usuario</string>
+    <string name="mostrar_incidencia_juego">Juego</string>
+    <string name="mostrar_incidencia_otro">Otro</string>
+
+    <!-- POP-UP DETALLE INCIDENCIA -->
+    <string name="detalle_incidencia_titulo">TEMA DE INCIDENCIA</string>
+    <string name="detalle_incidencia_remitente">De: usuario@arcadia.com</string>
+    <string name="detalle_incidencia_titulo_desc">DESCRIPCIÓN DEL REPORTE</string>
+    <string name="detalle_incidencia_contenido_desc">Contenido de la descripción...</string>
+    <string name="detalle_incidencia_info_adicional">Información técnica adicional</string>
+    <string name="detalle_incidencia_btn_resolver">MARCAR COMO RESUELTA</string>
+
+    <!-- NOTIFICACIONES -->
+    <string name="completar_campos">Completa todos los campos</string>
+    <string name="error_login">Usuario o contraseña incorrectos</string>
+
+</resources>

@@ -4,7 +4,7 @@
     android:id="@+id/fragment_catalogo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Azul_Oscuro">
+    android:background="@drawable/fondo_sin_logo">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:letterSpacing="0.1"
-                android:text="@string/Catalogo"
+                android:text="@string/catalogo_titulo"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -37,7 +37,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Buscar juegos en Arcadia..."
+                android:hint="@string/catalogo_buscar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/titulo_catalago_u" />
@@ -46,7 +46,7 @@
                 android:id="@+id/search_view_catalogo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/Buscar"
+                android:hint="@string/catalogo_buscar"
                 app:layout_anchor="@id/search_bar_catalogo" />
 
             <HorizontalScrollView
@@ -55,33 +55,57 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:scrollbars="none"
+                android:fillViewport="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/search_bar_catalogo">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chip_group_categorias"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleSelection="false">
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_pc"
-                        style="@style/Widget.Material3.Chip.Filter"
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chip_group_categorias"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="PC"
-                        app:chipBackgroundColor="@color/Azul_Fondo_Botones"
-                        android:textColor="@color/white"/>
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        app:chipSpacingHorizontal="8dp"
+                        app:singleSelection="true"
+                        app:selectionRequired="false">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chip_xbob"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Xbob" />
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_pc"
+                            style="@style/Widget.Material3.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/catalogo_pc" />
 
-                </com.google.android.material.chip.ChipGroup>
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_playstation"
+                            style="@style/Widget.Material3.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/catalogo_playstation" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_xbox"
+                            style="@style/Widget.Material3.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/catalogo_xbox" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_nintendo"
+                            style="@style/Widget.Material3.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/catalogo_nintendo" />
+
+                    </com.google.android.material.chip.ChipGroup>
+                </LinearLayout>
             </HorizontalScrollView>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -96,4 +120,18 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_agregar_juego"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="Agregar Juego"
+        app:tint="@android:color/white"
+        android:visibility="gone"
+        tools:visibility="visible"
+        xmlns:tools="http://schemas.android.com/tools"/>
+
 </FrameLayout>

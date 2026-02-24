@@ -1,78 +1,97 @@
 package com.example.prueba1integrador
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prueba1integrador.databinding.ActivityMainBinding
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import org.json.JSONObject
-import android.os.Handler
-import android.os.Looper
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
+
+    // ESTO ES LO MÁS IMPORTANTE: Obliga a la actividad a usar el idioma guardado
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LanguageUtils.updateBaseContextLocale(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseApp.initializeApp(this)
+        auth = Firebase.auth
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.initialScreenLayout.visibility = View.GONE
-        binding.loginScreenLayout.visibility = View.VISIBLE
-        binding.loginScreenLayout.rotationY = 0f // Aseguramos que esté de frente
+        // Banderas
+        binding.flagSpanish.setOnClickListener { changeLang("es") }
+        binding.flagEnglish.setOnClickListener { changeLang("en") }
+        binding.flagFrench.setOnClickListener { changeLang("fr") }
 
-        // Listener Login
         binding.btnLogin.setOnClickListener {
-            val user = binding.edtUsuario.text.toString()
-            val pass = binding.edtPassword.text.toString()
+            val email = binding.edtUsuario.text.toString().trim()
+            val pass = binding.edtPassword.text.toString().trim()
 
-            if (user.isNotEmpty() && pass.isNotEmpty()) {
-                validarUsuario("http://10.0.2.2/arcadia_games_db/validar_usuario.php")
+            if (email.isNotEmpty() && pass.isNotEmpty()) {
+                loginConFirebase(email, pass)
             } else {
-                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.completar_campos), Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Ir a Registro
-        binding.btnRegistrarse?.setOnClickListener {
-            startActivity(Intent(this, CrearCuenta::class.java))
+        binding.btnRegistrarse.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
-    private fun validarUsuario(url: String) {
-        val stringRequest = object : StringRequest(Request.Method.POST, url,
-            { response ->
-                if (response.isNotEmpty() && !response.contains("no_existe")) {
-                    val jsonResponse = JSONObject(response)
-                    val rol = jsonResponse.getString("rol")
-                    val usuario = jsonResponse.getString("usuario")
+    // Al volver del registro, si el idioma cambió, recreamos la actividad
+    override fun onResume() {
+        super.onResume()
+        val prefs = getSharedPreferences("Settings", MODE_PRIVATE)
+        val savedLang = prefs.getString("My_Lang", "es") ?: "es"
+        val currentLang = resources.configuration.locales.get(0).language
 
-                    // Solo dejamos el retraso de 3s para que el servidor respire
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        val intent = Intent(this, HomeActivity::class.java).apply {
-                            putExtra("ROL", rol)
-                            putExtra("USUARIO_LOGUEADO", usuario)
-                        }
+        if (currentLang != savedLang) {
+            recreate()
+        }
+    }
+
+    private fun changeLang(code: String) {
+        LanguageUtils.saveLocale(this, code)
+        recreate()
+    }
+
+    private fun loginConFirebase(email: String, pass: String) {
+        auth.signInWithEmailAndPassword(email, pass)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    val dbRef = Firebase.database.getReference("usuarios").child(user?.uid ?: "")
+
+                    dbRef.get().addOnSuccessListener { snapshot ->
+                        val rol = snapshot.child("rol").value?.toString() ?: "cliente"
+                        val nombreUsuario = snapshot.child("nombre").value?.toString() ?: email
+
+                        val intent = Intent(this, HomeActivity::class.java)
+                        intent.putExtra("ROL_USUARIO", rol)
+                        intent.putExtra("USUARIO_LOGUEADO", nombreUsuario)
+
                         startActivity(intent)
                         finish()
-                    }, 3000)
+                    }.addOnFailureListener {
+                        Toast.makeText(this, "Error de seguridad", Toast.LENGTH_LONG).show()
+                    }
                 } else {
-                    Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.error_login), Toast.LENGTH_SHORT).show()
                 }
-            },
-            { Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show() }
-        ) {
-            override fun getParams(): MutableMap<String, String> {
-                val parametros = HashMap<String, String>()
-                parametros["usuario"] = binding.edtUsuario.text.toString()
-                parametros["password"] = binding.edtPassword.text.toString()
-                return parametros
             }
-        }
-        Volley.newRequestQueue(this).add(stringRequest)
     }
 }

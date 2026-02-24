@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/fondo_sin_logo"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvNombre"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvPrecio"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnComprar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/detalle_juego_comprar"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:background="@drawable/boton_background"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/btnAlquilar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/detalle_juego_alquilar"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:background="@drawable/boton_background"
+            android:layout_marginTop="12dp"/>
+    </LinearLayout>
+
+</FrameLayout>

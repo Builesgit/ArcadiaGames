@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/historial_background">
+
+    <TextView
+        android:id="@+id/tvTituloAnadir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/inventario_añadir_titulo"
+        android:textColor="#FFC107"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:alignmentMode="alignMargins">
+
+        <EditText
+            android:id="@+id/etStockPS"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="@string/inventario_añadir_playstation"
+            android:inputType="number"
+            android:textColorHint="#FFFFFF"
+            android:gravity="center"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:id="@+id/etStockXbox"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="@string/inventario_añadir_xbox"
+            android:textColorHint="#FFFFFF"
+            android:gravity="center"
+            android:inputType="number"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:id="@+id/etStockNintendo"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="@string/inventario_añadir_nintendo"
+            android:gravity="center"
+            android:textColorHint="#FFFFFF"
+            android:inputType="number"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:id="@+id/etStockPC"
+            android:layout_width="0dp"
+            android:layout_columnWeight="1"
+            android:hint="@string/inventario_añadir_pc"
+            android:textColorHint="#FFFFFF"
+            android:gravity="center"
+            android:inputType="number"
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:layout_margin="4dp"/>
+    </GridLayout>
+
+    <Button
+        android:id="@+id/btnConfirmarSuma"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/inventario_añadir_btn_confirmar"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:backgroundTint="#4CAF50"/>
+</LinearLayout>

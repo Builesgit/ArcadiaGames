@@ -1,0 +1,15 @@
+# Normalize line endings
+* text=auto
+
+# Kotlin & Java
+*.kt text
+*.kts text
+*.java text
+
+# XML & Gradle
+*.xml text
+*.gradle text
+*.properties text
+
+# Shell scripts (force LF)
+*.sh text eol=lf
