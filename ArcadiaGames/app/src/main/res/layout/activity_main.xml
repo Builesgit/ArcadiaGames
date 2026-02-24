@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,21 +23,21 @@
 
         <ImageView
             android:id="@+id/imgLogo"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
+            android:layout_width="185dp"
+            android:layout_height="167dp"
             android:layout_marginTop="50dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/marco_logo"
             android:contentDescription="@string/app_name"
-            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/logo_sin_fondo"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_vertical"
             android:layout_width="3dp"
             android:layout_height="350dp"
-            app:dividerColor="@color/Azul_claro"
+            app:dividerColor="@color/Amarillo"
             app:layout_constraintTop_toBottomOf="@id/imgLogo"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="40dp"
@@ -46,7 +47,7 @@
             android:id="@+id/divisor_horizontal"
             android:layout_width="220dp"
             android:layout_height="3dp"
-            app:dividerColor="@color/Azul_claro"
+            app:dividerColor="@color/Amarillo"
             app:layout_constraintTop_toTopOf="@id/divisor_vertical"
             app:layout_constraintStart_toEndOf="@id/divisor_vertical"
             android:layout_marginTop="40dp"/>
@@ -56,8 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_inicio"
-            android:textColor="@color/Azul_claro"
-            android:textSize="24sp"
+            android:textColor="@color/Amarillo"
+            android:textSize="26sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/divisor_vertical"
             app:layout_constraintBottom_toTopOf="@id/divisor_horizontal"
@@ -123,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_registrate"
-            android:textColor="@color/Azul_claro"
+            android:textColor="@color/Amarillo"
             app:layout_constraintTop_toBottomOf="@id/btnLogin"
             app:layout_constraintStart_toStartOf="@id/btnLogin"
             android:layout_marginTop="8dp"/>
