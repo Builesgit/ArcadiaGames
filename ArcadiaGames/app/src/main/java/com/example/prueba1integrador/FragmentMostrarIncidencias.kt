@@ -14,6 +14,9 @@ import com.example.prueba1integrador.databinding.DialogoDetalleIncidenciaBinding
 import com.example.prueba1integrador.databinding.FragmentMostrarIncidenciaBinding
 import com.google.android.material.chip.Chip
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class FragmentMostrarIncidencias : Fragment() {
 
@@ -21,8 +24,16 @@ class FragmentMostrarIncidencias : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: IncidenciaAdapter
-    private var listaCompleta: MutableList<Incidencia> = mutableListOf()
-    private lateinit var database: DatabaseReference
+    private val listaCompleta: MutableList<Incidencia> = mutableListOf()
+
+    private lateinit var dbPendientes: DatabaseReference
+    private lateinit var dbResueltas: DatabaseReference
+    private lateinit var rootRef: DatabaseReference
+
+    private var listenerActual: ValueEventListener? = null
+    private var refActual: DatabaseReference? = null
+
+    private var mostrandoResueltas = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,11 +45,17 @@ class FragmentMostrarIncidencias : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        database = FirebaseDatabase.getInstance().getReference("incidencias")
+
+        rootRef = FirebaseDatabase.getInstance().reference
+        dbPendientes = rootRef.child("incidencias")                     // pendientes = incidencias/{id}
+        dbResueltas = rootRef.child("incidencias").child("resueltas")   // resueltas = incidencias/resueltas/{id}
 
         setupRecyclerView()
-        loadIncidencias()
         setupFilters()
+        setupFabResueltas()
+
+        // Vista por defecto: pendientes
+        cargarDesde(dbPendientes)
     }
 
     private fun setupRecyclerView() {
@@ -47,6 +64,20 @@ class FragmentMostrarIncidencias : Fragment() {
             mostrarDetalleIncidencia(incidencia)
         }
         binding.rvCatalogoCompleto.adapter = adapter
+    }
+
+    private fun setupFabResueltas() {
+        binding.fabVerResueltas.setOnClickListener {
+            mostrandoResueltas = !mostrandoResueltas
+
+            if (mostrandoResueltas) {
+                Toast.makeText(requireContext(), "Mostrando incidencias resueltas", Toast.LENGTH_SHORT).show()
+                cargarDesde(dbResueltas)
+            } else {
+                Toast.makeText(requireContext(), "Mostrando incidencias pendientes", Toast.LENGTH_SHORT).show()
+                cargarDesde(dbPendientes)
+            }
+        }
     }
 
     private fun mostrarDetalleIncidencia(incidencia: Incidencia) {
@@ -60,13 +91,51 @@ class FragmentMostrarIncidencias : Fragment() {
         dialogBinding.tvDetalleInfo.text = incidencia.infoAdicional
         dialogBinding.tvDetalleUsuario.text = "De: ${incidencia.usuarioEmail}"
 
+        // Si estás viendo resueltas, ocultamos el botón
+        dialogBinding.btnFinalizarIncidencia.visibility =
+            if (mostrandoResueltas) View.GONE else View.VISIBLE
+
         dialogBinding.btnFinalizarIncidencia.setOnClickListener {
-            incidencia.id?.let { id ->
-                database.child(id).removeValue().addOnSuccessListener {
-                    Toast.makeText(context, "Reporte resuelto", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
+
+            // ✅ key real de Firebase (siempre es la correcta)
+            val keyReal = incidencia.id?.trim()
+            if (keyReal.isNullOrEmpty()) {
+                Toast.makeText(context, "No se pudo resolver: ID vacío.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            val fecha = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date())
+
+            val incidenciaResueltaMap = hashMapOf<String, Any?>(
+                "id" to keyReal,
+                "tema" to incidencia.tema,
+                "descripcion" to incidencia.descripcion,
+                "infoAdicional" to incidencia.infoAdicional,
+                "usuarioEmail" to incidencia.usuarioEmail,
+                "tipo" to incidencia.tipo,
+                "estado" to "resuelta",
+                "fechaResuelta" to fecha
+            )
+
+            // ✅ ATÓMICO: archiva y borra en una sola operación
+            val updates = hashMapOf<String, Any?>(
+                "incidencias/resueltas/$keyReal" to incidenciaResueltaMap,
+                "incidencias/$keyReal" to null
+            )
+
+            rootRef.updateChildren(updates)
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Reporte archivado como resuelto", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+
+                    // ✅ refrescar vista actual
+                    refActual?.let { cargarDesde(it) }
+                }
+                .addOnFailureListener { e ->
+                    // ✅ muestra el error real (si es "Permission denied", lo verás aquí)
+                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    e.printStackTrace()
+                }
         }
 
         dialog.show()
@@ -74,41 +143,62 @@ class FragmentMostrarIncidencias : Fragment() {
         dialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
-    private fun loadIncidencias() {
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (!isAdded) return
-                listaCompleta.clear()
-                for (postSnapshot in snapshot.children) {
-                    val incidencia = postSnapshot.getValue(Incidencia::class.java)
-                    if (incidencia != null) listaCompleta.add(incidencia)
-                }
-                filtrar()
-            }
-            override fun onCancelled(error: DatabaseError) {}
-        })
-    }
-
     private fun setupFilters() {
-        // Filtro por Texto
+        // Filtro por texto
         binding.searchBarCatalogo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 filtrar()
             }
-            override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Filtro por Chips
+        // Filtro por chips
         binding.chipGroupFiltros.setOnCheckedStateChangeListener { _, _ ->
             filtrar()
         }
     }
 
+    private fun cargarDesde(ref: DatabaseReference) {
+        // quitar listener anterior
+        listenerActual?.let { old ->
+            refActual?.removeEventListener(old)
+        }
+        refActual = ref
+
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isAdded) return
+
+                listaCompleta.clear()
+
+                for (postSnapshot in snapshot.children) {
+                    // Si leemos pendientes desde "incidencias", ignoramos el nodo "resueltas"
+                    if (!mostrandoResueltas && postSnapshot.key == "resueltas") continue
+
+                    val incidencia = postSnapshot.getValue(Incidencia::class.java) ?: continue
+
+                    // Guardar la key real (obligatorio para borrar / archivar)
+                    incidencia.id = postSnapshot.key
+
+                    listaCompleta.add(incidencia)
+                }
+
+                filtrar()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Error Firebase: ${error.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        listenerActual = listener
+        ref.addValueEventListener(listener)
+    }
+
     private fun filtrar() {
         val texto = binding.searchBarCatalogo.text.toString().trim().lowercase()
 
-        // Obtener el tipo del Chip seleccionado
         val selectedChipId = binding.chipGroupFiltros.checkedChipId
         val tipoSeleccionado = if (selectedChipId != -1) {
             binding.chipGroupFiltros.findViewById<Chip>(selectedChipId).text.toString().lowercase()
@@ -125,11 +215,15 @@ class FragmentMostrarIncidencias : Fragment() {
 
             coincideTexto && coincideTipo
         }
+
         adapter.updateList(listaFiltrada)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        listenerActual?.let { old ->
+            refActual?.removeEventListener(old)
+        }
         _binding = null
     }
 }

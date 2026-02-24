@@ -157,6 +157,7 @@
     <string name="catalogo_playstation">PlayStation</string>
     <string name="catalogo_xbox">Xbox</string>
     <string name="catalogo_nintendo">Nintendo</string>
+    <string name="catalogo_todos">Todos</string>
 
         <!-- POP-UP DETALLE JUEGO -->
     <string name="detalle_juego_comprar">Comprar</string>

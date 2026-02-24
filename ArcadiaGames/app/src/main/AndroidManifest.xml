@@ -75,10 +75,6 @@
             android:name=".HistorialActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".MisComprasActivity"
-            android:exported="false" />
-
         <!-- 🗺 MAPS ACTIVITY -->
         <activity
             android:name=".MapsActivity"

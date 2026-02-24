@@ -47,6 +47,6 @@
         android:elevation="9dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:src="@drawable/logo_perfil" />
+        android:src="@drawable/ic_menu_mando" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

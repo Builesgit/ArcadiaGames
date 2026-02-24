@@ -13,7 +13,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/mando"
+        android:src="@drawable/logo_sin_fondo"
         android:scaleType="fitCenter"
         android:contentDescription="Logo"/>
 
@@ -35,10 +35,10 @@
         android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
         app:tabBackground="@android:color/transparent"
-        app:tabIndicatorColor="#00E5FF"
+        app:tabIndicatorColor="@color/Amarillo"
         app:tabIndicatorHeight="3dp"
         app:tabTextColor="@android:color/white"
-        app:tabSelectedTextColor="#00E5FF"
+        app:tabSelectedTextColor="@color/Amarillo"
         app:tabGravity="fill"
         app:tabMode="fixed"
         app:tabRippleColor="@null"/>
