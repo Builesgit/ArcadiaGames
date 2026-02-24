@@ -1,6 +1,5 @@
 package com.example.prueba1integrador
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import kotlin.jvm.java
-
+import com.google.firebase.database.*
 
 class FragmentMisAlquileres : Fragment() {
 
@@ -50,20 +44,34 @@ class FragmentMisAlquileres : Fragment() {
             .addValueEventListener(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
-
                     listaAlquileres.clear()
 
-                    for (alquilerSnap in snapshot.children) {
+                    for (alqSnap in snapshot.children) {
 
-                        val fecha = alquilerSnap.child("fecha")
-                            .getValue(Long::class.java) ?: 0L
+                        val fechaInicio = alqSnap.child("fechaInicio").getValue(Long::class.java)
+                            ?: alqSnap.child("inicio").getValue(Long::class.java)
+                            ?: 0L
 
-                        val juego = alquilerSnap.getValue(Juego::class.java)
+                        val fechaFin = alqSnap.child("fechaFin").getValue(Long::class.java)
+                            ?: alqSnap.child("fin").getValue(Long::class.java)
+                            ?: 0L
+
+                        val juego = alqSnap.child("juego").getValue(Juego::class.java)
+                            ?: alqSnap.getValue(Juego::class.java)
+
                         if (juego != null) {
-                            listaAlquileres.add(JuegoComprado(juego, fecha))
+                            listaAlquileres.add(
+                                JuegoComprado(
+                                    juego = juego,
+                                    fechaInicio = fechaInicio,
+                                    fechaFin = fechaFin,
+                                    esAlquiler = true
+                                )
+                            )
                         }
                     }
 
+                    listaAlquileres.sortByDescending { it.fechaInicio ?: 0L }
                     adapter.notifyDataSetChanged()
                 }
 
@@ -71,4 +79,3 @@ class FragmentMisAlquileres : Fragment() {
             })
     }
 }
-

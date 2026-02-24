@@ -3,7 +3,7 @@ package com.example.prueba1integrador
 import java.io.Serializable
 
 data class Incidencia(
-    val id: String? = null,
+    var id: String? = null,
     val tema: String = "",
     val descripcion: String = "",
     val infoAdicional: String = "",

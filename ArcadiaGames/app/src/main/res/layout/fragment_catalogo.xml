@@ -20,17 +20,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
-                android:letterSpacing="0.1"
                 android:text="@string/catalogo_titulo"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold|italic"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.search.SearchBar
                 android:id="@+id/search_bar_catalogo"
@@ -38,75 +36,136 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="@string/catalogo_buscar"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/titulo_catalago_u"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/titulo_catalago_u" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <com.google.android.material.search.SearchView
-                android:id="@+id/search_view_catalogo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/catalogo_buscar"
-                app:layout_anchor="@id/search_bar_catalogo" />
-
-            <HorizontalScrollView
-                android:id="@+id/scroll_chips"
+            <!-- CONTENEDOR BOTONES -->
+            <LinearLayout
+                android:id="@+id/containerChips"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:scrollbars="none"
-                android:fillViewport="true"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/search_bar_catalogo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/search_bar_catalogo">
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <LinearLayout
+                <!-- FILA 1 -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupFiltros"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
+                    app:singleSelection="true"
+                    app:selectionRequired="false"
+                    app:chipSpacingHorizontal="14dp"
+                    app:chipSpacingVertical="14dp">
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chip_group_categorias"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        app:chipSpacingHorizontal="8dp"
-                        app:singleSelection="true"
-                        app:selectionRequired="false">
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFiltroTodos"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:text="@string/catalogo_todos"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textAlignment="center"
+                        app:chipMinHeight="40dp"
+                        app:chipCornerRadius="10dp"
+                        app:chipStartPadding="0dp"
+                        app:chipEndPadding="0dp"
+                        app:textStartPadding="0dp"
+                        app:textEndPadding="0dp"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/chip_selector_color_small" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_pc"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/catalogo_pc" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFiltroBug"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
+                        android:text="@string/catalogo_playstation"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textAlignment="center"
+                        app:chipMinHeight="40dp"
+                        app:chipCornerRadius="10dp"
+                        app:chipStartPadding="0dp"
+                        app:chipEndPadding="0dp"
+                        app:textStartPadding="0dp"
+                        app:textEndPadding="0dp"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/chip_selector_color_small" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_playstation"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/catalogo_playstation" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFiltroUsuario"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:text="@string/catalogo_pc"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textAlignment="center"
+                        app:chipMinHeight="40dp"
+                        app:chipCornerRadius="10dp"
+                        app:chipStartPadding="0dp"
+                        app:chipEndPadding="0dp"
+                        app:textStartPadding="0dp"
+                        app:textEndPadding="0dp"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/chip_selector_color_small" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_xbox"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/catalogo_xbox" />
+                </com.google.android.material.chip.ChipGroup>
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_nintendo"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/catalogo_nintendo" />
 
-                    </com.google.android.material.chip.ChipGroup>
-                </LinearLayout>
-            </HorizontalScrollView>
+                <!-- FILA 2 -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupFiltrosFila2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    app:chipSpacingHorizontal="14dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFiltroJuego"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:text="@string/catalogo_xbox"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textAlignment="center"
+                        app:chipMinHeight="40dp"
+                        app:chipCornerRadius="10dp"
+                        app:chipStartPadding="0dp"
+                        app:chipEndPadding="0dp"
+                        app:textStartPadding="0dp"
+                        app:textEndPadding="0dp"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/chip_selector_color_small" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFiltroOtros"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
+                        android:text="@string/catalogo_nintendo"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:textAlignment="center"
+                        app:chipMinHeight="40dp"
+                        app:chipCornerRadius="10dp"
+                        app:chipStartPadding="0dp"
+                        app:chipEndPadding="0dp"
+                        app:textStartPadding="0dp"
+                        app:textEndPadding="0dp"
+                        app:checkedIconVisible="false"
+                        app:chipBackgroundColor="@color/chip_selector_color_small" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_catalogo_completo"
@@ -114,24 +173,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="false"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/containerChips"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scroll_chips" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_agregar_juego"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:src="@drawable/ic_launcher_foreground"
-        android:contentDescription="Agregar Juego"
-        app:tint="@android:color/white"
-        android:visibility="gone"
-        tools:visibility="visible"
-        xmlns:tools="http://schemas.android.com/tools"/>
-
 </FrameLayout>

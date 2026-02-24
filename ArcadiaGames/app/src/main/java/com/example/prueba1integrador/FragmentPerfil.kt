@@ -115,7 +115,7 @@ class FragmentPerfil : Fragment() {
             binding.btnAbrirDialogoAdmin.visibility = View.VISIBLE
 
             binding.btnMisCompras.setOnClickListener {
-                startActivity(Intent(requireContext(), MisComprasActivity::class.java))
+                startActivity(Intent(requireContext(), FragmentMisCompras::class.java))
             }
 
             // --- NUEVO: SOPORTE TÉCNICO (USUARIO) ---
