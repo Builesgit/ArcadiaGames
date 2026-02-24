@@ -4,82 +4,106 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="@drawable/historial_background">
+    android:background="@drawable/historial_background"
+    android:gravity="center_horizontal">
 
     <TextView
         android:id="@+id/tvTituloAnadir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/inventario_añadir_titulo"
+        android:text="REPOSICIÓN POR PLATAFORMA"
         android:textColor="#FFC107"
         android:textSize="18sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="24dp"/>
 
-    <GridLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="2"
-        android:alignmentMode="alignMargins">
+        android:orientation="vertical"
+        android:gravity="center">
 
-        <EditText
-            android:id="@+id/etStockPS"
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:hint="@string/inventario_añadir_playstation"
-            android:inputType="number"
-            android:textColorHint="#FFFFFF"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:gravity="center"
-            android:background="@drawable/edittext_background"
-            android:padding="12dp"
-            android:layout_margin="4dp"/>
+            android:layout_marginBottom="8dp">
 
-        <EditText
-            android:id="@+id/etStockXbox"
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:hint="@string/inventario_añadir_xbox"
-            android:textColorHint="#FFFFFF"
-            android:gravity="center"
-            android:inputType="number"
-            android:background="@drawable/edittext_background"
-            android:padding="12dp"
-            android:layout_margin="4dp"/>
+            <EditText
+                android:id="@+id/etStockPS"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="PlayStation"
+                android:inputType="number"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:background="@drawable/edittext_background"
+                android:padding="14dp"
+                android:layout_margin="4dp"/>
 
-        <EditText
-            android:id="@+id/etStockNintendo"
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:hint="@string/inventario_añadir_nintendo"
-            android:gravity="center"
-            android:textColorHint="#FFFFFF"
-            android:inputType="number"
-            android:background="@drawable/edittext_background"
-            android:padding="12dp"
-            android:layout_margin="4dp"/>
+            <EditText
+                android:id="@+id/etStockXbox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Xbox"
+                android:inputType="number"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:background="@drawable/edittext_background"
+                android:padding="14dp"
+                android:layout_margin="4dp"/>
+        </LinearLayout>
 
-        <EditText
-            android:id="@+id/etStockPC"
-            android:layout_width="0dp"
-            android:layout_columnWeight="1"
-            android:hint="@string/inventario_añadir_pc"
-            android:textColorHint="#FFFFFF"
-            android:gravity="center"
-            android:inputType="number"
-            android:background="@drawable/edittext_background"
-            android:padding="12dp"
-            android:layout_margin="4dp"/>
-    </GridLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/etStockNintendo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Nintendo"
+                android:inputType="number"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:background="@drawable/edittext_background"
+                android:padding="14dp"
+                android:layout_margin="4dp"/>
+
+            <EditText
+                android:id="@+id/etStockPC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="PC"
+                android:inputType="number"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:background="@drawable/edittext_background"
+                android:padding="14dp"
+                android:layout_margin="4dp"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnConfirmarSuma"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/inventario_añadir_btn_confirmar"
+        android:layout_marginTop="32dp"
+        android:text="ACTUALIZAR INVENTARIO"
         android:textStyle="bold"
         android:textColor="#000000"
-        android:backgroundTint="#4CAF50"/>
+        android:backgroundTint="#4CAF50"
+        android:letterSpacing="0.05"/>
 </LinearLayout>
