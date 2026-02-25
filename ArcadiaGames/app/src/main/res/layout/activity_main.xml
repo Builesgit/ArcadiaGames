@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- FONDO -->
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,37 +22,53 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- LOGO -->
         <ImageView
             android:id="@+id/imgLogo"
             android:layout_width="185dp"
             android:layout_height="167dp"
             android:layout_marginTop="50dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/app_name"
             android:src="@drawable/logo_sin_fondo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- PANEL NEGRO (AHORA VA DETRÁS DE LAS LÍNEAS) -->
+        <View
+            android:id="@+id/panel_login"
+            android:layout_width="332dp"
+            android:layout_height="322dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="32dp"
+            android:background="#AA000000"
+            app:layout_constraintBottom_toBottomOf="@id/divisor_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/imgLogo" />
 
+        <!-- LINEA AMARILLA VERTICAL -->
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_vertical"
             android:layout_width="3dp"
             android:layout_height="350dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="30dp"
             app:dividerColor="@color/Amarillo"
             app:layout_constraintTop_toBottomOf="@id/imgLogo"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="30dp"/>
+            app:layout_constraintStart_toStartOf="parent"/>
 
+        <!-- LINEA HORIZONTAL -->
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_horizontal"
             android:layout_width="220dp"
             android:layout_height="3dp"
+            android:layout_marginTop="40dp"
             app:dividerColor="@color/Amarillo"
             app:layout_constraintTop_toTopOf="@id/divisor_vertical"
-            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
-            android:layout_marginTop="40dp"/>
+            app:layout_constraintStart_toEndOf="@id/divisor_vertical"/>
 
+        <!-- TITULO -->
         <TextView
             android:id="@+id/level_description_detail"
             android:layout_width="wrap_content"
@@ -60,10 +77,11 @@
             android:textColor="@color/Amarillo"
             android:textSize="26sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
+            android:layout_marginStart="12dp"
             app:layout_constraintBottom_toTopOf="@id/divisor_horizontal"
-            android:layout_marginStart="12dp"/>
+            app:layout_constraintStart_toEndOf="@id/divisor_vertical"/>
 
+        <!-- CORREO -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Usuario"
             style="?attr/textInputFilledStyle"
@@ -71,21 +89,22 @@
             android:layout_height="wrap_content"
             android:hint="@string/login_correo"
             app:boxBackgroundColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/divisor_horizontal"
-            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/divisor_horizontal"
+            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtUsuario"
-                android:layout_width="match_parent"
+                android:layout_width="310dp"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:textColor="@android:color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- PASSWORD -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Contraseña"
             style="?attr/textInputFilledStyle"
@@ -94,19 +113,20 @@
             android:hint="@string/login_password"
             app:endIconMode="password_toggle"
             app:boxBackgroundColor="@color/white"
+            android:layout_marginTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/TextLayout_Usuario"
             app:layout_constraintStart_toStartOf="@id/TextLayout_Usuario"
-            app:layout_constraintEnd_toEndOf="@id/TextLayout_Usuario"
-            android:layout_marginTop="12dp">
+            app:layout_constraintEnd_toEndOf="@id/TextLayout_Usuario">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="310dp"
+                android:layout_height="match_parent"
                 android:inputType="textPassword"
                 android:textColor="@android:color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- BOTON LOGIN -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
@@ -114,10 +134,11 @@
             android:text="@string/login_acceder"
             android:backgroundTint="@color/Amarillo"
             android:textColor="@android:color/black"
+            android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@id/TextLayout_Contraseña"
-            app:layout_constraintStart_toStartOf="@id/TextLayout_Contraseña"
-            android:layout_marginTop="20dp"/>
+            app:layout_constraintStart_toStartOf="@id/TextLayout_Contraseña"/>
 
+        <!-- REGISTRARSE -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegistrarse"
             style="@style/Widget.Material3.Button.TextButton"
@@ -125,9 +146,9 @@
             android:layout_height="wrap_content"
             android:text="@string/login_registrate"
             android:textColor="@color/Amarillo"
+            android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/btnLogin"
-            app:layout_constraintStart_toStartOf="@id/btnLogin"
-            android:layout_marginTop="8dp"/>
+            app:layout_constraintStart_toStartOf="@id/btnLogin"/>
 
         <LinearLayout
             android:id="@+id/languageSelector"
