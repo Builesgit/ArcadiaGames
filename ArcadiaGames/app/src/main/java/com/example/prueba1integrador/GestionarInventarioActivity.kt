@@ -1,10 +1,16 @@
 package com.example.prueba1integrador
 
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.ActivityGestionarInventarioBinding
+import java.io.FileOutputStream
 
 class GestionarInventarioActivity : BaseActivity() {
 
@@ -13,12 +19,29 @@ class GestionarInventarioActivity : BaseActivity() {
     private lateinit var adapter: GestionarAdapter
     private var listaVisualInventario: List<ItemInventario> = emptyList()
 
+    // Launchers para exportación
+    private val exportarCSVLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
+        uri?.let { generarArchivoCSV(it) }
+    }
+
+    private val exportarPDFLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) { uri ->
+        uri?.let { generarArchivoPDF(it) }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGestionarInventarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupRecyclerView()
+
+        binding.btnExportarInventario.setOnClickListener {
+            if (listaVisualInventario.isEmpty()) {
+                Toast.makeText(this, "No hay datos para exportar", Toast.LENGTH_SHORT).show()
+            } else {
+                mostrarDialogoExportar()
+            }
+        }
     }
 
     override fun onResume() {
@@ -26,15 +49,31 @@ class GestionarInventarioActivity : BaseActivity() {
         cargarDatos()
     }
 
-    private fun setupRecyclerView() {
-        binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
+    private fun mostrarDialogoExportar() {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val view = layoutInflater.inflate(R.layout.dialogo_exportar, null)
+        builder.setView(view)
 
-        adapter = GestionarAdapter(
-            listaInventario = listaVisualInventario,
-            onEditClick = { /* Lógica de edición si fuera necesaria */ },
-            onDataChanged = { cargarDatos() }
-        )
-        binding.rvInventarioGestion.adapter = adapter
+        val dialog = builder.create()
+        // Muy importante para que se vean los bordes redondeados del drawable
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val btnCSV = view.findViewById<android.widget.Button>(R.id.btnExportarCSV_Pop)
+        val btnPDF = view.findViewById<android.widget.Button>(R.id.btnExportarPDF_Pop)
+
+        val timestamp = System.currentTimeMillis()
+
+        btnCSV.setOnClickListener {
+            exportarCSVLauncher.launch("Inventario_Arcadia_$timestamp.csv")
+            dialog.dismiss()
+        }
+
+        btnPDF.setOnClickListener {
+            exportarPDFLauncher.launch("Inventario_Arcadia_$timestamp.pdf")
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun cargarDatos() {
@@ -49,38 +88,180 @@ class GestionarInventarioActivity : BaseActivity() {
 
     private fun procesarYMostrarLista(lista: List<Juego>) {
         val agrupados = lista.groupBy { it.nombre.trim().lowercase() }
-
         listaVisualInventario = agrupados.map { entry ->
             val listaDeEsteJuego = entry.value
-            val juegoRepresentante = listaDeEsteJuego.first()
+            val juego = listaDeEsteJuego.first()
 
-            // 1. Calculamos el stock por plataforma
             val stockPS = listaDeEsteJuego.sumOf { it.detalle_stock?.get("playstation") ?: 0 }
             val stockXB = listaDeEsteJuego.sumOf { it.detalle_stock?.get("xbox") ?: 0 }
             val stockNI = listaDeEsteJuego.sumOf { it.detalle_stock?.get("nintendo") ?: 0 }
             val stockPC = listaDeEsteJuego.sumOf { it.detalle_stock?.get("pc") ?: 0 }
 
-            // 2. Stock total como suma real del detalle
-            val sumaTotalReal = stockPS + stockXB + stockNI + stockPC
-
             ItemInventario(
-                juego = juegoRepresentante,
-                cantidad = sumaTotalReal,
+                juego = juego,
+                cantidad = stockPS + stockXB + stockNI + stockPC,
                 idsAgrupados = listaDeEsteJuego.map { it.id },
-                ps = stockPS,
-                xb = stockXB,
-                ni = stockNI,
-                pc = stockPC,
-
-                // --- INTEGRACIÓN DE ESTADÍSTICAS SUMADAS ---
+                ps = stockPS, xb = stockXB, ni = stockNI, pc = stockPC,
                 totalVistas = listaDeEsteJuego.sumOf { it.rendimiento_vistas },
                 totalVentas = listaDeEsteJuego.sumOf { it.rendimiento_ventas }
             )
         }
-
-        // Identificamos al líder de la semana por ventas para uso futuro en el dashboard
-        val liderSemanal = listaVisualInventario.maxByOrNull { it.totalVentas }
-
         adapter.actualizarLista(listaVisualInventario)
+    }
+
+    private fun generarArchivoCSV(uri: Uri) {
+        try {
+            contentResolver.openOutputStream(uri)?.use { output ->
+                val sb = StringBuilder()
+                sb.append("Juego,Precio,Stock Total,PS,XB,NI,PC,Ventas,Vistas\n")
+                listaVisualInventario.forEach { item ->
+                    sb.append("${item.juego.nombre},${item.juego.precio},${item.cantidad},")
+                    sb.append("${item.ps},${item.xb},${item.ni},${item.pc},")
+                    sb.append("${item.totalVentas},${item.totalVistas}\n")
+                }
+                output.write(sb.toString().toByteArray())
+                Toast.makeText(this, "CSV exportado correctamente", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al exportar CSV", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun generarArchivoPDF(uri: Uri) {
+        val pdfDocument = PdfDocument()
+        val paint = Paint()
+        val titlePaint = Paint()
+
+        // Configuración de página A4
+        val pageWidth = 595
+        val pageHeight = 842
+        var pageNumber = 1
+
+        var pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+        var page = pdfDocument.startPage(pageInfo)
+        var canvas = page.canvas
+
+        // --- FUNCIÓN AUXILIAR PARA ENCABEZADO ---
+        fun dibujarEncabezado(canvas: android.graphics.Canvas) {
+            titlePaint.color = android.graphics.Color.parseColor("#FFC107") // Amarillo Arcadia
+            titlePaint.textSize = 24f
+            titlePaint.isFakeBoldText = true
+            canvas.drawText("ARCADIA GAMES - REPORTE CENTRAL", 50f, 60f, titlePaint)
+
+            paint.textSize = 10f
+            paint.color = android.graphics.Color.BLACK
+            paint.isFakeBoldText = false
+            val fecha = java.text.DateFormat.getDateTimeInstance().format(java.util.Date())
+            canvas.drawText("Inventario Global y Análisis de Ventas | $fecha", 50f, 80f, paint)
+            canvas.drawLine(50f, 95f, 545f, 95f, paint)
+        }
+
+        dibujarEncabezado(canvas)
+        var yPos = 130f
+
+        // ==========================================
+        // SECCIÓN 1: INVENTARIO COMPLETO
+        // ==========================================
+        paint.textSize = 14f
+        paint.isFakeBoldText = true
+        canvas.drawText("1. ESTADO ACTUAL DEL STOCK", 50f, yPos, paint)
+        yPos += 30f
+        paint.isFakeBoldText = false
+
+        listaVisualInventario.forEach { item ->
+            // Control de salto de página (Evita que el texto se corte al final)
+            if (yPos > 750) {
+                pdfDocument.finishPage(page)
+                pageNumber++
+                pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+                page = pdfDocument.startPage(pageInfo)
+                canvas = page.canvas
+                dibujarEncabezado(canvas)
+                yPos = 130f
+            }
+
+            // Fila del Juego
+            paint.textSize = 12f
+            paint.isFakeBoldText = true
+            canvas.drawText(item.juego.nombre.uppercase(), 50f, yPos, paint)
+            canvas.drawText("Total: ${item.cantidad}", 450f, yPos, paint)
+
+            yPos += 18f
+            paint.textSize = 10f
+            paint.isFakeBoldText = false
+            paint.color = android.graphics.Color.DKGRAY
+
+            // Desglose de plataformas que pediste
+            val plataformas = "PS: ${item.ps} | XB: ${item.xb} | NI: ${item.ni} | PC: ${item.pc}"
+            canvas.drawText(plataformas, 60f, yPos, paint)
+
+            // Estadísticas sumadas
+            canvas.drawText("Ventas: ${item.totalVentas} | Vistas: ${item.totalVistas}", 300f, yPos, paint)
+
+            paint.color = android.graphics.Color.BLACK
+            yPos += 12f
+            paint.alpha = 30 // Línea divisoria tenue
+            canvas.drawLine(50f, yPos, 545f, yPos, paint)
+            paint.alpha = 255
+            yPos += 25f
+        }
+
+        // ==========================================
+        // SECCIÓN 2: TOP 5 MÁS VENDIDOS (Ahora en Negro)
+        // ==========================================
+        yPos += 20f
+        if (yPos > 650) { // Salto de página si el Top 5 no cabe al final
+            pdfDocument.finishPage(page)
+            pageNumber++
+            pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+            page = pdfDocument.startPage(pageInfo)
+            canvas = page.canvas
+            dibujarEncabezado(canvas)
+            yPos = 130f
+        }
+
+        paint.textSize = 14f
+        paint.isFakeBoldText = true
+        paint.color = android.graphics.Color.BLACK // Cambiado de Verde a Negro
+        canvas.drawText("2. TOP 5 - PRODUCTOS LÍDERES (VENTAS)", 50f, yPos, paint)
+        yPos += 30f
+
+        // Lógica para obtener los 5 con más ventas
+        val top5Ventas = listaVisualInventario.sortedByDescending { it.totalVentas }.take(5)
+
+        paint.textSize = 11f
+        top5Ventas.forEachIndexed { index, item ->
+            val puesto = index + 1
+            paint.isFakeBoldText = true
+            canvas.drawText("$puesto. ${item.juego.nombre}", 60f, yPos, paint)
+            paint.isFakeBoldText = false
+            canvas.drawText("${item.totalVentas} unidades vendidas", 400f, yPos, paint)
+            yPos += 22f
+        }
+
+        // Pie de página con número de página
+        paint.color = android.graphics.Color.GRAY
+        paint.textSize = 8f
+        canvas.drawText("Fin del reporte - Página $pageNumber", 50f, 820f, paint)
+
+        pdfDocument.finishPage(page)
+
+        // --- PROCESO DE GUARDADO ---
+        try {
+            contentResolver.openOutputStream(uri)?.use { os ->
+                pdfDocument.writeTo(os)
+            }
+            Toast.makeText(this, "PDF exportado con éxito", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al guardar el documento", Toast.LENGTH_SHORT).show()
+        } finally {
+            pdfDocument.close()
+        }
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
+        adapter = GestionarAdapter(listaVisualInventario, {}, { cargarDatos() })
+        binding.rvInventarioGestion.adapter = adapter
     }
 }
