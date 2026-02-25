@@ -115,7 +115,12 @@ class FragmentPerfil : Fragment() {
             binding.btnAbrirDialogoAdmin.visibility = View.VISIBLE
 
             binding.btnMisCompras.setOnClickListener {
-                startActivity(Intent(requireContext(), FragmentMisCompras::class.java))
+
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.main_home_U_fragment, FragmentMisPedidos())
+                    .addToBackStack(null)
+                    .commit()
             }
 
             // --- NUEVO: SOPORTE TÉCNICO (USUARIO) ---
