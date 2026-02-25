@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 
 class DetalleCestaActivity : BaseActivity() {
 
@@ -19,8 +18,14 @@ class DetalleCestaActivity : BaseActivity() {
 
         findViewById<Button>(R.id.btnComprar).setOnClickListener {
             val i = Intent(this, PagoActivity::class.java)
-            val precioNum = juego.precio.replace("€", "").replace(",", ".").trim().toDoubleOrNull() ?: 0.0
-            i.putExtra("PRECIO_TOTAL", precioNum)
+
+            // Pasamos el juego en una lista para PagoActivity
+            val lista = arrayListOf(juego)
+            i.putExtra("LISTA_PRODUCTOS", lista)
+
+            // ENVIAR EL PRECIO CON LA CLAVE CORRECTA
+            i.putExtra("TOTAL_PAGO", juego.precio)
+
             startActivity(i)
         }
 

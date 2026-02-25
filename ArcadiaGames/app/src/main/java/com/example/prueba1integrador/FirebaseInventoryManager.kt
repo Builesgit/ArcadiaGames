@@ -28,10 +28,8 @@ class FirebaseInventoryManager {
         val updates = hashMapOf<String, Any>()
         val campoProducto = if (tipo == "VENTA") "rendimiento_ventas" else "rendimiento_vistas"
 
-        // Actualiza el contador en el producto
         dbReference.child(idJuego).child(campoProducto).setValue(ServerValue.increment(cantidad.toLong()))
 
-        // Actualiza la tabla independiente
         val nodoStats = statsReference.child("por_producto").child(idJuego)
         updates["$tipo/total"] = ServerValue.increment(cantidad.toLong())
         updates["$tipo/ultima_actualizacion"] = ServerValue.TIMESTAMP
@@ -46,7 +44,7 @@ class FirebaseInventoryManager {
         registrarEventoEstadistico(idJuego, "VENTA", cantidadVendida)
     }
 
-    // --- CONSULTAS PARA EL DASHBOARD ---
+    // --- CONSULTAS DASHBOARD ---
     fun obtenerTopVentas(callback: InventoryCallback) {
         dbReference.orderByChild("rendimiento_ventas").limitToLast(5)
             .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -69,7 +67,7 @@ class FirebaseInventoryManager {
             })
     }
 
-    // --- MÉTODOS DE GESTIÓN DE PRODUCTOS ---
+    // --- MÉTODOS DE GESTIÓN ---
     fun subirImagen(imageUri: Uri, callback: ImageUploadCallback) {
         val fileName = "img_${System.currentTimeMillis()}.jpg"
         val fileRef = storageReference.child(fileName)
@@ -102,6 +100,7 @@ class FirebaseInventoryManager {
         }
     }
 
+    // ACTUALIZADO: Escucha constante de cambios
     fun consultarInventario(callback: InventoryCallback) {
         dbReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

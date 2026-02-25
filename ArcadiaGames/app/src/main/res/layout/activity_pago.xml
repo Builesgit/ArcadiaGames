@@ -153,6 +153,35 @@
                     android:contentDescription="Mastercard"/>
             </LinearLayout>
 
+            <RadioGroup
+                android:id="@+id/rgTipoEntrega"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/boton_background"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp">
+
+                <RadioButton
+                    android:id="@+id/rbFisico"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Recoger en tienda"
+                    android:textColor="#FFFFFF"
+                    android:buttonTint="@color/Amarillo"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/rbDigital"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Compra Online"
+                    android:textColor="#FFFFFF"
+                    android:buttonTint="@color/Amarillo" />
+            </RadioGroup>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

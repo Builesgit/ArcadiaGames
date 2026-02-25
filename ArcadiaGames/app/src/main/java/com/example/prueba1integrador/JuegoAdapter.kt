@@ -78,29 +78,83 @@ class JuegoAdapter(
         val dialog = AlertDialog.Builder(context).setView(dialogBinding.root).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
+        // 1. VINCULACIÓN DE TEXTOS E IMAGEN
         dialogBinding.tvDetalleNombre.text = juego.nombre
         dialogBinding.tvDetallePrecio.text = juego.precio
+        dialogBinding.tvDetalleDescripcion.text = juego.descripcion
+        dialogBinding.tvDetalleCategoria.text = juego.categoria
 
-        val hayStock = (juego.stock) > 0
-        if (!hayStock) {
+        Glide.with(context)
+            .load(juego.imagenUrl)
+            .centerCrop()
+            .into(dialogBinding.ivDetalleImagen)
+
+        // 2. LÓGICA DE STOCK (Mensaje en rojo debajo del precio)
+        val hayStockTotal = juego.stock > 0
+        if (!hayStockTotal) {
             dialogBinding.tvDetalleStock.visibility = View.VISIBLE
+            dialogBinding.tvDetalleStock.text = "AGOTADO"
+            dialogBinding.tvDetalleStock.setTextColor(Color.parseColor("#EF5350")) // Rojo
+
+            // Bloquear botones
             dialogBinding.btnComprar.isEnabled = false
             dialogBinding.btnComprar.alpha = 0.5f
+            dialogBinding.btnAlquilar.isEnabled = false
+            dialogBinding.btnAlquilar.alpha = 0.5f
         }
 
-        // Lógica de Chips y Botón Comprar...
+        // 3. GENERACIÓN DE CHIPS CON SELECTORES
+        dialogBinding.chipGroupPlataformasDetalle.removeAllViews()
+        val plataformasArray = juego.plataforma.split(",")
+
+        plataformasArray.forEachIndexed { index, plat ->
+            val nombreLimpio = plat.trim()
+            if (nombreLimpio.isNotEmpty()) {
+                val chip = Chip(context)
+                chip.text = nombreLimpio
+                chip.isCheckable = true
+
+                // Aplicamos tus selectores (Usa selector_chip_colores para el fondo o texto)
+                chip.setChipBackgroundColorResource(R.color.selector_chip_colores)
+                chip.setTextColor(Color.WHITE)
+
+                dialogBinding.chipGroupPlataformasDetalle.addView(chip)
+
+                // Marcar la primera plataforma por defecto
+                if (index == 0 && hayStockTotal) {
+                    chip.isChecked = true
+                }
+            }
+        }
+
+        // 4. BOTÓN COMPRAR
         dialogBinding.btnComprar.setOnClickListener {
             val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             val selectedId = dialogBinding.chipGroupPlataformasDetalle.checkedChipId
-            if (uid.isNotEmpty() && selectedId != View.NO_ID) {
-                val plat = dialogBinding.chipGroupPlataformasDetalle.findViewById<Chip>(selectedId).text.toString()
+
+            if (selectedId != View.NO_ID) {
+                val platSeleccionada = dialogBinding.chipGroupPlataformasDetalle.findViewById<Chip>(selectedId).text.toString()
+
                 FirebaseDatabase.getInstance().getReference("cesta").child(uid).child(juego.id)
-                    .setValue(juego.copy(plataforma = plat)).addOnSuccessListener {
-                        Toast.makeText(context, "Añadido", Toast.LENGTH_SHORT).show()
+                    .setValue(juego.copy(plataforma = platSeleccionada))
+                    .addOnSuccessListener {
+                        Toast.makeText(context, "Añadido a la cesta", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }
+            } else {
+                Toast.makeText(context, "Selecciona una plataforma", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // 5. BOTÓN ALQUILAR
+        dialogBinding.btnAlquilar.setOnClickListener {
+            val selectedId = dialogBinding.chipGroupPlataformasDetalle.checkedChipId
+            if (selectedId != View.NO_ID) {
+                // Tu lógica de alquiler aquí
+                dialog.dismiss()
+            }
+        }
+
         dialog.show()
     }
 
