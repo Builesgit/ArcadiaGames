@@ -168,7 +168,7 @@
     <!-- HOME ADMIN -->
     <string name="home_admin_panel_control">PANEL DE CONTROL</string>
     <string name="home_admin_btn_inventario">INVENTARIO</string>
-    <string name="home_admin_btn_añadir_producto">AÑADIR PRODUCTO</string>
+    <string name="home_admin_btn_añadir_producto">AÑADIR NUEVO PRODUCTO</string>
     <string name="home_admin_titulo_soporte">SOPORTE Y TICKETS</string>
     <string name="home_admin_btn_gestion_incidencias">Gestión de Incidencias</string>
     <string name="home_admin_gestion_incidencias_desc">Cola de reportes activos</string>

@@ -1,14 +1,10 @@
 package com.example.prueba1integrador
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prueba1integrador.databinding.ActivityHistorialBinding
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class HistorialActivity : BaseActivity() {
     private lateinit var binding: ActivityHistorialBinding
@@ -19,8 +15,10 @@ class HistorialActivity : BaseActivity() {
         binding = ActivityHistorialBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Configuración simple del RecyclerView
         binding.rvHistorial.layoutManager = LinearLayoutManager(this)
 
+        // Carga de datos original
         val ref = FirebaseDatabase.getInstance().getReference("historial")
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -29,8 +27,7 @@ class HistorialActivity : BaseActivity() {
                     data.getValue(AccionHistorial::class.java)?.let { listaCompleta.add(it) }
                 }
                 listaCompleta.reverse()
-                // Por defecto mostramos Admins (Tab 0)
-                filtrarLista(0)
+                filtrarLista(binding.tabFiltroHistorial.selectedTabPosition)
             }
             override fun onCancelled(error: DatabaseError) {}
         })
@@ -53,7 +50,6 @@ class HistorialActivity : BaseActivity() {
                         it.accion.contains("stock", true)
             }
         } else {
-            // Acciones Comerciales (Usuarios)
             listaCompleta.filter {
                 it.accion.contains("compró", ignoreCase = true) ||
                         it.accion.contains("intercambió", ignoreCase = true) ||

@@ -33,7 +33,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-
 class FragmentHome : Fragment() {
 
     private lateinit var rvNovedades: RecyclerView
@@ -141,43 +140,28 @@ class FragmentHome : Fragment() {
     // ====================== MAPA USUARIO ======================
 
     private fun setupMapUsuario(view: View, savedInstanceState: Bundle?) {
-        // Solo inicializamos una vez
         if (mapView != null) return
-
         mapView = view.findViewById(R.id.mapViewTiendas)
         if (mapView == null) return
 
         mapView?.onCreate(savedInstanceState)
-
         mapView?.getMapAsync { map ->
             gMap = map
-
-            // Ajustes para que no pelee con el NestedScrollView
             map.uiSettings.isZoomControlsEnabled = false
             map.uiSettings.isMyLocationButtonEnabled = true
-            map.uiSettings.isScrollGesturesEnabled = false  // MUY importante en scroll
+            map.uiSettings.isScrollGesturesEnabled = false
             map.uiSettings.isZoomGesturesEnabled = true
             map.uiSettings.isRotateGesturesEnabled = false
             map.uiSettings.isTiltGesturesEnabled = false
 
-            // Marcadores de ejemplo (luego los cambias por Firebase)
             val tiendas = listOf(
                 Triple("Arcadia Games Centro", 40.416775, -3.703790),
                 Triple("Arcadia Games Norte", 40.478000, -3.688000)
             )
-
             tiendas.forEach { (nombre, lat, lng) ->
-                map.addMarker(
-                    MarkerOptions()
-                        .position(LatLng(lat, lng))
-                        .title(nombre)
-                )
+                map.addMarker(MarkerOptions().position(LatLng(lat, lng)).title(nombre))
             }
-
-            // Cámara por defecto (fallback)
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(40.416775, -3.703790), 11f))
-
-            // Intentar activar ubicación (pide permiso si hace falta)
             checkLocationPermissionAndEnable()
         }
     }
@@ -188,23 +172,16 @@ class FragmentHome : Fragment() {
         if (granted) {
             enableMyLocationAndCenter()
         } else {
-            // Pide permiso solo si el usuario está viendo el layout usuario
             if (esUsuarioVisible) requestLocationPermissionLauncher.launch(permission)
         }
     }
 
     private fun enableMyLocationAndCenter() {
         val map = gMap ?: return
-
         val permission = Manifest.permission.ACCESS_FINE_LOCATION
         val granted = ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
         if (!granted) return
-
-        try {
-            map.isMyLocationEnabled = true
-        } catch (_: SecurityException) {
-            return
-        }
+        try { map.isMyLocationEnabled = true } catch (_: SecurityException) { return }
 
         fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
             if (loc != null) {
@@ -215,7 +192,6 @@ class FragmentHome : Fragment() {
     }
 
     private fun teardownMap() {
-        // Si el admin entra, destruimos el mapa para evitar fugas
         mapView?.onPause()
         mapView?.onStop()
         mapView?.onDestroy()
@@ -226,22 +202,30 @@ class FragmentHome : Fragment() {
     // ====================== ADMIN ======================
 
     private fun configurarDashboardAdmin(view: View) {
-        // 1. Inventario
+        // 1. Inventario (Actividad)
         view.findViewById<View>(R.id.cardInventarioDashboard)?.setOnClickListener {
             startActivity(Intent(requireContext(), GestionarInventarioActivity::class.java))
         }
 
-        // 2. Añadir Producto
+        // 2. Añadir Producto (Actividad)
         view.findViewById<View>(R.id.cardNuevoProductoDashboard)?.setOnClickListener {
             startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
         }
 
-        // 3. Incidencias
+        // 3. Incidencias (Fragmento)
         view.findViewById<View>(R.id.cardIncidenciasDashboard)?.setOnClickListener {
-            val fragmentoIncidencias = FragmentMostrarIncidencias()
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .replace(R.id.main_home_U_fragment, fragmentoIncidencias)
+                .replace(R.id.main_home_U_fragment, FragmentMostrarIncidencias())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        // 4. Estadísticas (NUEVO - Fragmento)
+        view.findViewById<View>(R.id.cardEstadisticasDashboard)?.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.main_home_U_fragment, FragmentEstadisticas())
                 .addToBackStack(null)
                 .commit()
         }
@@ -261,7 +245,6 @@ class FragmentHome : Fragment() {
                 rvHistorialAdmin.layoutManager = LinearLayoutManager(requireContext())
                 rvHistorialAdmin.adapter = HistorialAdapter(listaLocalLogs, esModoMenu = true)
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Log.e("Firebase", "Error en historial: ${error.message}")
             }
@@ -287,7 +270,6 @@ class FragmentHome : Fragment() {
                     rvNovedades.scrollToPosition(middle)
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {}
         })
     }
@@ -312,12 +294,9 @@ class FragmentHome : Fragment() {
         })
     }
 
-    // ====================== LIFECYCLE (IMPORTANTE PARA MAPVIEW) ======================
-
     override fun onResume() {
         super.onResume()
         mapView?.onResume()
-
         val uidActual = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         if (uidActual.isNotEmpty()) {
             FirebaseDatabase.getInstance().getReference("usuarios").child(uidActual).child("rol")
@@ -347,7 +326,6 @@ class FragmentHome : Fragment() {
     }
 
     override fun onDestroyView() {
-        // OJO: onDestroyView es el correcto en fragments
         mapView?.onDestroy()
         mapView = null
         gMap = null

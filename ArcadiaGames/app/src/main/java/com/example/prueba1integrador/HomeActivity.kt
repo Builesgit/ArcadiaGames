@@ -69,44 +69,21 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun setupNavigation(rol: String) {
-        // --- LÓGICA DE SEGURIDAD PARA EL MENÚ ---
         if (rol == "admin") {
-            // El admin no necesita ver la cesta, pero SÍ las estadísticas
             binding.navigationRail.menu.findItem(R.id.item_cesta)?.isVisible = false
             binding.navigationRail.menu.findItem(R.id.item_estadisticas)?.isVisible = true
         } else {
-            // El cliente ve la cesta, pero NO las estadísticas
             binding.navigationRail.menu.findItem(R.id.item_estadisticas)?.isVisible = false
         }
 
         binding.navigationRail.setOnItemSelectedListener { item ->
             cerrarMenuLateral()
-
             when (item.itemId) {
-                R.id.item_menu -> {
-                    reemplazarFragmento(FragmentHome())
-                    true
-                }
-                R.id.item_catalogo -> {
-                    reemplazarFragmento(FragmentCatalogo())
-                    true
-                }
-                R.id.item_estadisticas -> {
-                    if (rol == "admin") {
-                        reemplazarFragmento(FragmentEstadisticas())
-                    }
-                    true
-                }
-                R.id.item_cesta -> {
-                    if (rol != "admin") {
-                        reemplazarFragmento(FragmentCesta())
-                    }
-                    true
-                }
-                R.id.item_perfil -> {
-                    reemplazarFragmento(FragmentPerfil())
-                    true
-                }
+                R.id.item_menu -> { reemplazarFragmento(FragmentHome()); true }
+                R.id.item_catalogo -> { reemplazarFragmento(FragmentCatalogo()); true }
+                R.id.item_estadisticas -> { if (rol == "admin") reemplazarFragmento(FragmentEstadisticas()); true }
+                R.id.item_cesta -> { if (rol != "admin") reemplazarFragmento(FragmentCesta()); true }
+                R.id.item_perfil -> { reemplazarFragmento(FragmentPerfil()); true }
                 else -> false
             }
         }

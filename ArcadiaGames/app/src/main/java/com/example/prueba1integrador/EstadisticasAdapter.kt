@@ -8,8 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class EstadisticasAdapter(private val lista: List<Juego>) :
-    RecyclerView.Adapter<EstadisticasAdapter.ViewHolder>() {
+class EstadisticasAdapter(
+    private val lista: List<Juego>,
+    private val esRankingVentas: Boolean = false // Nuevo parámetro para saber qué mostrar
+) : RecyclerView.Adapter<EstadisticasAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imagen: ImageView = view.findViewById(R.id.iv_juego_stat)
@@ -25,13 +27,13 @@ class EstadisticasAdapter(private val lista: List<Juego>) :
         val juego = lista[position]
         holder.nombre.text = juego.nombre
 
-        // Si el rendimiento de ventas es > 0, mostramos ventas, si no, mostramos vistas
-        if (juego.rendimiento_ventas > 0) {
-            holder.metrica.text = "${juego.rendimiento_ventas} ventas"
+        if (esRankingVentas) {
+            // Ranking basado en la posición de la lista (ya viene ordenada de Firebase)
+            val puesto = position + 1
+            holder.metrica.text = "${puesto}º más comprado\n(${juego.rendimiento_ventas} ventas)"
         } else {
             holder.metrica.text = "${juego.rendimiento_vistas} vistas"
         }
-
         Glide.with(holder.itemView.context).load(juego.imagenUrl).into(holder.imagen)
     }
 

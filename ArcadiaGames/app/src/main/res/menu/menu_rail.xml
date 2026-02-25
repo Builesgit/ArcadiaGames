@@ -10,7 +10,7 @@
         android:title="@string/menu_catalogo" />
     <item
         android:id="@+id/item_estadisticas"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_analytics"
         android:title="@string/menu_estadisticas" />
     <item
         android:id="@+id/item_cesta"

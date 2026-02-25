@@ -148,7 +148,7 @@
 
     <string name="home_admin_panel_control">PANNEAU DE CONTRÔLE</string>
     <string name="home_admin_btn_inventario">INVENTAIRE</string>
-    <string name="home_admin_btn_añadir_producto">AJOUTER PRODUIT</string>
+    <string name="home_admin_btn_añadir_producto">AJOUTER NOUVEAU PRODUIT</string>
     <string name="home_admin_titulo_soporte">SUPPORT ET TICKETS</string>
     <string name="home_admin_btn_gestion_incidencias">Gestion des Incidents</string>
     <string name="home_admin_gestion_incidencias_desc">File d\'attente des rapports actifs</string>

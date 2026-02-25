@@ -23,32 +23,30 @@ class FirebaseInventoryManager {
         fun onDataLoaded(lista: List<Juego>)
     }
 
-    // --- TABLA DE ESTADÍSTICAS INDEPENDIENTE ---
+    // --- REGISTRO DE ESTADÍSTICAS DIARIAS ---
     fun registrarEventoEstadistico(idJuego: String, tipo: String, cantidad: Int = 1) {
         val updates = hashMapOf<String, Any>()
-
-        // 1. En el objeto Juego
         val campoProducto = if (tipo == "VENTA") "rendimiento_ventas" else "rendimiento_vistas"
+
+        // Actualiza el contador en el producto
         dbReference.child(idJuego).child(campoProducto).setValue(ServerValue.increment(cantidad.toLong()))
 
-        // 2. En la TABLA 'estadisticas'
+        // Actualiza la tabla independiente
         val nodoStats = statsReference.child("por_producto").child(idJuego)
         updates["$tipo/total"] = ServerValue.increment(cantidad.toLong())
         updates["$tipo/ultima_actualizacion"] = ServerValue.TIMESTAMP
-
         nodoStats.updateChildren(updates)
     }
 
     fun registrarVista(idJuego: String) {
-        dbReference.child(idJuego).child("rendimiento_vistas").setValue(ServerValue.increment(1))
         registrarEventoEstadistico(idJuego, "VISTA")
     }
 
     fun registrarVentaMecanica(idJuego: String, cantidadVendida: Int) {
-        dbReference.child(idJuego).child("rendimiento_ventas").setValue(ServerValue.increment(cantidadVendida.toLong()))
         registrarEventoEstadistico(idJuego, "VENTA", cantidadVendida)
     }
 
+    // --- CONSULTAS PARA EL DASHBOARD ---
     fun obtenerTopVentas(callback: InventoryCallback) {
         dbReference.orderByChild("rendimiento_ventas").limitToLast(5)
             .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -71,7 +69,7 @@ class FirebaseInventoryManager {
             })
     }
 
-    // --- MÉTODOS DE GESTIÓN ---
+    // --- MÉTODOS DE GESTIÓN DE PRODUCTOS ---
     fun subirImagen(imageUri: Uri, callback: ImageUploadCallback) {
         val fileName = "img_${System.currentTimeMillis()}.jpg"
         val fileRef = storageReference.child(fileName)

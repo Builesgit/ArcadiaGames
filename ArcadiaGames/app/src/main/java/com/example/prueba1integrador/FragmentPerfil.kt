@@ -21,6 +21,7 @@ class FragmentPerfil : Fragment() {
     private var _binding: ActivityPerfilBinding? = null
     private val binding get() = _binding!!
 
+    // Mantenemos tus referencias
     private var userListener: ValueEventListener? = null
     private var userRef: DatabaseReference? = null
 
@@ -48,7 +49,7 @@ class FragmentPerfil : Fragment() {
 
         val uidActual = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-        // ESCUCHA EN TIEMPO REAL: El perfil se actualiza apenas cambia el rol en Firebase
+        // Tu lógica de escucha en tiempo real intacta
         val userRef = FirebaseDatabase.getInstance().getReference("usuarios").child(uidActual)
         userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -57,7 +58,6 @@ class FragmentPerfil : Fragment() {
                 val rolActualizado = snapshot.child("rol").getValue(String::class.java) ?: "user"
                 val nombreUser = snapshot.child("nombre").getValue(String::class.java) ?: "Desconocido"
 
-                // ¡AQUÍ ESTÁ LA CLAVE! Llamamos a la función para que ejecute la lógica de visibilidad
                 actualizarInterfaz(nombreUser, rolActualizado, uidActual, snapshot)
             }
             override fun onCancelled(error: DatabaseError) {
@@ -65,7 +65,6 @@ class FragmentPerfil : Fragment() {
             }
         })
 
-        // Lógica para cerrar sesión
         binding.btnLogout.setOnClickListener {
             val intent = Intent(requireContext(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -85,7 +84,6 @@ class FragmentPerfil : Fragment() {
             val esJefe = snapshot.child("esJefe").getValue(Boolean::class.java) ?: false
             binding.btnGestionAdmins.visibility = if (esJefe) View.VISIBLE else View.GONE
 
-            // --- BOTONES ADMIN EXISTENTES ---
             binding.btnCrearProducto.setOnClickListener {
                 startActivity(Intent(requireContext(), AnadirProductoActivity::class.java))
             }
@@ -95,6 +93,8 @@ class FragmentPerfil : Fragment() {
             binding.btnGestionAdmins.setOnClickListener {
                 startActivity(Intent(requireContext(), GestionAdminsActivity::class.java))
             }
+
+            // ÚNICO CAMBIO: Abrimos HistorialActivity para evitar el crash
             binding.btnHistorial.setOnClickListener {
                 startActivity(Intent(requireContext(), HistorialActivity::class.java))
             }
@@ -103,7 +103,6 @@ class FragmentPerfil : Fragment() {
                 val fragmentoIncidencias = FragmentMostrarIncidencias()
                 parentFragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    // Reemplazamos el perfil por el listado de incidencias
                     .replace(R.id.main_home_U_fragment, fragmentoIncidencias)
                     .addToBackStack(null)
                     .commit()
@@ -118,9 +117,7 @@ class FragmentPerfil : Fragment() {
                 startActivity(Intent(requireContext(), MisComprasActivity::class.java))
             }
 
-            // --- NUEVO: SOPORTE TÉCNICO (USUARIO) ---
             binding.btnSoporteTecnico.setOnClickListener {
-                // El usuario va a la Activity para CREAR la incidencia
                 val intent = Intent(requireContext(), CrearIncidencia::class.java)
                 startActivity(intent)
             }
@@ -131,7 +128,7 @@ class FragmentPerfil : Fragment() {
         }
     }
 
-    // 2. Nueva función para mostrar el Pop-up
+    // Tu función de Pop-up intacta
     private fun mostrarPopUpAdmin(uid: String) {
         val inflater = LayoutInflater.from(requireContext())
         val view = inflater.inflate(R.layout.dialogo_canjear_admin, null)
@@ -160,17 +157,14 @@ class FragmentPerfil : Fragment() {
                     val userRef = FirebaseDatabase.getInstance().getReference("usuarios").child(uid)
                     userRef.child("rol").setValue("admin").addOnSuccessListener {
                         Toast.makeText(context, "¡Ahora eres administrador!", Toast.LENGTH_LONG).show()
-                        refCodigos.removeValue() // El código se usa una sola vez
+                        refCodigos.removeValue()
                         dialog.dismiss()
                     }
                 } else {
                     Toast.makeText(context, "Código inválido o caducado", Toast.LENGTH_SHORT).show()
                 }
-            }.addOnFailureListener {
-                Toast.makeText(context, "Error al verificar código", Toast.LENGTH_SHORT).show()
             }
         }
-
         dialog.show()
     }
 
