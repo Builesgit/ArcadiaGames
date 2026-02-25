@@ -75,7 +75,11 @@
             android:name=".HistorialActivity"
             android:exported="false" />
 
-        <!-- 🗺 MAPS ACTIVITY -->
+        <activity
+            android:name=".FragmentMisPedidos"
+            android:exported="false"/>
+
+        <!-- MAPS ACTIVITY -->
         <activity
             android:name=".MapsActivity"
             android:exported="false" />
