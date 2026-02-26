@@ -13,7 +13,12 @@ data class Juego(
     val categoria: String = "",
     val plataforma: String = "",
     val stock: Int = 0,
-    val detalle_stock: Map<String, Int>? = null
+    val detalle_stock: Map<String, Int>? = null,
+
+    val rendimiento_vistas: Int = 0,
+    val rendimiento_ventas: Int = 0,
+    val precio_original: Double = 0.0,
+    val ultima_actualizacion: Long = System.currentTimeMillis()
 ) : Serializable
 
 data class ItemInventario(

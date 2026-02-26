@@ -63,6 +63,12 @@
                 app:icon="@drawable/ico_incidencias" />
 
             <Button
+                android:id="@+id/btnEstadisticasPerfil"
+                style="@style/BotonMenuPersonalizado"
+                android:text="Estadísticas de Tienda"
+                app:icon="@drawable/ic_analytics" />
+
+            <Button
                 android:id="@+id/btnInventario"
                 style="@style/BotonMenuPersonalizado"
                 android:text="@string/perfil_btn_inventario"
