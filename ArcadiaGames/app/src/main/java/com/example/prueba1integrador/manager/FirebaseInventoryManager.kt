@@ -43,9 +43,10 @@ class FirebaseInventoryManager {
     fun registrarVista(idJuego: String) = registrarEventoEstadistico(idJuego, "VISTA")
     fun registrarVentaMecanica(idJuego: String, cantidad: Int) = registrarEventoEstadistico(idJuego, "VENTA", cantidad)
 
+    // Cambiamos listeners a tiempo real
     fun obtenerTopVentas(callback: InventoryCallback) {
         dbReference.orderByChild("rendimiento_ventas").limitToLast(5)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(s: DataSnapshot) {
                     val lista = s.children.mapNotNull { it.getValue(Juego::class.java) }.reversed()
                     callback.onDataLoaded(lista)
@@ -56,7 +57,7 @@ class FirebaseInventoryManager {
 
     fun obtenerMenosVistos(callback: InventoryCallback) {
         dbReference.orderByChild("rendimiento_vistas").limitToFirst(5)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(s: DataSnapshot) {
                     val lista = s.children.mapNotNull { it.getValue(Juego::class.java) }
                     callback.onDataLoaded(lista)

@@ -35,40 +35,38 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- PANEL NEGRO (AHORA VA DETRÁS DE LAS LÍNEAS) -->
-        <View
-            android:id="@+id/panel_login"
-            android:layout_width="332dp"
-            android:layout_height="322dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="32dp"
-            android:background="#AA000000"
-            app:layout_constraintBottom_toBottomOf="@id/divisor_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imgLogo" />
-
-        <!-- LINEA AMARILLA VERTICAL -->
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_vertical"
             android:layout_width="3dp"
-            android:layout_height="350dp"
+            android:layout_height="0dp"
             android:layout_marginStart="40dp"
             android:layout_marginTop="30dp"
             app:dividerColor="@color/Amarillo"
             app:layout_constraintTop_toBottomOf="@id/imgLogo"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="@+id/panel_login"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- LINEA HORIZONTAL -->
+        <View
+            android:id="@+id/panel_login"
+            android:layout_width="0dp"
+            android:layout_height="322dp"
+            android:layout_marginEnd="40dp"
+            android:background="#AA000000"
+            app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/divisor_vertical" />
+
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_horizontal"
-            android:layout_width="220dp"
+            android:layout_width="0dp"
             android:layout_height="3dp"
+            android:layout_marginEnd="40dp"
             android:layout_marginTop="40dp"
             app:dividerColor="@color/Amarillo"
-            app:layout_constraintTop_toTopOf="@id/divisor_vertical"
-            app:layout_constraintStart_toEndOf="@id/divisor_vertical"/>
+            app:layout_constraintTop_toTopOf="@+id/panel_login"
+            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- TITULO -->
         <TextView
             android:id="@+id/level_description_detail"
             android:layout_width="wrap_content"
@@ -81,7 +79,6 @@
             app:layout_constraintBottom_toTopOf="@id/divisor_horizontal"
             app:layout_constraintStart_toEndOf="@id/divisor_vertical"/>
 
-        <!-- CORREO -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Usuario"
             style="?attr/textInputFilledStyle"
@@ -89,22 +86,21 @@
             android:layout_height="wrap_content"
             android:hint="@string/login_correo"
             app:boxBackgroundColor="@color/white"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@id/divisor_horizontal"
-            app:layout_constraintStart_toEndOf="@id/divisor_vertical"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintStart_toStartOf="@+id/panel_login"
+            app:layout_constraintEnd_toEndOf="@+id/panel_login">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtUsuario"
-                android:layout_width="310dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:textColor="@android:color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- PASSWORD -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TextLayout_Contraseña"
             style="?attr/textInputFilledStyle"
@@ -120,7 +116,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtPassword"
-                android:layout_width="310dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="textPassword"
                 android:textColor="@android:color/black" />

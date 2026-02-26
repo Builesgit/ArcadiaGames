@@ -20,7 +20,6 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
 
-    // ESTO ES LO MÁS IMPORTANTE: Obliga a la actividad a usar el idioma guardado
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LanguageUtils.updateBaseContextLocale(newBase))
     }
@@ -39,9 +38,7 @@ class MainActivity : BaseActivity() {
         binding.flagFrench.setOnClickListener { changeLang("fr") }
 
         binding.btnLogin.setOnClickListener {
-
             limpiarErrores()
-
             val email = binding.edtUsuario.text.toString().trim()
             val pass = binding.edtPassword.text.toString().trim()
 
@@ -55,101 +52,52 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val prefs = getSharedPreferences("Settings", MODE_PRIVATE)
-        val savedLang = prefs.getString("My_Lang", "es") ?: "es"
-        val currentLang = resources.configuration.locales.get(0).language
+    // ELIMINADO EL ONRESUME: No hace falta comprobar el idioma aquí,
+    // al usar recreate() en changeLang, la actividad ya se recarga sola.
 
-        if (currentLang != savedLang) {
-            recreate()
-        }
-    }
-
-    // =========================
-    // VALIDACIONES
-    // =========================
     private fun validarCampos(email: String, pass: String): Boolean {
-
         if (email.isEmpty()) {
             Toast.makeText(this, "Introduce tu correo", Toast.LENGTH_SHORT).show()
             return false
         }
-
         if (!email.contains("@")) {
             Toast.makeText(this, "El correo debe contener @gmail.com", Toast.LENGTH_SHORT).show()
             return false
         }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Formato de correo inválido", Toast.LENGTH_SHORT).show()
             return false
         }
-
         val regexPassword = Regex("^(?=.*[A-Z])(?=.*[!@#\$%^&*(),.?\":{}|<>]).{8,12}$")
-
         if (!regexPassword.matches(pass)) {
-            Toast.makeText(
-                this,
-                "Contraseña inválida",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(this, "Contraseña inválida", Toast.LENGTH_LONG).show()
             return false
         }
-
         return true
     }
 
-    private fun limpiarErrores() {
-        // Si tu login usa TextInputLayout podemos limpiar errores aquí
-    }
+    private fun limpiarErrores() { }
 
-    // =========================
-    // LOGIN FIREBASE
-    // =========================
     private fun loginConFirebase(email: String, pass: String) {
-
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this) { task ->
-
                 if (task.isSuccessful) {
-
                     val user = auth.currentUser
-                    val dbRef = Firebase.database.getReference("usuarios")
-                        .child(user?.uid ?: "")
-
-                    dbRef.get().addOnSuccessListener { snapshot ->
-
+                    Firebase.database.getReference("usuarios").child(user?.uid ?: "").get().addOnSuccessListener { snapshot ->
                         val rol = snapshot.child("rol").value?.toString() ?: "user"
                         val nombreUsuario = snapshot.child("nombre").value?.toString() ?: email
 
                         val intent = Intent(this, HomeActivity::class.java)
                         intent.putExtra("ROL_USUARIO", rol)
                         intent.putExtra("USUARIO_LOGUEADO", nombreUsuario)
-
                         startActivity(intent)
                         finish()
                     }
-
                 } else {
-
                     when (task.exception) {
-
-                        is FirebaseAuthInvalidUserException -> {
-                            Toast.makeText(this, "El correo no está registrado", Toast.LENGTH_LONG).show()
-                        }
-
-                        is FirebaseAuthInvalidCredentialsException -> {
-                            Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_LONG).show()
-                        }
-
-                        else -> {
-                            Toast.makeText(
-                                this,
-                                "Error: ${task.exception?.localizedMessage}",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                        is FirebaseAuthInvalidUserException -> Toast.makeText(this, "El correo no está registrado", Toast.LENGTH_LONG).show()
+                        is FirebaseAuthInvalidCredentialsException -> Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_LONG).show()
+                        else -> Toast.makeText(this, "Error: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -157,6 +105,18 @@ class MainActivity : BaseActivity() {
 
     private fun changeLang(code: String) {
         LanguageUtils.saveLocale(this, code)
-        recreate()
+
+        // Creamos un intent explícito para reiniciar la actividad
+        val intent = Intent(this, MainActivity::class.java)
+
+        // Estos flags aseguran que la actividad se limpie y se recree desde cero
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+
+        startActivity(intent)
+
+        // Esta es la parte que "suaviza" el cambio evitando el salto brusco
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+
+        finish()
     }
 }

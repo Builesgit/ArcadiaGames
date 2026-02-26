@@ -2,9 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.Prueba1Integrador" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/Azul_claro</item>
-        <item name="android:statusBarColor">@color/Azul_Oscuro</item>
+        <item name="android:windowBackground">@color/Azul_Fondo_Botones</item>
 
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="Theme.Prueba1Integrador" parent="Base.Theme.Prueba1Integrador" />

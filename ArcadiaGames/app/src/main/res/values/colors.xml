@@ -31,5 +31,6 @@
     <color name="Amarillo_otros">#FACC15</color>
     <color name="Amarillo_Oscuro_otros">#433F28</color>
     <color name="Amarillo_Borde_otros">#7E6B1F</color>
+    <color name="fondo_general">#1E293B</color>
 
 </resources>

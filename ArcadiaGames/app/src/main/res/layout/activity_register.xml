@@ -23,22 +23,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <View
-            android:id="@+id/panel_fondo_form"
-            android:layout_width="327dp"
-            android:layout_height="493dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="120dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="120dp"
-            android:background="#AA000000"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.372" />
-
         <ImageView
             android:id="@+id/imgLogo"
             android:layout_width="115dp"
@@ -52,28 +36,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <View
+            android:id="@+id/panel_fondo_form"
+            android:layout_width="0dp"
+            android:layout_height="493dp"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="40dp"
+            android:background="#AA000000"
+            app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_vertical"
             android:layout_width="3dp"
-            android:layout_height="520dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="40dp"
             app:dividerColor="@color/Amarillo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.093"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.44" />
+            app:layout_constraintTop_toTopOf="@+id/panel_fondo_form"
+            app:layout_constraintBottom_toBottomOf="@+id/panel_fondo_form"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divisor_horizontal"
-            android:layout_width="250dp"
+            android:layout_width="0dp"
             android:layout_height="3dp"
+            android:layout_marginEnd="40dp"
             app:dividerColor="@color/Amarillo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/divisor_vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.25" />
+            app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
+            app:layout_constraintEnd_toEndOf="@+id/panel_fondo_form"
+            app:layout_constraintTop_toTopOf="@+id/panel_fondo_form"
+            android:layout_marginTop="50dp" />
 
         <TextView
             android:id="@+id/tv_titulo_crear"
@@ -91,14 +84,16 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ly_nombre_usuario"
             style="?attr/textInputFilledStyle"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
             android:hint="@string/register_usuario"
             app:boxBackgroundColor="@color/white"
-            app:layout_constraintStart_toEndOf="@+id/divisor_vertical"
-            app:layout_constraintTop_toBottomOf="@id/divisor_horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp">
+            app:layout_constraintStart_toStartOf="@+id/panel_fondo_form"
+            app:layout_constraintEnd_toEndOf="@+id/panel_fondo_form"
+            app:layout_constraintTop_toBottomOf="@id/divisor_horizontal">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_nombre_usuario"
@@ -111,13 +106,16 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ly_usuario"
             style="?attr/textInputFilledStyle"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:hint="@string/register_correo"
             app:boxBackgroundColor="@color/white"
-            app:layout_constraintStart_toStartOf="@+id/ly_nombre_usuario"
-            app:layout_constraintTop_toBottomOf="@id/ly_nombre_usuario"
-            android:layout_marginTop="10dp">
+            app:layout_constraintStart_toStartOf="@+id/panel_fondo_form"
+            app:layout_constraintEnd_toEndOf="@+id/panel_fondo_form"
+            app:layout_constraintTop_toBottomOf="@id/ly_nombre_usuario">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_usuario"
@@ -130,14 +128,17 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ly_pass"
             style="?attr/textInputFilledStyle"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:hint="@string/register_contraseña"
             app:boxBackgroundColor="@color/white"
             app:endIconMode="password_toggle"
-            app:layout_constraintStart_toStartOf="@+id/ly_usuario"
-            app:layout_constraintTop_toBottomOf="@id/ly_usuario"
-            android:layout_marginTop="10dp">
+            app:layout_constraintStart_toStartOf="@+id/panel_fondo_form"
+            app:layout_constraintEnd_toEndOf="@+id/panel_fondo_form"
+            app:layout_constraintTop_toBottomOf="@id/ly_usuario">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_pass"
@@ -150,13 +151,16 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ly_confirm_pass"
             style="?attr/textInputFilledStyle"
-            android:layout_width="300dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:hint="@string/register_contraseña_2"
             app:boxBackgroundColor="@color/white"
-            app:layout_constraintStart_toStartOf="@+id/ly_pass"
-            app:layout_constraintTop_toBottomOf="@id/ly_pass"
-            android:layout_marginTop="10dp">
+            app:layout_constraintStart_toStartOf="@+id/panel_fondo_form"
+            app:layout_constraintEnd_toEndOf="@+id/panel_fondo_form"
+            app:layout_constraintTop_toBottomOf="@id/ly_pass">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_confirm_pass"

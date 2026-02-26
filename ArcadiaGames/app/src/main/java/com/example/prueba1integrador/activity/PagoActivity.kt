@@ -8,6 +8,7 @@ import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -63,6 +64,8 @@ class PagoActivity : BaseActivity() {
         tvTotalPie.text = "TOTAL: €${String.format("%.2f", totalCompraDouble)}"
         tvPedido.text = "Pedido: $compraId"
         tvFecha.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(fechaActualMillis))
+
+        etTarjeta.filters = arrayOf(InputFilter.LengthFilter(19))
 
         // 1. Formateador de tarjeta (espacios cada 4 números)
         etTarjeta.addTextChangedListener(object : TextWatcher {
@@ -120,7 +123,7 @@ class PagoActivity : BaseActivity() {
         val etExp = findViewById<EditText>(R.id.etExpiration)
         val etCvv = findViewById<EditText>(R.id.etCvv)
 
-        val tarjeta = etTarjeta.text.toString().replace(" ", "")
+        val tarjeta = etTarjeta.text.toString().trim()
         val nombre = etNombre.text.toString().trim()
         val exp = etExp.text.toString().trim()
         val cvv = etCvv.text.toString().trim()
@@ -129,7 +132,7 @@ class PagoActivity : BaseActivity() {
             Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
             return false
         }
-        if (tarjeta.length < 16) {
+        if (tarjeta.replace(" ", "").length < 16) {
             Toast.makeText(this, "Número de tarjeta no válido", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -141,7 +144,6 @@ class PagoActivity : BaseActivity() {
     }
 
     private fun procesarFinalizacionPago(cliente: String, totalCompra: Double) {
-
         val user = FirebaseAuth.getInstance().currentUser
         if (user == null) {
             Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_LONG).show()
@@ -151,7 +153,6 @@ class PagoActivity : BaseActivity() {
         val uid = user.uid
         val db = FirebaseDatabase.getInstance().reference
 
-        // Añadimos la modalidad al mapa para que el PDF sepa si imprimir el código o el vale de recogida
         val compraMap = hashMapOf(
             "cliente" to cliente,
             "fecha" to fechaActualMillis,
@@ -159,68 +160,37 @@ class PagoActivity : BaseActivity() {
             "modalidad" to if (esEntregaFisica) "FÍSICO" else "DIGITAL"
         )
 
-        db.child("compras")
-            .child(uid)
-            .child(compraId)
-            .setValue(compraMap)
-            .addOnCompleteListener { task ->
-
-                if (!task.isSuccessful) {
-                    Toast.makeText(this, "Error guardando compra", Toast.LENGTH_LONG).show()
-                    return@addOnCompleteListener
-                }
-
-                for (juego in listaProductos) {
-                    // 1. Guardar el juego en el historial de compras del usuario
-                    val juegoMap = hashMapOf(
-                        "id" to juego.id,
-                        "nombre" to juego.nombre,
-                        "plataforma" to juego.plataforma,
-                        "precio" to juego.precio,
-                        "imagenUrl" to juego.imagenUrl,
-                        "categoria" to juego.categoria,
-                        "codigoDigital" to if (!esEntregaFisica) generarCodigoDigital() else ""
-                    )
-
-                    db.child("compras").child(uid).child(compraId).child("juegos").child(juego.id)
-                        .setValue(juegoMap)
-
-                    // 2. RESTRICCIÓN DE STOCK DETALLADO (Lógica corregida)
-                    val productoRef = db.child("productos").child(juego.id)
-
-                    productoRef.get().addOnSuccessListener { snapshot ->
-                        val stockActualTotal =
-                            snapshot.child("stock").getValue(Int::class.java) ?: 0
-
-                        val plataformaKey = juego.plataforma.lowercase().trim()
-
-                        val stockPlataformaActual =
-                            snapshot.child("detalle_stock").child(plataformaKey)
-                                .getValue(Int::class.java) ?: 0
-
-                        val updates = hashMapOf<String, Any>(
-                            "stock" to (stockActualTotal - 1).coerceAtLeast(0),
-                            "detalle_stock/$plataformaKey" to (stockPlataformaActual - 1).coerceAtLeast(0)
-                        )
-
-                        productoRef.updateChildren(updates)
-
-                        val invManager = com.example.prueba1integrador.manager.FirebaseInventoryManager()
-                        invManager.registrarEnHistorial(cliente, "compró", juego.nombre, 1)
-                    }
-                }
-
-                // 3. Limpiar la cesta del usuario tras la compra
-                db.child("cesta").child(uid).removeValue()
-
-                Toast.makeText(this, "Generando factura...", Toast.LENGTH_SHORT).show()
-
-                // 4. LANZAR FACTURA (Sustituye al Intent directo)
-                // El launcher ya se encarga de ir al HomeActivity al terminar el PDF
-                guardarFacturaLauncher.launch("Factura_Arcadia_${System.currentTimeMillis()}.pdf")
+        db.child("compras").child(uid).child(compraId).setValue(compraMap).addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Toast.makeText(this, "Error guardando compra", Toast.LENGTH_LONG).show()
+                return@addOnCompleteListener
             }
+
+            for (juego in listaProductos) {
+                val juegoMap = hashMapOf(
+                    "id" to juego.id,
+                    "nombre" to juego.nombre,
+                    "plataforma" to juego.plataforma,
+                    "precio" to juego.precio,
+                    "imagenUrl" to juego.imagenUrl,
+                    "categoria" to juego.categoria,
+                    "codigoDigital" to if (!esEntregaFisica) generarCodigoDigital() else ""
+                )
+
+                db.child("compras").child(uid).child(compraId).child("juegos").child(juego.id).setValue(juegoMap)
+
+                // LLAMADA AL MÉTODO RESTAURADO
+                restarStockReal(juego)
+                inventoryManager.registrarEnHistorial(cliente, "compró", juego.nombre, 1)
+            }
+
+            db.child("cesta").child(uid).removeValue()
+            Toast.makeText(this, "Generando factura...", Toast.LENGTH_SHORT).show()
+            guardarFacturaLauncher.launch("Factura_Arcadia_${System.currentTimeMillis()}.pdf")
+        }
     }
 
+    // MÉTODO RESTAURADO QUE ME PEDISTE
     private fun restarStockReal(juego: Juego) {
         val dbRef = FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
         dbRef.get().addOnSuccessListener { snapshot ->
@@ -239,20 +209,16 @@ class PagoActivity : BaseActivity() {
         }
     }
 
-    private fun generarCodigoDigital() = (1..3).joinToString("-") {
-        (1..5).map { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".random() }.joinToString("")
-    }
-
+    private fun generarCodigoDigital() = (1..3).joinToString("-") { (1..5).map { "ABC0123456789".random() }.joinToString("") }
 
     private fun crearPDF_Factura(uri: Uri) {
         val pdfDocument = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
-        val page = pdfDocument.startPage(pageInfo)
+        val page = pdfDocument.startPage(PdfDocument.PageInfo.Builder(595, 842, 1).create())
         val canvas = page.canvas
         val paint = Paint()
 
         paint.isFakeBoldText = true
-        paint.textSize = 26f
+        paint.textSize = 24f
         paint.color = Color.parseColor("#FFC107")
         canvas.drawText("ARCADIA GAMES - FACTURA", 50f, 60f, paint)
 
@@ -266,7 +232,7 @@ class PagoActivity : BaseActivity() {
         var y = 160f
         listaProductos.forEach { juego ->
             paint.isFakeBoldText = true
-            canvas.drawText(juego.nombre.uppercase(), 50f, y, paint)
+            canvas.drawText("${juego.nombre.uppercase()} (${juego.plataforma})", 50f, y, paint)
             canvas.drawText(juego.precio, 450f, y, paint)
             y += 20f
             if (!esEntregaFisica) {

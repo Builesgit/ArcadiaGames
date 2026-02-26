@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.prueba1integrador.R
 import com.example.prueba1integrador.manager.FirebaseInventoryManager
 import com.example.prueba1integrador.model.Juego
 import com.example.prueba1integrador.adapter.JuegoAdapter
-import com.example.prueba1integrador.R
 import com.example.prueba1integrador.databinding.FragmentCatalogoBinding
 
 class FragmentCatalogo : Fragment() {
@@ -24,64 +24,42 @@ class FragmentCatalogo : Fragment() {
     private var plataformaSeleccionada: String? = null
     private var cambiandoChips = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCatalogoBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
         setupFilters()
         setupData()
-
-        // ✅ Por defecto: TODOS
         marcarSolo(binding.chipFiltroTodos.id)
-        plataformaSeleccionada = null
     }
 
     private fun setupData() {
         inventoryManager.consultarInventario(object : FirebaseInventoryManager.InventoryCallback {
             override fun onDataLoaded(lista: List<Juego>) {
                 listaCompleta = lista
-                filtrar("") // ✅ sin SearchBar: filtramos solo por chips
+                filtrar("")
             }
         })
     }
 
     private fun setupRecyclerView() {
         binding.rvCatalogoCompleto.layoutManager = LinearLayoutManager(context)
-
         val rolUsuario = activity?.intent?.getStringExtra("ROL_USUARIO") ?: "cliente"
-        val esAdmin = (rolUsuario == "admin")
-
-        adapter = JuegoAdapter(emptyList(), esCarousel = false, esAdmin = esAdmin)
+        adapter = JuegoAdapter(emptyList(), esCarousel = false, esAdmin = (rolUsuario == "admin"))
         binding.rvCatalogoCompleto.adapter = adapter
     }
 
     private fun setupFilters() {
-
-        val chips = listOf(
-            binding.chipFiltroTodos,
-            binding.chipFiltroBug,
-            binding.chipFiltroUsuario,
-            binding.chipFiltroJuego,
-            binding.chipFiltroOtros
-        )
-
-        // ✅ Forzamos selección única (entre las dos filas)
+        val chips = listOf(binding.chipFiltroTodos, binding.chipFiltroBug, binding.chipFiltroUsuario, binding.chipFiltroJuego, binding.chipFiltroOtros)
         chips.forEach { chip ->
             chip.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (cambiandoChips) return@setOnCheckedChangeListener
-
                 if (isChecked) {
                     marcarSolo(buttonView.id)
-
                     plataformaSeleccionada = when (buttonView.id) {
                         R.id.chipFiltroTodos -> null
                         R.id.chipFiltroBug -> "playstation"
@@ -90,14 +68,9 @@ class FragmentCatalogo : Fragment() {
                         R.id.chipFiltroOtros -> "nintendo"
                         else -> null
                     }
-
                     filtrar("")
-                } else {
-                    // ✅ Evitar que se queden TODOS desmarcados
-                    val algunoMarcado = chips.any { it.isChecked }
-                    if (!algunoMarcado) {
-                        marcarSolo(buttonView.id)
-                    }
+                } else if (!chips.any { it.isChecked }) {
+                    marcarSolo(buttonView.id)
                 }
             }
         }
@@ -105,40 +78,17 @@ class FragmentCatalogo : Fragment() {
 
     private fun marcarSolo(chipId: Int) {
         cambiandoChips = true
-        try {
-            val chips = listOf(
-                binding.chipFiltroTodos,
-                binding.chipFiltroBug,
-                binding.chipFiltroUsuario,
-                binding.chipFiltroJuego,
-                binding.chipFiltroOtros
-            )
-            chips.forEach { it.isChecked = (it.id == chipId) }
-        } finally {
-            cambiandoChips = false
-        }
+        val chips = listOf(binding.chipFiltroTodos, binding.chipFiltroBug, binding.chipFiltroUsuario, binding.chipFiltroJuego, binding.chipFiltroOtros)
+        chips.forEach { it.isChecked = (it.id == chipId) }
+        cambiandoChips = false
     }
 
     private fun filtrar(texto: String) {
         val query = texto.lowercase().trim()
-
         val listaFiltrada = listaCompleta.filter { juego ->
-
-            // ✅ Si en el futuro metes un buscador real, esto ya te sirve
-            val coincideNombre = juego.nombre.lowercase().contains(query)
-
-            // ✅ Filtro plataforma exacto (multiplataforma con comas)
-            val coincidePlataforma = plataformaSeleccionada == null || run {
-                juego.plataforma
-                    .lowercase()
-                    .split(",")
-                    .map { it.trim() }
-                    .contains(plataformaSeleccionada)
-            }
-
-            coincideNombre && coincidePlataforma
+            val coincidePlataforma = plataformaSeleccionada == null || juego.plataforma.lowercase().split(",").map { it.trim() }.contains(plataformaSeleccionada)
+            juego.nombre.lowercase().contains(query) && coincidePlataforma
         }
-
         adapter.setFilteredList(listaFiltrada)
     }
 
