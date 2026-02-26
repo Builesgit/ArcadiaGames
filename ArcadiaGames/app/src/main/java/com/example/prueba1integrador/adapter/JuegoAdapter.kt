@@ -17,6 +17,7 @@ import com.example.prueba1integrador.R
 import com.example.prueba1integrador.activity.AlquilarJuegoActivity
 import com.example.prueba1integrador.activity.HomeActivity
 import com.example.prueba1integrador.databinding.DialogoDetalleJuegoBinding
+import com.example.prueba1integrador.manager.FirebaseInventoryManager
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -27,6 +28,8 @@ class JuegoAdapter(
     private val esAdmin: Boolean = false,
     private val onJuegoClick: (Juego) -> Unit = {}
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val inventoryManager = FirebaseInventoryManager()
 
     companion object {
         private const val VIEW_TYPE_LISTA = 1
@@ -51,6 +54,8 @@ class JuegoAdapter(
 
         holder.itemView.setOnClickListener {
             if (!esAdmin) {
+                // Registro de la vista en estadísticas al abrir el detalle
+                inventoryManager.registrarVista(juego.id)
                 mostrarDialogoDetalle(holder.itemView, juego)
             } else {
                 onJuegoClick(juego)
@@ -92,21 +97,19 @@ class JuegoAdapter(
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        // Configuración de textos
         dialogBinding.tvDetalleNombre.text = juego.nombre
         dialogBinding.tvDetalleDescripcion.text = juego.descripcion
         dialogBinding.tvDetallePrecio.text = juego.precio
         dialogBinding.tvDetalleCategoria.text = juego.categoria
 
-        // --- BLOQUEO POR STOCK ---
-        val hayStock = (juego.stock ?: 0) > 0
+        // --- LÓGICA DE STOCK Y BLOQUEO DE BOTONES ---
+        val hayStockTotal = (juego.stock ?: 0) > 0
 
-        if (!hayStock) {
+        if (!hayStockTotal) {
             dialogBinding.tvDetalleStock.visibility = View.VISIBLE
             dialogBinding.tvDetalleStock.text = "AGOTADO"
             dialogBinding.tvDetalleStock.setTextColor(Color.parseColor("#FF5252"))
 
-            // Desactivamos los botones visualmente
             dialogBinding.btnComprar.isEnabled = false
             dialogBinding.btnComprar.alpha = 0.5f
             dialogBinding.btnAlquilar.isEnabled = false
@@ -119,11 +122,11 @@ class JuegoAdapter(
             dialogBinding.btnAlquilar.alpha = 1.0f
         }
 
-        // 1. CHIPS DE PLATAFORMA
+        // 1. GENERACIÓN DE CHIPS DE PLATAFORMA
         dialogBinding.chipGroupPlataformasDetalle.removeAllViews()
-        val plataformas = juego.plataforma.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        val plataformasArray = juego.plataforma.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
-        plataformas.forEachIndexed { index, plat ->
+        plataformasArray.forEachIndexed { index, plat ->
             val chip = Chip(context)
             chip.text = plat
             chip.isCheckable = true
@@ -131,51 +134,45 @@ class JuegoAdapter(
             chip.setTextColor(Color.WHITE)
             chip.setChipBackgroundColorResource(R.color.chip_selector_azul)
             dialogBinding.chipGroupPlataformasDetalle.addView(chip)
-            if (index == 0) chip.isChecked = true
+
+            // Seleccionar la primera por defecto si hay stock
+            if (index == 0 && hayStockTotal) chip.isChecked = true
         }
 
         Glide.with(context).load(juego.imagenUrl).into(dialogBinding.ivDetalleImagen)
 
-        // 2. BOTÓN COMPRAR (Validación de seguridad añadida)
+        // 2. BOTÓN COMPRAR
         dialogBinding.btnComprar.setOnClickListener {
-            // Validación extra de seguridad: Si no hay stock, no hacemos nada
-            if (!hayStock) {
-                Toast.makeText(context, "Lo sentimos, este producto no tiene stock", Toast.LENGTH_SHORT).show()
+            if (!hayStockTotal) {
+                Toast.makeText(context, "Producto agotado", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             if (uid.isEmpty()) {
-                Toast.makeText(context, "Debes iniciar sesión", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Inicia sesión para comprar", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val selectedId = dialogBinding.chipGroupPlataformasDetalle.checkedChipId
-            if (selectedId == View.NO_ID) {
+            if (selectedId != View.NO_ID) {
+                val plataformaElegida = dialogBinding.chipGroupPlataformasDetalle.findViewById<Chip>(selectedId).text.toString()
+                val juegoCompra = juego.copy(plataforma = plataformaElegida)
+
+                FirebaseDatabase.getInstance().getReference("cesta").child(uid).child(juego.id)
+                    .setValue(juegoCompra)
+                    .addOnSuccessListener {
+                        Toast.makeText(context, "Añadido: $plataformaElegida", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+            } else {
                 Toast.makeText(context, "Selecciona una plataforma", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
             }
-
-            val chipSeleccionado = dialogBinding.chipGroupPlataformasDetalle.findViewById<Chip>(selectedId)
-            val plataformaElegida = chipSeleccionado.text.toString()
-            val juegoCompra = juego.copy(plataforma = plataformaElegida)
-
-            FirebaseDatabase.getInstance().getReference("cesta").child(uid).child(juego.id).setValue(juegoCompra)
-                .addOnSuccessListener {
-                    Toast.makeText(context, "Añadido a la cesta: $plataformaElegida", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                    val intent = Intent(context, HomeActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    context.startActivity(intent)
-                }
         }
 
-        // 3. BOTÓN ALQUILAR (También bloqueado por seguridad)
+        // 3. BOTÓN ALQUILAR
         dialogBinding.btnAlquilar.setOnClickListener {
-            if (!hayStock) {
-                Toast.makeText(context, "No es posible alquilar productos agotados", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (!hayStockTotal) return@setOnClickListener
             val intent = Intent(context, AlquilarJuegoActivity::class.java)
             intent.putExtra("JUEGO", juego)
             context.startActivity(intent)
