@@ -120,7 +120,13 @@ class FirebaseInventoryManager {
 
     fun eliminarProducto(idJuego: String, callback: DeleteCallback) {
         dbReference.child(idJuego).removeValue()
-            .addOnSuccessListener { callback.onDeleteComplete(true) }
-            .addOnFailureListener { callback.onDeleteComplete(false) }
+
+            .addOnSuccessListener {
+                callback.onDeleteComplete(true)
+            }
+
+            .addOnFailureListener {
+                callback.onDeleteComplete(false)
+            }
     }
 }

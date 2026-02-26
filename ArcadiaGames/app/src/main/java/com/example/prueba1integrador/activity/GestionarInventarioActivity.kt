@@ -20,7 +20,6 @@ class GestionarInventarioActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGestionarInventarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupRecyclerView()
     }
 
@@ -31,14 +30,10 @@ class GestionarInventarioActivity : BaseActivity() {
 
     private fun setupRecyclerView() {
         binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
-
         adapter = GestionarAdapter(
             listaInventario = listaVisualInventario,
-            onEditClick = { /* No hace falta lógica aquí, el Adapter abre el diálogo */ },
-            onDataChanged = {
-                // Refrescar datos cuando el adapter realice una operación (suma/resta/borrado)
-                cargarDatos()
-            }
+            onEditClick = { },
+            onDataChanged = { cargarDatos() }
         )
         binding.rvInventarioGestion.adapter = adapter
     }
@@ -60,15 +55,19 @@ class GestionarInventarioActivity : BaseActivity() {
             val listaDeEsteJuego = entry.value
             val juegoRepresentante = listaDeEsteJuego.first()
 
+            val stockPS = listaDeEsteJuego.sumOf { it.detalle_stock?.get("playstation") ?: 0 }
+            val stockXB = listaDeEsteJuego.sumOf { it.detalle_stock?.get("xbox") ?: 0 }
+            val stockNI = listaDeEsteJuego.sumOf { it.detalle_stock?.get("nintendo") ?: 0 }
+            val stockPC = listaDeEsteJuego.sumOf { it.detalle_stock?.get("pc") ?: 0 }
+
             ItemInventario(
                 juego = juegoRepresentante,
-                cantidad = listaDeEsteJuego.sumOf { it.stock },
+                cantidad = stockPS + stockXB + stockNI + stockPC,
                 idsAgrupados = listaDeEsteJuego.map { it.id },
-                // Las claves deben ser idénticas a las del Map anterior
-                ps = listaDeEsteJuego.sumOf { it.detalle_stock?.get("playstation") ?: 0 },
-                xb = listaDeEsteJuego.sumOf { it.detalle_stock?.get("xbox") ?: 0 },
-                ni = listaDeEsteJuego.sumOf { it.detalle_stock?.get("nintendo") ?: 0 },
-                pc = listaDeEsteJuego.sumOf { it.detalle_stock?.get("pc") ?: 0 }
+                ps = stockPS,
+                xb = stockXB,
+                ni = stockNI,
+                pc = stockPC
             )
         }
         adapter.actualizarLista(listaVisualInventario)

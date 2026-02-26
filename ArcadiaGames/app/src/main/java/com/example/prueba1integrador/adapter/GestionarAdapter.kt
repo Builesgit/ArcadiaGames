@@ -17,7 +17,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.prueba1integrador.manager.FirebaseInventoryManager
 import com.example.prueba1integrador.model.ItemInventario
 import com.example.prueba1integrador.model.Juego
 import com.example.prueba1integrador.R
@@ -51,20 +50,17 @@ class GestionarAdapter(
 
         holder.tvNombre.text = juego.nombre
         holder.tvPrecio.text = juego.precio
-
-        // Reseteo de estado
         holder.tvDetalle.visibility = View.GONE
         holder.ivFlecha.rotation = 0f
 
-        // Lógica de Stock Total y Color del Triángulo
         if (item.cantidad <= 0) {
             holder.tvCantidad.text = "AGOTADO (0)"
             holder.tvCantidad.setTextColor(Color.parseColor("#EF5350"))
-            holder.ivFlecha.setColorFilter(Color.parseColor("#EF5350")) // Triángulo Rojo si está agotado
+            holder.ivFlecha.setColorFilter(Color.parseColor("#EF5350"))
         } else {
             holder.tvCantidad.text = "Stock Total: ${item.cantidad}"
             holder.tvCantidad.setTextColor(Color.parseColor("#4CAF50"))
-            holder.ivFlecha.setColorFilter(Color.parseColor("#4CAF50")) // Triángulo Verde si hay stock
+            holder.ivFlecha.setColorFilter(Color.parseColor("#4CAF50"))
         }
 
         Glide.with(holder.itemView.context)
@@ -75,19 +71,14 @@ class GestionarAdapter(
         holder.itemView.setOnClickListener {
             if (holder.tvDetalle.visibility == View.GONE) {
                 holder.ivFlecha.animate().rotation(90f).setDuration(200).start()
-
-                // Construimos el texto con colores dinámicos por línea
                 val builder = SpannableStringBuilder()
 
-                appendPlataforma(builder, "PlayStation", item.ps)
-                builder.append("\n")
-                appendPlataforma(builder, "Xbox", item.xb)
-                builder.append("\n")
-                appendPlataforma(builder, "Nintendo", item.ni)
-                builder.append("\n")
-                appendPlataforma(builder, "PC", item.pc)
+                if (tienePlataforma(juego, "PlayStation")) appendPlataforma(builder, "PlayStation", item.ps)
+                if (tienePlataforma(juego, "Xbox")) appendPlataforma(builder, "Xbox", item.xb)
+                if (tienePlataforma(juego, "Nintendo")) appendPlataforma(builder, "Nintendo", item.ni)
+                if (tienePlataforma(juego, "PC")) appendPlataforma(builder, "PC", item.pc)
 
-                holder.tvDetalle.text = builder
+                holder.tvDetalle.text = if (builder.isEmpty()) "Sin plataformas" else builder
                 holder.tvDetalle.visibility = View.VISIBLE
             } else {
                 holder.ivFlecha.animate().rotation(0f).setDuration(200).start()
@@ -99,20 +90,32 @@ class GestionarAdapter(
         holder.btnEliminar.setOnClickListener { mostrarDialogoEliminarPro(item, holder.itemView.context) }
     }
 
-    // Función auxiliar para pintar cada línea de plataforma según su stock
+    private fun tienePlataforma(juego: Juego, nombrePlat: String): Boolean {
+        return juego.plataforma.split(",")
+            .map { it.trim().lowercase() }
+            .contains(nombrePlat.lowercase())
+    }
+
     private fun appendPlataforma(builder: SpannableStringBuilder, nombre: String, cant: Int) {
-        val inicio = builder.length
         val textoLinea = "$nombre: $cant"
+        // 🛡️ Seguridad: No procesar si el texto es nulo o vacío
+        if (textoLinea.isBlank()) return
+
+        if (builder.isNotEmpty()) builder.append("\n")
+        val inicio = builder.length
         builder.append(textoLinea)
 
         val color = if (cant <= 0) Color.parseColor("#EF5350") else Color.parseColor("#4CAF50")
 
-        builder.setSpan(
-            ForegroundColorSpan(color),
-            inicio,
-            builder.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        // Aplicar el span solo si el rango es válido (longitud > 0)
+        if (builder.length > inicio) {
+            builder.setSpan(
+                ForegroundColorSpan(color),
+                inicio,
+                builder.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
     }
 
     override fun getItemCount(): Int = listaInventario.size
@@ -128,6 +131,11 @@ class GestionarAdapter(
         val etPC = view.findViewById<EditText>(R.id.etStockPC)
         val btnConfirmar = view.findViewById<Button>(R.id.btnConfirmarSuma)
 
+        etPS.visibility = if (tienePlataforma(item.juego, "PlayStation")) View.VISIBLE else View.GONE
+        etXbox.visibility = if (tienePlataforma(item.juego, "Xbox")) View.VISIBLE else View.GONE
+        etNintendo.visibility = if (tienePlataforma(item.juego, "Nintendo")) View.VISIBLE else View.GONE
+        etPC.visibility = if (tienePlataforma(item.juego, "PC")) View.VISIBLE else View.GONE
+
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
@@ -140,15 +148,13 @@ class GestionarAdapter(
             val totalNuevasUnidades = psNuevos + xbNuevos + niNuevos + pcNuevos
 
             if (totalNuevasUnidades > 0) {
-                val nuevoDetalle = mapOf(
-                    "playstation" to (item.ps + psNuevos),
-                    "xbox" to (item.xb + xbNuevos),
-                    "nintendo" to (item.ni + niNuevos),
-                    "pc" to (item.pc + pcNuevos)
-                )
+                val nuevoDetalle = mutableMapOf<String, Int>()
+                if (etPS.visibility == View.VISIBLE) nuevoDetalle["playstation"] = item.ps + psNuevos
+                if (etXbox.visibility == View.VISIBLE) nuevoDetalle["xbox"] = item.xb + xbNuevos
+                if (etNintendo.visibility == View.VISIBLE) nuevoDetalle["nintendo"] = item.ni + niNuevos
+                if (etPC.visibility == View.VISIBLE) nuevoDetalle["pc"] = item.pc + pcNuevos
 
-                val nuevoStockTotal = item.cantidad + totalNuevasUnidades
-                actualizarFirebaseConDetalle(item.juego.id, nuevoStockTotal, nuevoDetalle)
+                actualizarFirebaseConDetalle(item.juego.id, item.cantidad + totalNuevasUnidades, nuevoDetalle)
                 dialog.dismiss()
             } else {
                 Toast.makeText(context, "Ingresa cantidades a sumar", Toast.LENGTH_SHORT).show()
@@ -160,60 +166,62 @@ class GestionarAdapter(
     private fun actualizarFirebaseConDetalle(id: String, total: Int, detalle: Map<String, Int>) {
         val dbRef = FirebaseDatabase.getInstance().getReference("productos").child(id)
         val updates = hashMapOf<String, Any>("stock" to total, "detalle_stock" to detalle)
-
-        dbRef.updateChildren(updates).addOnSuccessListener {
-            onDataChanged()
-        }.addOnFailureListener {
-            Toast.makeText(null, "Error al guardar detalle", Toast.LENGTH_SHORT).show()
-        }
+        dbRef.updateChildren(updates).addOnSuccessListener { onDataChanged() }
     }
 
     private fun mostrarDialogoEliminarPro(item: ItemInventario, context: Context) {
-        val juego = item.juego
-        val stockActual = item.cantidad
         val builder = AlertDialog.Builder(context)
         val view = LayoutInflater.from(context).inflate(R.layout.dialogo_eliminar_producto, null)
         builder.setView(view)
 
+        val etPS = view.findViewById<EditText>(R.id.etEliminarPS)
+        val etXB = view.findViewById<EditText>(R.id.etEliminarXB)
+        val etNI = view.findViewById<EditText>(R.id.etEliminarNI)
+        val etPC = view.findViewById<EditText>(R.id.etEliminarPC)
+        val btnConfirmar = view.findViewById<Button>(R.id.btnConfirmarRetiro)
+        val btnVaciarTodo = view.findViewById<Button>(R.id.btnEliminarTodo)
+
+        etPS.visibility = if (tienePlataforma(item.juego, "PlayStation")) View.VISIBLE else View.GONE
+        etXB.visibility = if (tienePlataforma(item.juego, "Xbox")) View.VISIBLE else View.GONE
+        etNI.visibility = if (tienePlataforma(item.juego, "Nintendo")) View.VISIBLE else View.GONE
+        etPC.visibility = if (tienePlataforma(item.juego, "PC")) View.VISIBLE else View.GONE
+
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val etCantidad = view.findViewById<EditText>(R.id.etCantidadEliminar)
-        val btnRetirarLote = view.findViewById<Button>(R.id.btnRetirarCantidad)
-        val btnRetirarUno = view.findViewById<Button>(R.id.btnRetirarUno)
-        val btnEliminarTodo = view.findViewById<Button>(R.id.btnEliminarTodo)
+        btnConfirmar.setOnClickListener {
+            val psRetirar = etPS.text.toString().toIntOrNull() ?: 0
+            val xbRetirar = etXB.text.toString().toIntOrNull() ?: 0
+            val niRetirar = etNI.text.toString().toIntOrNull() ?: 0
+            val pcRetirar = etPC.text.toString().toIntOrNull() ?: 0
 
-        btnRetirarUno.setOnClickListener {
-            ejecutarActualizacion(juego, (stockActual - 1).coerceAtLeast(0), "redujo stock (-1)")
-            dialog.dismiss()
-        }
+            if (psRetirar <= item.ps && xbRetirar <= item.xb && niRetirar <= item.ni && pcRetirar <= item.pc) {
+                val sumaRetiro = psRetirar + xbRetirar + niRetirar + pcRetirar
+                if (sumaRetiro > 0) {
+                    val nuevoMapa = mutableMapOf<String, Int>()
+                    if (etPS.visibility == View.VISIBLE) nuevoMapa["playstation"] = item.ps - psRetirar
+                    if (etXB.visibility == View.VISIBLE) nuevoMapa["xbox"] = item.xb - xbRetirar
+                    if (etNI.visibility == View.VISIBLE) nuevoMapa["nintendo"] = item.ni - niRetirar
+                    if (etPC.visibility == View.VISIBLE) nuevoMapa["pc"] = item.pc - pcRetirar
 
-        btnRetirarLote.setOnClickListener {
-            val cant = etCantidad.text.toString().toIntOrNull() ?: 0
-            if (cant in 1..stockActual) {
-                ejecutarActualizacion(juego, stockActual - cant, "redujo stock (-$cant)")
-                dialog.dismiss()
+                    actualizarFirebaseConDetalle(item.juego.id, item.cantidad - sumaRetiro, nuevoMapa)
+                    dialog.dismiss()
+                }
             } else {
-                Toast.makeText(context, "Cantidad no válida", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "No puedes retirar más de lo disponible", Toast.LENGTH_SHORT).show()
             }
         }
 
-        btnEliminarTodo.setOnClickListener {
-            val dbRef = FirebaseDatabase.getInstance().getReference("productos")
-            item.idsAgrupados.forEach { dbRef.child(it).child("stock").setValue(0) }
-            FirebaseInventoryManager().registrarEnHistorial("Admin", "borró el producto", juego.nombre, 0)
-            onDataChanged()
+        btnVaciarTodo.setOnClickListener {
+            val nuevoMapa = mutableMapOf<String, Int>()
+            if (etPS.visibility == View.VISIBLE) nuevoMapa["playstation"] = 0
+            if (etXB.visibility == View.VISIBLE) nuevoMapa["xbox"] = 0
+            if (etNI.visibility == View.VISIBLE) nuevoMapa["nintendo"] = 0
+            if (etPC.visibility == View.VISIBLE) nuevoMapa["pc"] = 0
+            actualizarFirebaseConDetalle(item.juego.id, 0, nuevoMapa)
             dialog.dismiss()
         }
         dialog.show()
-    }
-
-    private fun ejecutarActualizacion(juego: Juego, nuevaCant: Int, msgLog: String) {
-        FirebaseDatabase.getInstance().getReference("productos").child(juego.id)
-            .child("stock").setValue(nuevaCant).addOnSuccessListener {
-                FirebaseInventoryManager().registrarEnHistorial("Admin", msgLog, juego.nombre, nuevaCant)
-                onDataChanged()
-            }
     }
 
     fun actualizarLista(nuevaLista: List<ItemInventario>) {
