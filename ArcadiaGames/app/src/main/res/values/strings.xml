@@ -65,7 +65,7 @@
     <string name="pago_btn_pagar">Pagar</string>
 
     <!-- CLASE AÑADIR PRODUCTO -->
-    <string name="add_product_titulo">AÑADIR PRODUCTO</string>
+    <string name="add_product_titulo">AÑADIR NUEVO PRODUCTO</string>
     <string name="add_product_nombre">Nombre del Juego</string>
     <string name="add_product_plataforma">Selecciona plataforma</string>
     <string name="add_product_desc">Descripción del producto...</string>
@@ -169,7 +169,7 @@
         <!-- HOME ADMIN -->
         <string name="home_admin_panel_control">PANEL DE CONTROL</string>
         <string name="home_admin_btn_inventario">INVENTARIO</string>
-        <string name="home_admin_btn_añadir_producto">AÑADIR PRODUCTO</string>
+        <string name="home_admin_btn_añadir_producto">AÑADIR NUEVO PRODUCTO</string>
         <string name="home_admin_titulo_soporte">SOPORTE Y TICKETS</string>
         <string name="home_admin_btn_gestion_incidencias">Gestión de Incidencias</string>
         <string name="home_admin_gestion_incidencias_desc">Cola de reportes activos</string>

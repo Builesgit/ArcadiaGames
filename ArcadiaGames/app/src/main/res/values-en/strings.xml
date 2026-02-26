@@ -150,7 +150,7 @@
 
     <string name="home_admin_panel_control">CONTROL PANEL</string>
     <string name="home_admin_btn_inventario">INVENTORY</string>
-    <string name="home_admin_btn_añadir_producto">ADD PRODUCT</string>
+    <string name="home_admin_btn_añadir_producto">ADD NEW PRODUCT</string>
     <string name="home_admin_titulo_soporte">SUPPORT AND TICKETS</string>
     <string name="home_admin_btn_gestion_incidencias">Incident Management</string>
     <string name="home_admin_gestion_incidencias_desc">Active report queue</string>
