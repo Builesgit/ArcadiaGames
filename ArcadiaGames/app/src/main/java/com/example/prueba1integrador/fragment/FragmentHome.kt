@@ -126,10 +126,30 @@ class FragmentHome : Fragment() {
     }
 
     private fun configurarDashboardAdmin(view: View) {
-        view.findViewById<View>(R.id.cardInventarioDashboard)?.setOnClickListener { startActivity(Intent(context, GestionarInventarioActivity::class.java)) }
-        view.findViewById<View>(R.id.cardNuevoProductoDashboard)?.setOnClickListener { startActivity(Intent(context, AnadirProductoActivity::class.java)) }
+        // Inventario
+        view.findViewById<View>(R.id.cardInventarioDashboard)?.setOnClickListener {
+            startActivity(Intent(context, GestionarInventarioActivity::class.java))
+        }
+
+        // Nuevo Producto
+        view.findViewById<View>(R.id.cardNuevoProductoDashboard)?.setOnClickListener {
+            startActivity(Intent(context, AnadirProductoActivity::class.java))
+        }
+
+        // Estadísticas
         view.findViewById<View>(R.id.cardEstadisticasDashboard)?.setOnClickListener {
-            parentFragmentManager.beginTransaction().replace(R.id.main_home_U_fragment, FragmentEstadisticas()).addToBackStack(null).commit()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_home_U_fragment, FragmentEstadisticas())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        // --- NUEVO: Incidencias ---
+        view.findViewById<View>(R.id.cardIncidenciasDashboard)?.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_home_U_fragment, FragmentMostrarIncidencias())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
