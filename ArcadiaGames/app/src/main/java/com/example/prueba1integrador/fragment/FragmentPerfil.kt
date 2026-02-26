@@ -109,13 +109,16 @@ class FragmentPerfil : Fragment() {
             binding.layoutUsuario.visibility = View.VISIBLE
             binding.btnAbrirDialogoAdmin.visibility = View.VISIBLE
 
-            // FUNCIONALIDAD BOTÓN NORMAL PARA MIS COMPRAS
+            // --- CORRECCIÓN AQUÍ: CARGAR FRAGMENTO, NO ACTIVIDAD ---
             binding.btnMisCompras.setOnClickListener {
-                val intent = Intent(requireContext(), FragmentMisPedidos::class.java)
-                startActivity(intent)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.main_home_U_fragment, FragmentMisPedidos())
+                    .addToBackStack(null)
+                    .commit()
             }
 
             binding.btnSoporteTecnico.setOnClickListener {
+                // Soporte técnico sí es una Activity (CrearIncidencia), así que Intent está bien
                 startActivity(Intent(requireContext(), CrearIncidencia::class.java))
             }
 

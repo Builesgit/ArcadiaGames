@@ -20,7 +20,9 @@ class DetalleCestaActivity : BaseActivity() {
 
         findViewById<Button>(R.id.btnComprar).setOnClickListener {
             val i = Intent(this, PagoActivity::class.java)
-            val precioNum = juego.precio.replace("€", "").replace(",", ".").trim().toDoubleOrNull() ?: 0.0
+            val precioNum = juego.precio.replace("€", "").replace(",", ".").replace(" ", "").trim().toDoubleOrNull() ?: 0.0
+
+            i.putExtra("LISTA_PRODUCTOS", arrayListOf(juego))
             i.putExtra("PRECIO_TOTAL", precioNum)
             startActivity(i)
         }
