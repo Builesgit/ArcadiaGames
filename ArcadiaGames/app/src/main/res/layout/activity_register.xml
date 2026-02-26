@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/crear_cuenta_container"
-    tools:context=".RegisterActivity">
+    tools:context=".activity.RegisterActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login_screen_layout"
