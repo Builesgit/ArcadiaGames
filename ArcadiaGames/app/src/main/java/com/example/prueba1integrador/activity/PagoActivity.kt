@@ -200,40 +200,54 @@ class PagoActivity : BaseActivity() {
                 }
 
                 for (juego in listaProductos) {
-
+                    // 1. Guardar el juego en el historial de compras del usuario
                     val juegoMap = hashMapOf(
                         "id" to juego.id,
                         "nombre" to juego.nombre,
                         "plataforma" to juego.plataforma,
                         "precio" to juego.precio,
                         "imagenUrl" to juego.imagenUrl,
-                        "imagenResId" to juego.imagenResId,
-                        "descripcion" to juego.descripcion,
-                        "categoria" to juego.categoria,
-                        "stock" to juego.stock,
-                        "tags" to juego.tags
+                        "categoria" to juego.categoria
                     )
 
-                    db.child("compras")
-                        .child(uid)
-                        .child(compraId)
-                        .child("juegos")
-                        .child(juego.id)
+                    db.child("compras").child(uid).child(compraId).child("juegos").child(juego.id)
                         .setValue(juegoMap)
 
-                    val nuevoStock = (juego.stock - 1).coerceAtLeast(0)
-                    db.child("productos")
-                        .child(juego.id)
-                        .child("stock")
-                        .setValue(nuevoStock)
+                    // 2. RESTRICCIÓN DE STOCK DETALLADO (Lógica corregida)
+                    val productoRef = db.child("productos").child(juego.id)
+
+                    productoRef.get().addOnSuccessListener { snapshot ->
+                        val stockActualTotal =
+                            snapshot.child("stock").getValue(Int::class.java) ?: 0
+
+                        // Identificar la plataforma comprada (en minúsculas para coincidir con el mapa)
+                        val plataformaKey = juego.plataforma.lowercase().trim()
+
+                        // Obtener el stock actual de esa plataforma específica
+                        val stockPlataformaActual =
+                            snapshot.child("detalle_stock").child(plataformaKey)
+                                .getValue(Int::class.java) ?: 0
+
+                        val updates = hashMapOf<String, Any>(
+                            "stock" to (stockActualTotal - 1).coerceAtLeast(0),
+                            "detalle_stock/$plataformaKey" to (stockPlataformaActual - 1).coerceAtLeast(0)
+                        )
+
+                        // Actualizar ambos valores de golpe en Firebase
+                        productoRef.updateChildren(updates)
+
+                        // Registrar en el historial global de la tienda
+                        val invManager = com.example.prueba1integrador.manager.FirebaseInventoryManager()
+                        invManager.registrarEnHistorial(cliente, "compró", juego.nombre, 1)
+                    }
                 }
 
-                db.child("cesta")
-                    .child(uid)
-                    .removeValue()
+                // 3. Limpiar la cesta del usuario tras la compra
+                db.child("cesta").child(uid).removeValue()
 
                 Toast.makeText(this, "¡Compra realizada correctamente!", Toast.LENGTH_LONG).show()
 
+                // 4. Volver al Home y cerrar esta pantalla
                 val intent = Intent(this, HomeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 startActivity(intent)

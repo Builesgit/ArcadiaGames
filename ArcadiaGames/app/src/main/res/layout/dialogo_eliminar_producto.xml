@@ -4,17 +4,18 @@
     android:layout_height="wrap_content"
     android:background="@drawable/historial_background"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:gravity="center_horizontal">
 
     <TextView
         android:id="@+id/tvTituloEliminar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/inventario_eliminar_titulo"
-        android:textColor="#FFFFFF"
+        android:text="RETIRAR STOCK POR PLATAFORMA"
+        android:textColor="#FF5252"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
         android:textAllCaps="true" />
 
     <TextView
@@ -22,53 +23,103 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/inventario_eliminar_subtitulo"
+        android:text="Indique las unidades a retirar de cada sistema"
         android:textColor="#B0BEC5"
+        android:gravity="center"
         android:textSize="14sp" />
-
-    <EditText
-        android:id="@+id/etCantidadEliminar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="#1A2436"
-        android:hint="@string/inventario_eliminar_cantidad"
-        android:inputType="number"
-        android:padding="12dp"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#546E7A" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
 
-        <Button
-            android:id="@+id/btnRetirarCantidad"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#2196F3"
-            android:text="@string/inventario_eliminar_cantidad_especifica"
-            android:textColor="#FFFFFF" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnRetirarUno"
+            <EditText
+                android:id="@+id/etEliminarPS"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="PlayStation"
+                android:inputType="number"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#FFFFFF"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:layout_margin="4dp"
+                android:gravity="center"/>
+
+            <EditText
+                android:id="@+id/etEliminarXB"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Xbox"
+                android:inputType="number"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#FFFFFF"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:layout_margin="4dp"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="#37474F"
-            android:text="@string/inventario_eliminar_una_cantidad"
-            android:textColor="#FFFFFF" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnEliminarTodo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="#B71C1C"
-            android:text="@string/inventario_eliminar_cantidad_total"
-            android:textColor="#FFFFFF" />
+            <EditText
+                android:id="@+id/etEliminarNI"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Nintendo"
+                android:inputType="number"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#FFFFFF"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:layout_margin="4dp"
+                android:gravity="center"/>
 
+            <EditText
+                android:id="@+id/etEliminarPC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="PC"
+                android:inputType="number"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#FFFFFF"
+                android:background="@drawable/edittext_background"
+                android:padding="12dp"
+                android:layout_margin="4dp"
+                android:gravity="center"/>
+        </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnConfirmarRetiro"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="24dp"
+        android:text="RETIRAR UNIDADES SELECCIONADAS"
+        android:backgroundTint="#2196F3"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnEliminarTodo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="VACIAR STOCK TOTAL"
+        android:backgroundTint="#B71C1C"
+        android:textColor="#FFFFFF" />
+
 </LinearLayout>
