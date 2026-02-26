@@ -59,7 +59,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val tienda2x = 40.539033
         val tienda2y = -3.625239
 
-        addMarker(tienda1x, tienda1y, "Tienda 1 - San Fernando")
+        addMarker(tienda1x, tienda1y, "Tienda 1 - Algete")
         addMarker(tienda2x, tienda2y, "Tienda 2 - Alcobendas")
 
         val centroMadrid = LatLng(40.55, -3.55)
