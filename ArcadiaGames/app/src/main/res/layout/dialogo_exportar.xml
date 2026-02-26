@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/historial_background"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="EXPORTAR INVENTARIO"
+        android:textColor="#FFC107"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selecciona el formato deseado para generar el reporte de existencias."
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        android:alpha="0.8"/>
+
+    <Button
+        android:id="@+id/btnExportarCSV_Pop"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="EXCEL (FORMATO CSV)"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:backgroundTint="#FFC107"
+        android:layout_marginBottom="12dp"
+        android:letterSpacing="0.05"/>
+
+    <Button
+        android:id="@+id/btnExportarPDF_Pop"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="DOCUMENTO PDF"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#334155"
+        android:letterSpacing="0.05"/>
+
+</LinearLayout>

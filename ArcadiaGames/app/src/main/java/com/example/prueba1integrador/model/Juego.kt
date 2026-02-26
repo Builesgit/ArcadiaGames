@@ -28,5 +28,8 @@ data class ItemInventario(
     val ps: Int = 0,
     val xb: Int = 0,
     val ni: Int = 0,
-    val pc: Int = 0
+    val pc: Int = 0,
+
+    val totalVistas: Int = 0,
+    val totalVentas: Int = 0
 ) : Serializable
