@@ -12,11 +12,14 @@
         android:id="@+id/item_estadisticas"
         android:icon="@drawable/ic_analytics"
         android:title="Estadisticas" />
-
     <item
         android:id="@+id/item_cesta"
         android:icon="@drawable/ic_menu_carrito"
         android:title="Cesta"/>
+    <item
+        android:id="@+id/nav_mapa"
+        android:title="Mapa de Tiendas"
+        android:icon="@drawable/ic_map" />
     <item
         android:id="@+id/item_perfil"
         android:icon="@drawable/ic_menu_account"

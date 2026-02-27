@@ -75,6 +75,13 @@ class HomeActivity : BaseActivity() {
                 R.id.item_estadisticas -> { if (rol == "admin") reemplazarFragmento(FragmentEstadisticas()); true }
                 R.id.item_cesta -> { if (rol != "admin") reemplazarFragmento(FragmentCesta()); true }
                 R.id.item_perfil -> { reemplazarFragmento(FragmentPerfil()); true }
+
+                // NUEVA NAVEGACIÓN A MAPA
+                R.id.nav_mapa -> {
+                    startActivity(Intent(this, MapsActivity::class.java))
+                    true
+                }
+
                 else -> false
             }
         }
