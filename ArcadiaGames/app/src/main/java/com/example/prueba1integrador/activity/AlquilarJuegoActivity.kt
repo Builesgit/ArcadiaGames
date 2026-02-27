@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.prueba1integrador.model.Juego
 import com.example.prueba1integrador.databinding.ActivityAlquilarJuegoBinding
+import com.example.prueba1integrador.manager.FirebaseInventoryManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit
 class AlquilarJuegoActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAlquilarJuegoBinding
+    private val inventoryManager = FirebaseInventoryManager()
     private val precioPorDia = 5.0
     private var fechaInicio: Calendar? = null
     private var fechaFin: Calendar? = null
@@ -135,7 +137,8 @@ class AlquilarJuegoActivity : BaseActivity() {
             .setValue(alquilerMap)
             .addOnSuccessListener {
 
-                Toast.makeText(this, "Alquiler realizado correctamente ✅", Toast.LENGTH_SHORT).show()
+                inventoryManager.registrarEnHistorial(user.email ?: "Usuario", "Alquiló juego", juego.nombre, 1)
+                Toast.makeText(this, "Alquiler realizado correctamente ", Toast.LENGTH_SHORT).show()
                 finish()
             }
             .addOnFailureListener {

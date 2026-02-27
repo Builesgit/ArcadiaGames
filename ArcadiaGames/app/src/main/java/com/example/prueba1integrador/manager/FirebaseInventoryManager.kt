@@ -11,6 +11,7 @@ class FirebaseInventoryManager {
     private val dbReference = FirebaseDatabase.getInstance().getReference("productos")
     private val storageReference = FirebaseStorage.getInstance().reference.child("imagenes_productos")
     private val statsReference = FirebaseDatabase.getInstance().getReference("estadisticas")
+    private val historialRef = FirebaseDatabase.getInstance().getReference("historial")
 
     interface ImageUploadCallback {
         fun onUrlLoaded(url: String)
@@ -25,14 +26,25 @@ class FirebaseInventoryManager {
         fun onDataLoaded(lista: List<Juego>)
     }
 
+    // --- LOGICA DE ALERTAS Y AUDITORÍA ---
+    fun verificarStockYRegistrar(juego: Juego, stockTotal: Int) {
+        if (stockTotal <= 0) {
+            registrarEnHistorial("Sistema", "Agotado", juego.nombre, 0)
+        } else if (stockTotal <= 3) {
+            registrarEnHistorial("Sistema", "Stock bajo (Quedan $stockTotal)", juego.nombre, stockTotal)
+        }
+    }
+
+    fun registrarEnHistorial(nombreUser: String, accion: String, producto: String, cant: Int = 1) {
+        val idLog = historialRef.push().key ?: return
+        val nuevoLog = AccionHistorial(idLog, nombreUser, accion, producto, cant, System.currentTimeMillis())
+        historialRef.child(idLog).setValue(nuevoLog)
+    }
+
     // --- LÓGICA DE ESTADÍSTICAS ---
     fun registrarEventoEstadistico(idJuego: String, tipo: String, cantidad: Int = 1) {
         val campoProducto = if (tipo == "VENTA") "rendimiento_ventas" else "rendimiento_vistas"
-
-        // Incremento atómico en el producto
         dbReference.child(idJuego).child(campoProducto).setValue(ServerValue.increment(cantidad.toLong()))
-
-        // Incremento en el nodo global de estadísticas
         val updates = hashMapOf<String, Any>(
             "$tipo/total" to ServerValue.increment(cantidad.toLong()),
             "$tipo/ultima_actualizacion" to ServerValue.TIMESTAMP
@@ -43,10 +55,9 @@ class FirebaseInventoryManager {
     fun registrarVista(idJuego: String) = registrarEventoEstadistico(idJuego, "VISTA")
     fun registrarVentaMecanica(idJuego: String, cantidad: Int) = registrarEventoEstadistico(idJuego, "VENTA", cantidad)
 
-    // Cambiamos listeners a tiempo real
     fun obtenerTopVentas(callback: InventoryCallback) {
         dbReference.orderByChild("rendimiento_ventas").limitToLast(5)
-            .addValueEventListener(object : ValueEventListener {
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(s: DataSnapshot) {
                     val lista = s.children.mapNotNull { it.getValue(Juego::class.java) }.reversed()
                     callback.onDataLoaded(lista)
@@ -57,7 +68,7 @@ class FirebaseInventoryManager {
 
     fun obtenerMenosVistos(callback: InventoryCallback) {
         dbReference.orderByChild("rendimiento_vistas").limitToFirst(5)
-            .addValueEventListener(object : ValueEventListener {
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(s: DataSnapshot) {
                     val lista = s.children.mapNotNull { it.getValue(Juego::class.java) }
                     callback.onDataLoaded(lista)
@@ -78,7 +89,10 @@ class FirebaseInventoryManager {
     fun subirProducto(videojuego: Juego, callback: ProductSaveCallback) {
         if (videojuego.id.isNotEmpty()) {
             dbReference.child(videojuego.id).setValue(videojuego)
-                .addOnSuccessListener { callback.onSaveComplete(true) }
+                .addOnSuccessListener {
+                    registrarEnHistorial("Admin", "Actualizó producto", videojuego.nombre, videojuego.stock)
+                    callback.onSaveComplete(true)
+                }
                 .addOnFailureListener { callback.onSaveComplete(false) }
             return
         }
@@ -99,14 +113,14 @@ class FirebaseInventoryManager {
         })
     }
 
-    fun registrarEnHistorial(nombreUser: String, accion: String, producto: String, cant: Int = 1) {
-        val ref = FirebaseDatabase.getInstance().getReference("historial")
-        val idLog = ref.push().key ?: return
-        val nuevoLog = AccionHistorial(idLog, nombreUser, accion, producto, cant, System.currentTimeMillis())
-        ref.child(idLog).setValue(nuevoLog)
-    }
-
-    fun eliminarProducto(idJuego: String, callback: ProductSaveCallback) {
-        dbReference.child(idJuego).removeValue().addOnCompleteListener { callback.onSaveComplete(it.isSuccessful) }
+    fun eliminarProducto(juego: Juego, callback: ProductSaveCallback) {
+        dbReference.child(juego.id).removeValue().addOnCompleteListener {
+            if(it.isSuccessful) {
+                registrarEnHistorial("Admin", "Eliminó producto", juego.nombre, juego.stock)
+                callback.onSaveComplete(true)
+            } else {
+                callback.onSaveComplete(false)
+            }
+        }
     }
 }

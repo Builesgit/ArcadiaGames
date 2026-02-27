@@ -15,7 +15,9 @@ import com.example.prueba1integrador.model.Incidencia
 import com.example.prueba1integrador.adapter.IncidenciaAdapter
 import com.example.prueba1integrador.databinding.DialogoDetalleIncidenciaBinding
 import com.example.prueba1integrador.databinding.FragmentMostrarIncidenciaBinding
+import com.example.prueba1integrador.manager.FirebaseInventoryManager
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -28,6 +30,9 @@ class FragmentMostrarIncidencias : Fragment() {
 
     private lateinit var adapter: IncidenciaAdapter
     private val listaCompleta: MutableList<Incidencia> = mutableListOf()
+
+    // --- LOG AUDITORÍA ---
+    private val inventoryManager = FirebaseInventoryManager()
 
     private lateinit var dbPendientes: DatabaseReference
     private lateinit var dbResueltas: DatabaseReference
@@ -100,7 +105,7 @@ class FragmentMostrarIncidencias : Fragment() {
 
         dialogBinding.btnFinalizarIncidencia.setOnClickListener {
 
-            // ✅ key real de Firebase (siempre es la correcta)
+            // key real de Firebase (siempre es la correcta)
             val keyReal = incidencia.id?.trim()
             if (keyReal.isNullOrEmpty()) {
                 Toast.makeText(context, "No se pudo resolver: ID vacío.", Toast.LENGTH_SHORT).show()
@@ -128,6 +133,10 @@ class FragmentMostrarIncidencias : Fragment() {
 
             rootRef.updateChildren(updates)
                 .addOnSuccessListener {
+                    // --- LOG AUDITORÍA ---
+                    val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: "Admin"
+                    inventoryManager.registrarEnHistorial(userEmail, "Completó incidencia", incidencia.tema, 1)
+
                     Toast.makeText(context, "Reporte archivado como resuelto", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
 
@@ -191,7 +200,7 @@ class FragmentMostrarIncidencias : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Error Firebase: ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Error Firebase: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         }
 

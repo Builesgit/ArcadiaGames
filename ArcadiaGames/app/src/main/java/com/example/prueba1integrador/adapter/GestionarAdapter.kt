@@ -20,6 +20,8 @@ import com.bumptech.glide.Glide
 import com.example.prueba1integrador.model.ItemInventario
 import com.example.prueba1integrador.model.Juego
 import com.example.prueba1integrador.R
+import com.example.prueba1integrador.manager.FirebaseInventoryManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class GestionarAdapter(
@@ -27,6 +29,9 @@ class GestionarAdapter(
     private val onEditClick: (Juego) -> Unit,
     private val onDataChanged: () -> Unit
 ) : RecyclerView.Adapter<GestionarAdapter.GestionViewHolder>() {
+
+    private val inventoryManager = FirebaseInventoryManager()
+    private val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email ?: "Admin"
 
     class GestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivImagen: ImageView = view.findViewById(R.id.iv_juego_mgmt)
@@ -98,23 +103,13 @@ class GestionarAdapter(
 
     private fun appendPlataforma(builder: SpannableStringBuilder, nombre: String, cant: Int) {
         val textoLinea = "$nombre: $cant"
-        // 🛡️ Seguridad: No procesar si el texto es nulo o vacío
         if (textoLinea.isBlank()) return
-
         if (builder.isNotEmpty()) builder.append("\n")
         val inicio = builder.length
         builder.append(textoLinea)
-
         val color = if (cant <= 0) Color.parseColor("#EF5350") else Color.parseColor("#4CAF50")
-
-        // Aplicar el span solo si el rango es válido (longitud > 0)
         if (builder.length > inicio) {
-            builder.setSpan(
-                ForegroundColorSpan(color),
-                inicio,
-                builder.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            builder.setSpan(ForegroundColorSpan(color), inicio, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
 
@@ -144,7 +139,6 @@ class GestionarAdapter(
             val xbNuevos = etXbox.text.toString().toIntOrNull() ?: 0
             val niNuevos = etNintendo.text.toString().toIntOrNull() ?: 0
             val pcNuevos = etPC.text.toString().toIntOrNull() ?: 0
-
             val totalNuevasUnidades = psNuevos + xbNuevos + niNuevos + pcNuevos
 
             if (totalNuevasUnidades > 0) {
@@ -154,19 +148,19 @@ class GestionarAdapter(
                 if (etNintendo.visibility == View.VISIBLE) nuevoDetalle["nintendo"] = item.ni + niNuevos
                 if (etPC.visibility == View.VISIBLE) nuevoDetalle["pc"] = item.pc + pcNuevos
 
-                actualizarFirebaseConDetalle(item.juego.id, item.cantidad + totalNuevasUnidades, nuevoDetalle)
+                val nuevoTotal = item.cantidad + totalNuevasUnidades
+
+                // --- LOG AUDITORÍA Y ALERTA ---
+                inventoryManager.registrarEnHistorial(currentUserEmail, "Añadió stock", item.juego.nombre, totalNuevasUnidades)
+                inventoryManager.verificarStockYRegistrar(item.juego, nuevoTotal)
+
+                actualizarFirebaseConDetalle(item.juego.id, nuevoTotal, nuevoDetalle)
                 dialog.dismiss()
             } else {
                 Toast.makeText(context, "Ingresa cantidades a sumar", Toast.LENGTH_SHORT).show()
             }
         }
         dialog.show()
-    }
-
-    private fun actualizarFirebaseConDetalle(id: String, total: Int, detalle: Map<String, Int>) {
-        val dbRef = FirebaseDatabase.getInstance().getReference("productos").child(id)
-        val updates = hashMapOf<String, Any>("stock" to total, "detalle_stock" to detalle)
-        dbRef.updateChildren(updates).addOnSuccessListener { onDataChanged() }
     }
 
     private fun mostrarDialogoEliminarPro(item: ItemInventario, context: Context) {
@@ -204,7 +198,13 @@ class GestionarAdapter(
                     if (etNI.visibility == View.VISIBLE) nuevoMapa["nintendo"] = item.ni - niRetirar
                     if (etPC.visibility == View.VISIBLE) nuevoMapa["pc"] = item.pc - pcRetirar
 
-                    actualizarFirebaseConDetalle(item.juego.id, item.cantidad - sumaRetiro, nuevoMapa)
+                    val nuevoTotal = item.cantidad - sumaRetiro
+
+                    // --- LOG AUDITORÍA Y ALERTA ---
+                    inventoryManager.registrarEnHistorial(currentUserEmail, "Eliminó stock", item.juego.nombre, sumaRetiro)
+                    inventoryManager.verificarStockYRegistrar(item.juego, nuevoTotal)
+
+                    actualizarFirebaseConDetalle(item.juego.id, nuevoTotal, nuevoMapa)
                     dialog.dismiss()
                 }
             } else {
@@ -218,10 +218,21 @@ class GestionarAdapter(
             if (etXB.visibility == View.VISIBLE) nuevoMapa["xbox"] = 0
             if (etNI.visibility == View.VISIBLE) nuevoMapa["nintendo"] = 0
             if (etPC.visibility == View.VISIBLE) nuevoMapa["pc"] = 0
+
+            // --- LOG AUDITORÍA ---
+            inventoryManager.registrarEnHistorial(currentUserEmail, "Vació todo el stock", item.juego.nombre, item.cantidad)
+            inventoryManager.verificarStockYRegistrar(item.juego, 0)
+
             actualizarFirebaseConDetalle(item.juego.id, 0, nuevoMapa)
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    private fun actualizarFirebaseConDetalle(id: String, total: Int, detalle: Map<String, Int>) {
+        val dbRef = FirebaseDatabase.getInstance().getReference("productos").child(id)
+        val updates = hashMapOf<String, Any>("stock" to total, "detalle_stock" to detalle)
+        dbRef.updateChildren(updates).addOnSuccessListener { onDataChanged() }
     }
 
     fun actualizarLista(nuevaLista: List<ItemInventario>) {

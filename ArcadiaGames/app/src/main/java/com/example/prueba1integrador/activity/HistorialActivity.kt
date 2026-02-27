@@ -2,9 +2,9 @@ package com.example.prueba1integrador.activity
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.prueba1integrador.model.AccionHistorial
 import com.example.prueba1integrador.adapter.HistorialAdapter
 import com.example.prueba1integrador.databinding.ActivityHistorialBinding
+import com.example.prueba1integrador.model.AccionHistorial
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -47,14 +47,19 @@ class HistorialActivity : BaseActivity() {
 
     private fun filtrarLista(posicion: Int) {
         val listaFiltrada = if (posicion == 0) {
+            // Pestaña ADMINISTRADORES: Filtramos acciones de gestión
             listaCompleta.filter {
                 it.accion.contains("añadió", true) ||
                         it.accion.contains("eliminó", true) ||
                         it.accion.contains("actualizó", true) ||
-                        it.accion.contains("stock", true)
+                        it.accion.contains("stock", true) ||
+                        it.accion.contains("incidencia", true) ||
+                        it.accion.contains("generó", true) ||
+                        it.accion.contains("degradó", true) ||
+                        it.accion.contains("agotado", true)
             }
         } else {
-            // Acciones Comerciales (Usuarios)
+            // Pestaña USUARIOS: Filtramos acciones comerciales
             listaCompleta.filter {
                 it.accion.contains("compró", ignoreCase = true) ||
                         it.accion.contains("intercambió", ignoreCase = true) ||

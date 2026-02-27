@@ -54,6 +54,8 @@ class GestionarInventarioActivity : BaseActivity() {
 
     private fun setupRecyclerView() {
         binding.rvInventarioGestion.layoutManager = LinearLayoutManager(this)
+        // Asegúrate de que en tu adaptador, cuando edites stock, llames a:
+        // inventoryManager.verificarStockYRegistrar(juego, nuevoStockTotal)
         adapter = GestionarAdapter(
             listaInventario = listaVisualInventario,
             onEditClick = { },
@@ -171,7 +173,7 @@ class GestionarInventarioActivity : BaseActivity() {
 
         // 1. LISTADO DE INVENTARIO
         listaVisualInventario.forEach { item ->
-            if (yPos > 700) { // Margen para evitar corte
+            if (yPos > 700) {
                 pdfDocument.finishPage(page)
                 pageNumber++
                 pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
@@ -191,7 +193,6 @@ class GestionarInventarioActivity : BaseActivity() {
             paint.isFakeBoldText = false
             paint.color = Color.DKGRAY
 
-            // FILTRADO DE PLATAFORMAS (Solo las que tienen > 0)
             val listaPlat = mutableListOf<String>()
             if (item.ps > 0) listaPlat.add("PS: ${item.ps}")
             if (item.xb > 0) listaPlat.add("XB: ${item.xb}")
